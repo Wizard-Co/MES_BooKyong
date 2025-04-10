@@ -23,7 +23,7 @@ namespace WizMes_BooKyong
     {
         string stDate = string.Empty;
         string stTime = string.Empty;
-
+        //테스트
         Lib lib = new Lib();
         PlusFinder pf = new PlusFinder();
 
