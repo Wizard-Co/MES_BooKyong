@@ -80,38 +80,9 @@
                         Click="btnToday_Click" />
             </Grid>
 
-            <!--최종거래처-->
-            <Grid Grid.Row="0" Grid.Column="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="75*" />
-                    <ColumnDefinition Width="90*" />
-                    <ColumnDefinition Width="15*" />
-                </Grid.ColumnDefinitions>
-                <Label x:Name="lbInCustom" Grid.Column="0" 
-                       Style="{DynamicResource LabelSearch}"
-                       MouseLeftButtonUp="lbInCustom_MouseLeftButtonUp">
-                    <StackPanel Style="{DynamicResource StackPanelInLabel}">
-                        <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
-                            <CheckBox x:Name="chkInCustom" Checked="chkInCustom_Checked" 
-                                      Unchecked="chkInCustom_Unchecked" VerticalAlignment="Center"/>
-                        </Viewbox>
-                        <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}" >
-                            <TextBlock Text="최종거래처" 
-                                       Style="{DynamicResource TextBlockInViewBoxSearch}"/>
-                        </Viewbox>
-                    </StackPanel>
-                </Label>
-                <TextBox x:Name="txtInCustom" Grid.Column="1" 
-                         Style="{DynamicResource TextBoxSearch}"
-                         Keyboard.KeyDown="txtInCustom_KeyDown"/>
-                <Button x:Name="btnPfInCustom" Grid.Column="2" Margin="1" IsEnabled="False" 
-                        Click="btnPfInCustom_Click">
-                    <Image Source="{DynamicResource btiPlusFind}" />
-                </Button>
-            </Grid>
-
+          
             <!--거래처-->
-            <Grid Grid.Row="1" Grid.Column="2">
+            <Grid Grid.Row="0" Grid.Column="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -127,7 +98,7 @@
                                       Unchecked="chkCustom_Unchecked" VerticalAlignment="Center"/>
                         </Viewbox>
                         <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
-                            <TextBlock Text="거 래 처" 
+                            <TextBlock Text="고 객 사" 
                                        Style="{DynamicResource TextBlockInViewBoxSearch}"/>
                         </Viewbox>
                     </StackPanel>
@@ -141,7 +112,7 @@
             </Grid>
 
             <!--품명-->
-            <Grid Grid.Row="2" Grid.Column="2" >
+            <Grid Grid.Row="1" Grid.Column="2" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -170,7 +141,7 @@
             </Grid>
 
             <!--품번-->
-            <Grid  Grid.Row="3" Grid.Column="2" >
+            <Grid  Grid.Row="2" Grid.Column="2" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -201,7 +172,7 @@
             </Grid>
 
             <!--관리번호-->
-            <Grid Grid.Row="0" Grid.Column="3">
+            <Grid Grid.Row="3" Grid.Column="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -224,18 +195,18 @@
                          Style="{DynamicResource TextBoxSearch}"/>
             </Grid>
 
-            <Grid Grid.Row="1" Grid.Column="3">
+            <Grid Grid.Row="0" Grid.Column="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100*" />
                     <ColumnDefinition Width="65*" />
                     <ColumnDefinition Width="15*" />
                 </Grid.ColumnDefinitions>
-                <Label x:Name="lblPlanComplete" Grid.Row="0" Grid.Column="0" 
+                <Label x:Name="lblCompleted" Grid.Row="0" Grid.Column="0" 
                        Style="{DynamicResource LabelSearch}"
-                       MouseLeftButtonDown="lblPlanComplete_MouseLeftButtonDown" >
+                       MouseLeftButtonDown="lblCompleted_MouseLeftButtonDown" >
                     <StackPanel Style="{DynamicResource StackPanelInLabel}">
                         <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
-                            <CheckBox x:Name="chkPlanComplete" />
+                            <CheckBox x:Name="chkCompleted" />
                         </Viewbox>
                         <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}" >
                             <TextBlock Text="지시완료 포함" 
@@ -245,6 +216,28 @@
                 </Label>
             </Grid>
 
+            <Grid Grid.Row="1" Grid.Column="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100*" />
+                    <ColumnDefinition Width="65*" />
+                    <ColumnDefinition Width="15*" />
+                </Grid.ColumnDefinitions>
+                <Label x:Name="lblClosed"
+            Style="{DynamicResource LabelSearch}"
+            MouseLeftButtonDown="lblClosed_MouseLeftButtonDown" >
+                    <StackPanel Style="{DynamicResource StackPanelInLabel}">
+                        <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
+                            <CheckBox x:Name="chkClosed" />
+                        </Viewbox>
+                        <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}" >
+                            <TextBlock Text="지시마감 포함" 
+                            Style="{DynamicResource TextBlockInViewBoxSearch}"/>
+                        </Viewbox>
+                    </StackPanel>
+                </Label>
+            </Grid>
+
+
             <Grid Grid.Row="2" Grid.Column="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100*" />
@@ -253,7 +246,7 @@
                 </Grid.ColumnDefinitions>
             </Grid>
 
-            <Grid Grid.Row="3" Grid.Column="3" >
+            <Grid Grid.Row="2" Grid.Column="3" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="95*" />
                     <ColumnDefinition Width="95*" />
@@ -355,8 +348,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="10*" />
                 <RowDefinition Height="65" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="3*" />
+                <RowDefinition Height="5*" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.RowDefinitions>
@@ -393,10 +385,10 @@
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding PlanComplete}" Value="*">
+                                                    <DataTrigger Binding="{Binding Completed}" Value="*">
                                                         <Setter Property="Text" Value="■" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding PlanComplete}" Value="">
+                                                    <DataTrigger Binding="{Binding Completed}" Value="">
                                                         <Setter Property="Text" Value="" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -416,10 +408,10 @@
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding PlanTheEnd}" Value="*">
+                                                    <DataTrigger Binding="{Binding Closed}" Value="*">
                                                         <Setter Property="Text" Value="▲" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding PlanTheEnd}" Value="">
+                                                    <DataTrigger Binding="{Binding Closed}" Value="">
                                                         <Setter Property="Text" Value="" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -447,14 +439,14 @@
                         <DataGridTemplateColumn Header="  수 주 량  " Width="auto" SortMemberPath="OrderQty">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding OrderQty,StringFormat={}{0:#\,#.##}}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding OrderQty,StringFormat=N0}" TextAlignment="Right"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="  계 획 량  " Width="auto" SortMemberPath="OrderInstQty">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding OrderInstQty,StringFormat={}{0:#\,#.##}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding OrderInstQty,StringFormat=N0, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" TextAlignment="Right"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -470,21 +462,21 @@
                         <DataGridTemplateColumn Header="합계 계획량" Width="auto" SortMemberPath="TotOrderinstqty">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding TotOrderinstqty,StringFormat={}{0:#\,#}}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding TotOrderinstqty,StringFormat=N0}" TextAlignment="Right"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="합계 미계획량" Width="auto" SortMemberPath="notOrderInstQty">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding notOrderInstQty,StringFormat={}{0:#\,#}}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding notOrderInstQty,StringFormat=N0}" TextAlignment="Right"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="합계 투입량" Width="auto" SortMemberPath="p1WorkQty">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding p1WorkQty,StringFormat={}{0:#\,#}}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding p1WorkQty,StringFormat=N0}" TextAlignment="Right"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -492,14 +484,14 @@
                         <DataGridTemplateColumn Header="합계 검사량" Width="auto" SortMemberPath="InspectQty">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding InspectQty,StringFormat={}{0:#\,#}}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding InspectQty,StringFormat=N0}" TextAlignment="Right"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="합계 출고량" Width="auto" SortMemberPath="OutQty">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding OutQty,StringFormat={}{0:#\,#}}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding OutQty,StringFormat=N0}" TextAlignment="Right"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -508,7 +500,7 @@
                         <DataGridTemplateColumn Header="품명그룹" Width="auto" >
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding ArticleGrpName}" Tag="{Binding ArticleGrpID}" />
+                                    <TextBlock Text="{Binding ArticleGrp}" Tag="{Binding ArticleGrpID}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -516,14 +508,14 @@
 
 
                         <DataGridTextColumn Header="지시번호" Width="auto" Binding="{Binding InstID}" />
-                        <DataGridTextColumn Header="지시완료" Width="auto" Binding="{Binding PlanComplete}" />
+                        <DataGridTextColumn Header="지시완료" Width="auto" Binding="{Binding Completed}" />
                         <DataGridTextColumn Header="원자재투입예외관리" Width="auto" Binding="{Binding MtrExceptYN}" />
                         <DataGridTextColumn Header="선입선출예외" Width="auto" Binding="{Binding OutwareExceptYN}" />
                         <DataGridTextColumn Header="LotID" Width="auto" Binding="{Binding LotID}" />
                         <DataGridTemplateColumn Header="진척률(%)" Width="auto" SortMemberPath="Progress">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Progress,StringFormat={}{0:#\,#}}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding Progress,StringFormat=N0}" TextAlignment="Right"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -602,32 +594,7 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.5*" />
-                    <ColumnDefinition Width="0.5*" />
-                    <ColumnDefinition Width="0.1*" />
-                    <ColumnDefinition Width="0.5*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="0.1*" />
-                    <ColumnDefinition Width="0.5*" />
-                    <ColumnDefinition Width="0.5*" />
-                    <ColumnDefinition Width="0.5*" />
-                </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Content="지시수량" VerticalAlignment="Center" Height="30"></Label>
-                <TextBox Grid.Column="1" x:Name="txtOrderInstQty" VerticalContentAlignment="Center" IsEnabled="False"
-                                 Text="{Binding OrderInstQty, Mode=TwoWay}"></TextBox>
-                <Label Grid.Column="3" Content="지시사항"  VerticalAlignment="Center" Height="30"></Label>
-                <TextBox Grid.Column="4" Grid.ColumnSpan="2" x:Name="txtRemark" VerticalContentAlignment="Center" IsEnabled="False"
-                                 Text="{Binding Remark, Mode=TwoWay}"></TextBox>
-                <Label Grid.Column="7" Content="지시순번" VerticalAlignment="Center" Height="30"></Label>
-                <TextBox Grid.Column="8" x:Name="txtInstSeq" FontSize="18" VerticalContentAlignment="Center" IsEnabled="False"
-                                 Text="{Binding InstSeq, Mode=TwoWay}"></TextBox>
-
-            </Grid>
-
-            <Grid Grid.Row="3" >
+            <Grid Grid.Row="2" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="9*" />
                     <ColumnDefinition Width="*" />
@@ -879,7 +846,7 @@
                         <ColumnDefinition Width="10*" />
                         <ColumnDefinition Width="3*" />
                     </Grid.ColumnDefinitions>
-
+                   
                     <Button x:Name="btnSave" Grid.Row="1" Grid.Column="1" Margin="1" Click="btnSave_Click" Visibility="Hidden">
                         <StackPanel>
                             <Image Source="{DynamicResource btiSave}" Style="{DynamicResource imgSize}" />

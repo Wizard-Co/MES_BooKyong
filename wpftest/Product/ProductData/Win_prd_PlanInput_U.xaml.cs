@@ -225,49 +225,7 @@ namespace WizMes_BooKyong
 
         #region Header 검색조건 - 기타
 
-        //최종거래처
-        private void lbInCustom_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (chkInCustom.IsChecked == true)
-            {
-                chkInCustom.IsChecked = false;
-            }
-            else
-            {
-                chkInCustom.IsChecked = true;
-            }
-        }
-
-        //최종거래처
-        private void chkInCustom_Checked(object sender, RoutedEventArgs e)
-        {
-            txtInCustom.IsEnabled = true;
-            btnPfInCustom.IsEnabled = true;
-            txtInCustom.Focus();
-        }
-
-        //최종거래처
-        private void chkInCustom_Unchecked(object sender, RoutedEventArgs e)
-        {
-            txtInCustom.IsEnabled = false;
-            btnPfInCustom.IsEnabled = false;
-        }
-
-        //최종거래처
-        private void txtInCustom_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                MainWindow.pf.ReturnCode(txtInCustom, 72, "");
-            }
-        }
-
-        //최종거래처
-        private void btnPfInCustom_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.pf.ReturnCode(txtInCustom, 72, "");
-        }
-
+        
         //거래처
         private void lblCustom_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -425,17 +383,17 @@ namespace WizMes_BooKyong
         }
 
         //해상도가 낮아지면 체크박스 클릭이 어려워지므로 라벨 클릭으로 대체할수 있게 한다.
-        private void lblPlanComplete_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void lblCompleted_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (chkPlanComplete.IsChecked == true) { chkPlanComplete.IsChecked = false; }
-            else { chkPlanComplete.IsChecked = true; }
+            if (chkCompleted.IsChecked == true) { chkCompleted.IsChecked = false; }
+            else { chkCompleted.IsChecked = true; }
         }
 
         //해상도가 낮아지면 체크박스 클릭이 어려워지므로 라벨 클릭으로 대체할수 있게 한다.
-        private void lblCloseClss_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void lblOrderClosed_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (chkCloseClss.IsChecked == true) { chkCloseClss.IsChecked = false; }
-            else { chkCloseClss.IsChecked = true; }
+            if (chkOrderClosed.IsChecked == true) { chkOrderClosed.IsChecked = false; }
+            else { chkOrderClosed.IsChecked = true; }
         }
 
         //OrderNo
@@ -576,12 +534,10 @@ namespace WizMes_BooKyong
                     (txtArticle.Tag != null ? txtArticle.Tag.ToString() : "") : "");
                 sqlParameter.Add("ChkOrder", chkOrderID.IsChecked == true ? (rbnOrderID.IsChecked == true ? 1 : 2) : 0);
                 sqlParameter.Add("Order", chkOrderID.IsChecked == true ? txtOrderID.Text : "");
-                sqlParameter.Add("ChkIncPlComplete", chkPlanComplete.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("ChkCloseClss", chkCloseClss.IsChecked == true ? 1 : 0);
+                sqlParameter.Add("ChkCompleted", chkCompleted.IsChecked == true ? 1 : 0);
+                sqlParameter.Add("ChkOrderClosed", chkOrderClosed.IsChecked == true ? 1 : 0);
                 sqlParameter.Add("ChkBuyerArticleNo", CheckBoxBuyerArticleNoSearch.IsChecked == true ? 1 : 0);
                 sqlParameter.Add("BuyerArticleNoID", CheckBoxBuyerArticleNoSearch.IsChecked == true ? (TextBoxBuyerArticleNoSearch.Tag != null ? TextBoxBuyerArticleNoSearch.Tag.ToString() : "") : "");
-                sqlParameter.Add("ChkInCustom", chkInCustom.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("InCustomID", chkInCustom.IsChecked == true ? (txtInCustom.Tag != null ? txtInCustom.Tag.ToString() : "") : "");
 
                 DataSet ds = DataStore.Instance.ProcedureToDataSet_LogWrite("xp_PlanInput_sOrder", sqlParameter, true, "R");
 
@@ -620,8 +576,8 @@ namespace WizMes_BooKyong
                                 BuyerArticleNo = dr["BuyerArticleNo"].ToString(),
                                 Remark = dr["Remark"].ToString(),
                                 ArticleID = dr["ArticleID"].ToString(),
-                                TheEnd = dr["CloseClss"].ToString(),
-                                PlanComplete = dr["PlanComplete"].ToString(),
+                                OrderClosed = dr["OrderClosed"].ToString(),
+                                Completed = dr["Completed"].ToString(),
                                 ArticleGrpName = dr["ArticleGrpName"].ToString(),
                                 //InstID = dr["InstID"].ToString(),
                                 AcptDate = dr["AcptDate"].ToString(),
@@ -971,22 +927,7 @@ namespace WizMes_BooKyong
             Lib.Instance.CheckIsNumeric((TextBox)sender, e);
         }
 
-        private void txtQty_TextChanged(object sender, TextChangedEventArgs e)
-        {
 
-        }
-        
-        private void chkRemainData_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void chkAutoPrint_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        //
         private void cboProcessPattern_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (btnAdd.IsEnabled == false
@@ -1166,7 +1107,7 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("OrderID", strOrderID);
                 sqlParameter.Add("ArticleID", strArticleID);
                 sqlParameter.Add("PatternID", cboProcessPattern.SelectedValue.ToString());
-                sqlParameter.Add("StuffCloseClss", chkStuffClose.IsChecked == true ? "*" : "");
+                sqlParameter.Add("StuffOrderClosed", chkStuffClose.IsChecked == true ? "*" : "");
                 sqlParameter.Add("LastUpdateUserID", MainWindow.CurrentUser);
 
                 Procedure pro1 = new Procedure();
@@ -1650,7 +1591,7 @@ namespace WizMes_BooKyong
         }
 
         //콤보박스일때
-        private void EnterMoveComboBox_DropDownClosed(object sender, EventArgs e)
+        private void EnterMoveComboBox_DropDownOrderClosed(object sender, EventArgs e)
         {
             try
             {
@@ -1720,7 +1661,17 @@ namespace WizMes_BooKyong
             }
         }
 
-       
+        private void EnterMoveComboBox_DropDownClosed(object sender, EventArgs e)
+        {
+            try
+            {
+                lib.SendK(Key.Tab, this);
+            }
+            catch (Exception ee)
+            {
+                MessageBox.Show("예외처리 - " + ee.ToString());
+            }
+        }
     }
 
     #region CodeView
@@ -1751,8 +1702,8 @@ namespace WizMes_BooKyong
         public string BuyerArticleNo { get; set; }
         public string Remark { get; set; }
         public string ArticleID { get; set; }
-        public string TheEnd { get; set; }
-        public string PlanComplete { get; set; }
+        public string OrderClosed { get; set; }
+        public string Completed { get; set; }
 
         public string ArticleGrpName { get; set; }
         public string InstID { get; set; }
@@ -1764,9 +1715,9 @@ namespace WizMes_BooKyong
         //public string Remark { get; set; }
         //public string ArticleID { get; set; }
         //public string Article_Sabun { get; set; }
-        //public string CloseClss { get; set; }
-        //public string PlanComplete { get; set; }
-        //public string subPlanComplete { get; set; }
+        //public string OrderClosed { get; set; }
+        //public string Completed { get; set; }
+        //public string subCompleted { get; set; }
         //public string cboPatternID { get; set; }
         //public string PartGBNID { get; set; }
         //public string AcptDate { get; set; }

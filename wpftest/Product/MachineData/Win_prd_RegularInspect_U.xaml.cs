@@ -1205,7 +1205,7 @@ namespace WizMes_BooKyong
                 return flag;
             }
 
-            if (txtMcRInspectPersonID.Text.Length <= 0 || txtMcRInspectPersonID.Tag.Equals("") || txtMcRInspectPersonID.Tag == null)
+            if (string.IsNullOrWhiteSpace(txtMcRInspectPersonID.Tag?.ToString() ?? ""))
             {
                 MessageBox.Show("검사자가 입력되지 않았습니다.");
                 flag = false;

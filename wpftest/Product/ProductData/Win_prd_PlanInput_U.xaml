@@ -83,38 +83,9 @@
                             Click="btnToday_Click" />
             </Grid>
 
-            <!--최종거래처-->
-            <Grid Grid.Row="0" Grid.Column="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="75*" />
-                    <ColumnDefinition Width="90*" />
-                    <ColumnDefinition Width="15*" />
-                </Grid.ColumnDefinitions>
-                <Label x:Name="lbInCustom" Grid.Column="0" 
-                       Style="{DynamicResource LabelSearch}"
-                       MouseLeftButtonUp="lbInCustom_MouseLeftButtonUp">
-                    <StackPanel Style="{DynamicResource StackPanelInLabel}">
-                        <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
-                            <CheckBox x:Name="chkInCustom" Checked="chkInCustom_Checked" 
-                                      Unchecked="chkInCustom_Unchecked" VerticalAlignment="Center"/>
-                        </Viewbox>
-                        <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}" >
-                            <TextBlock Text="최종거래처" 
-                                       Style="{DynamicResource TextBlockInViewBoxSearch}"/>
-                        </Viewbox>
-                    </StackPanel>
-                </Label>
-                <TextBox x:Name="txtInCustom" Grid.Column="1" 
-                         Style="{DynamicResource TextBoxSearch}"
-                         Keyboard.KeyDown="txtInCustom_KeyDown"/>
-                <Button x:Name="btnPfInCustom" Grid.Column="2" Margin="1" IsEnabled="False" 
-                        Click="btnPfInCustom_Click">
-                    <Image Source="{DynamicResource btiPlusFind}" />
-                </Button>
-            </Grid>
-            
+           
             <!--거래처-->
-            <Grid Grid.Row="1" Grid.Column="2">
+            <Grid Grid.Row="0" Grid.Column="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -129,7 +100,7 @@
                                       Unchecked="chkCustom_Unchecked" VerticalAlignment="Center"/>
                         </Viewbox>
                         <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}" >
-                            <TextBlock Text="거 래 처" 
+                            <TextBlock Text="고 객 사" 
                                        Style="{DynamicResource TextBlockInViewBoxSearch}"/>
                         </Viewbox>
                     </StackPanel>
@@ -143,7 +114,7 @@
                 </Button>
             </Grid>
 
-            <Grid Grid.Row="2" Grid.Column="2" >
+            <Grid Grid.Row="1" Grid.Column="2" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -172,7 +143,7 @@
                 </Button>
             </Grid>
 
-            <Grid Grid.Column="2" Grid.Row="3" >
+            <Grid Grid.Column="2" Grid.Row="2" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -203,7 +174,7 @@
             </Grid>
 
             <!--관리번호-->
-            <Grid Grid.Row="0" Grid.Column="3">
+            <Grid Grid.Row="3" Grid.Column="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -228,18 +199,18 @@
             </Grid>
 
             <!--지시완료분 포함-->
-            <Grid Grid.Row="1" Grid.Column="3" >
+            <Grid Grid.Row="0" Grid.Column="3" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100*" />
                     <ColumnDefinition Width="65*" />
                     <ColumnDefinition Width="15*" />
                 </Grid.ColumnDefinitions>
-                <Label x:Name="lblPlanComplete" Grid.Column="0" 
+                <Label x:Name="lblCompleted" Grid.Column="0" 
                        Style="{DynamicResource LabelSearch}"
-                       MouseLeftButtonDown="lblPlanComplete_MouseLeftButtonDown">
+                       MouseLeftButtonDown="lblCompleted_MouseLeftButtonDown">
                     <StackPanel Style="{DynamicResource StackPanelInLabel}">
                         <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
-                            <CheckBox x:Name="chkPlanComplete" 
+                            <CheckBox x:Name="chkCompleted" 
                                       VerticalAlignment="Center" />
                         </Viewbox>
                         <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}" >
@@ -251,18 +222,18 @@
             </Grid>
 
             <!--마감분 포함-->
-            <Grid Grid.Row="2" Grid.Column="3">
+            <Grid Grid.Row="1" Grid.Column="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100*" />
                     <ColumnDefinition Width="65*" />
                     <ColumnDefinition Width="15*" />
                 </Grid.ColumnDefinitions>
-                <Label x:Name="lblCloseClss" Grid.Column="0" 
+                <Label x:Name="lblOrderClosed" Grid.Column="0" 
                        Style="{DynamicResource LabelSearch}"
-                       MouseLeftButtonDown="lblCloseClss_MouseLeftButtonDown">
+                       MouseLeftButtonDown="lblOrderClosed_MouseLeftButtonDown">
                     <StackPanel Style="{DynamicResource StackPanelInLabel}">
                         <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
-                            <CheckBox x:Name="chkCloseClss" />
+                            <CheckBox x:Name="chkOrderClosed" />
                         </Viewbox>
                         <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}" >
                             <TextBlock Text="수주마감 포함" 
@@ -377,8 +348,8 @@
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="지시사항" Width="auto" Binding="{Binding Remark}" />
                         <DataGridTextColumn Header="품명코드" Width="auto" Binding="{Binding ArticleID}" />
-                        <DataGridTextColumn Header="지시완료" Width="auto" Binding="{Binding PlanComplete}" />
-                        <DataGridTextColumn Header="수주마감" Width="auto" Binding="{Binding CloseClss}" />
+                        <DataGridTextColumn Header="지시완료" Width="auto" Binding="{Binding Completed}" />
+                        <DataGridTextColumn Header="수주마감" Width="auto" Binding="{Binding OrderClosed}" />
                         <DataGridTextColumn Header="InstID" Width="auto" Binding="{Binding InstID}" Visibility="Hidden"/>
                         <DataGridTextColumn Header="OrderSeq" Width="auto" Binding="{Binding OrderSeq}" Visibility="Visible" />
                     </DataGrid.Columns>

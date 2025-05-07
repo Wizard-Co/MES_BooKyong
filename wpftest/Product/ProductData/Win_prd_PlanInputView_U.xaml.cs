@@ -143,49 +143,6 @@ namespace WizMes_BooKyong
             dtpEDate.SelectedDate = Lib.Instance.BringThisMonthDatetimeList()[1];
         }
 
-        //최종거래처
-        private void lbInCustom_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (chkInCustom.IsChecked == true)
-            {
-                chkInCustom.IsChecked = false;
-            }
-            else
-            {
-                chkInCustom.IsChecked = true;
-            }
-        }
-
-        //최종거래처
-        private void chkInCustom_Checked(object sender, RoutedEventArgs e)
-        {
-            txtInCustom.IsEnabled = true;
-            btnPfInCustom.IsEnabled = true;
-            txtInCustom.Focus();
-        }
-
-        //최종거래처
-        private void chkInCustom_Unchecked(object sender, RoutedEventArgs e)
-        {
-            txtInCustom.IsEnabled = false;
-            btnPfInCustom.IsEnabled = false;
-        }
-
-        //최종거래처
-        private void txtInCustom_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                MainWindow.pf.ReturnCode(txtInCustom, 72, "");
-            }
-        }
-
-        //최종거래처
-        private void btnPfInCustom_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.pf.ReturnCode(txtInCustom, 72, "");
-        }
-
         //거래처
         private void lblCustom_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -293,13 +250,17 @@ namespace WizMes_BooKyong
         }
 
         //지시완료분 포함
-        private void lblPlanComplete_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void lblCompleted_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (chkPlanComplete.IsChecked == true) { chkPlanComplete.IsChecked = false; }
-            else { chkPlanComplete.IsChecked = true; }
+            if (chkCompleted.IsChecked == true) { chkCompleted.IsChecked = false; }
+            else { chkCompleted.IsChecked = true; }
         }
-
-       
+        //지시마감분 포함
+        private void lblClosed_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (chkClosed.IsChecked == true) { chkClosed.IsChecked = false; }
+            else { chkClosed.IsChecked = true; }
+        }
 
         private void rbnOrderNo_Click(object sender, RoutedEventArgs e)
         {
@@ -455,11 +416,8 @@ namespace WizMes_BooKyong
                 chkMtrExceptYN.IsEnabled = true;
                 chkOutWareExceptYN.IsEnabled = true;
                 chkTheEnd.IsEnabled = true;
-                txtInstSeq.IsEnabled = true;
-                txtOrderInstQty.IsEnabled = true;
-                txtRemark.IsEnabled = true;
                 rowNum = dgdMain.SelectedIndex;
-                //btnReWrite.Visibility = Visibility.Visible;
+                
 
             }
             else
@@ -562,12 +520,12 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("ArticleID", chkArticle.IsChecked == true && txtArticle.Tag != null ? txtArticle.Tag.ToString() : "");
                 sqlParameter.Add("ChkOrder", chkOrderID.IsChecked == true ? (rbnOrderID.IsChecked == true ? 1 : 2) : 0);
                 sqlParameter.Add("Order", chkOrderID.IsChecked == true ? txtOrderID.Text : "");
-                sqlParameter.Add("ChkPlanComplete", chkPlanComplete.IsChecked == true ? 1 : 0);
+                sqlParameter.Add("ChkCompleted", chkCompleted.IsChecked == true ? 1 : 0);
+                sqlParameter.Add("ChkClosed", chkClosed.IsChecked == true ? 1 : 0);
 
                 sqlParameter.Add("ChkBuyerArticleNo", CheckBoxBuyerArticleNoSearch.IsChecked == true ? 1 : 0);
                 sqlParameter.Add("BuyerArticleNoID", CheckBoxBuyerArticleNoSearch.IsChecked == true ? (TextBoxBuyerArticleNoSearch.Tag != null ? TextBoxBuyerArticleNoSearch.Tag.ToString() : "") : "");
-                sqlParameter.Add("ChkInCustom", chkInCustom.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("InCustomID", chkInCustom.IsChecked == true ? (txtInCustom.Tag != null ? txtInCustom.Tag.ToString() : "") : "");
+
 
                 DataSet ds = DataStore.Instance.ProcedureToDataSet("xp_prd_sPlanInput_WPF", sqlParameter, false);
 
@@ -576,7 +534,6 @@ namespace WizMes_BooKyong
                 if (dt.Rows.Count > 0)
                 {
                     DataRowCollection drc = dt.Rows;
-                    //ObservableCollection<CodeView> ovcArticleGrpID = ComboBoxUtil.Instance.GetArticleCode_SetComboBox("", 0);
 
                     foreach (DataRow dr in drc)
                     {
@@ -602,12 +559,13 @@ namespace WizMes_BooKyong
                             OutQty = Convert.ToDouble(dr["OutQty"]),
                             PatternID = dr["PatternID"].ToString(),
                             ArticleGrpID = dr["ArticleGrpID"].ToString(),
+                            ArticleGrp = dr["ArticleGrp"].ToString(),
 
                             BuyerModel = dr["BuyerModel"].ToString(),
                             BuyerModelID = dr["BuyerModelID"].ToString(),
                             BuyerArticleNo = dr["BuyerArticleNo"].ToString(),
                             Remark = dr["Remark"].ToString(),
-                            PlanComplete = dr["PlanComplete"].ToString(),
+                            Completed = dr["Completed"].ToString(),
 
                             ArticleID = dr["ArticleID"].ToString(),
                             InstID = dr["InstID"].ToString(),
@@ -617,7 +575,7 @@ namespace WizMes_BooKyong
 
                             OutwareExceptYN = dr["OutwareExceptYN"].ToString(),
                             LotID = dr["LotID"].ToString(),
-                            PlanTheEnd = dr["PlanTheEnd"].ToString(),
+                            Closed = dr["Closed"].ToString(),
                             Progress = dr["Progress"].ToString() + "%",               //진척률
                             InstSeq = dr["InstSeq"].ToString()           
 
@@ -644,7 +602,6 @@ namespace WizMes_BooKyong
                         if (!WinPlanOrder.cls.Trim().Equals("9"))
                         {
                             dgdMain.Items.Add(WinPlanOrder);
-                            txtInstSeq.Text = WinPlanOrder.InstSeq;
                         }
                         // 총계
                         else
@@ -671,9 +628,6 @@ namespace WizMes_BooKyong
 
             if (WinPlanView != null)
             {
-                txtInstSeq.Text = WinPlanView.InstSeq;
-                txtOrderInstQty.Text = WinPlanView.OrderInstQty.ToString();
-                txtRemark.Text = WinPlanView.Remark;
 
                 FillGridSub(WinPlanView.InstID);
 
@@ -695,7 +649,7 @@ namespace WizMes_BooKyong
                     chkOutWareExceptYN.IsChecked = false;
                 }
 
-                if (WinPlanView.PlanTheEnd.Trim().Equals("*"))
+                if (WinPlanView.Closed.Trim().Equals("*"))
                 {
                     chkTheEnd.IsChecked = true;
                 }
@@ -785,11 +739,7 @@ namespace WizMes_BooKyong
 
         #endregion
 
-        ////재지시 
-        //private void btnReWrite_Click(object sender, RoutedEventArgs e)
-        //{
-           
-        //}
+
 
         //저장
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -809,14 +759,10 @@ namespace WizMes_BooKyong
                 chkOutWareExceptYN.IsEnabled = false;
                 chkTheEnd.IsChecked = false;
                 chkTheEnd.IsEnabled = false;
-                txtInstSeq.IsEnabled = false;
-                txtOrderInstQty.IsEnabled = false;
-                txtRemark.IsEnabled = false;
 
                 //dgdMain.IsEnabled = true;
                 dgdMain.IsHitTestVisible = true;
                 Lib.Instance.UiButtonEnableChange_IUControl(this);
-                //btnReWrite.Visibility = Visibility;
 
                 dgdMain.Items.Clear();
                 dgdSub.Items.Clear();
@@ -860,13 +806,9 @@ namespace WizMes_BooKyong
         {
             chkMtrExceptYN.IsEnabled = false;
             chkOutWareExceptYN.IsEnabled = false;
-            txtInstSeq.IsEnabled = false;
-            txtOrderInstQty.IsEnabled = false;
-            txtRemark.IsEnabled = false;
 
             dgdMain.IsHitTestVisible = true;
             Lib.Instance.UiButtonEnableChange_IUControl(this);
-            //btnReWrite.Visibility = Visibility.Hidden;
 
             using (Loading lw = new Loading(FillGrid))
             {
@@ -900,8 +842,6 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("OutwareExceptYN", chkOutWareExceptYN.IsChecked == true ? "Y" : "N");
                 sqlParameter.Add("OrderInstQty", WinPlanView.OrderInstQty);
                 sqlParameter.Add("UpdateUserID", MainWindow.CurrentUser);
-                sqlParameter.Add("InstSeq", txtInstSeq.Text);
-                sqlParameter.Add("Remark", WinPlanView.Remark);
 
                 Procedure pro1 = new Procedure();
                 pro1.Name = "xp_PlanInput_uPlanInput";
@@ -1511,7 +1451,7 @@ namespace WizMes_BooKyong
             cboPrMachine.SelectedIndex = 0;
             //Lib.Instance.UiLoading(sender);
 
-            chkPlanComplete.IsChecked = true;
+            chkCompleted.IsChecked = true;
         }
 
         private void PnlListPrint_Opened(object sender, EventArgs e)
@@ -2441,6 +2381,8 @@ namespace WizMes_BooKyong
                 cell.Focus();
             }
         }
+
+       
     }
 
     class Win_prd_PlanInputView_U_CodeView : BaseView
@@ -2474,7 +2416,7 @@ namespace WizMes_BooKyong
         public string BuyerModelID { get; set; }
         public string BuyerArticleNo { get; set; }
         public string Remark { get; set; }
-        public string PlanComplete { get; set; }
+        public string Completed { get; set; }
 
         public string ArticleID { get; set; }
         public string InstID { get; set; }
@@ -2484,8 +2426,8 @@ namespace WizMes_BooKyong
 
         public string OutwareExceptYN { get; set; }
         public string LotID { get; set; }
-        public string ArticleGrpName { get; set; }
-        public string PlanTheEnd { get; set; }
+        public string ArticleGrp { get; set; }
+        public string Closed { get; set; }
         public string Progress { get; set; }
         public string InstSeq { get; set; }
 

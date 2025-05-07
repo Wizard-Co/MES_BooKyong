@@ -276,7 +276,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="수리비용" Width="auto" Binding="{Binding price,StringFormat={}{0:#\,#.##}}" CellStyle="{DynamicResource NumericDataGridCell}"></DataGridTextColumn>
+                    <!--<DataGridTextColumn Header="수리비용" Width="auto" Binding="{Binding price,StringFormat={}{0:#\,#.##}}" CellStyle="{DynamicResource NumericDataGridCell}"></DataGridTextColumn>-->
                     <DataGridTextColumn Header="예비품비용" Binding="{Binding partprice}" Width="auto" 
                                         CellStyle="{StaticResource NumericDataGridCell}">
                         <DataGridTextColumn.ElementStyle>

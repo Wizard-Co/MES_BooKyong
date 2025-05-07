@@ -46,7 +46,7 @@
                 <DatePicker x:Name="dtpSDate" Grid.Column="1" IsEnabled="True"
                             Style="{DynamicResource DatePickerSearch}"/>
             </Grid>
-            
+
             <Grid Grid.Column="1" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
@@ -55,7 +55,7 @@
                 <DatePicker x:Name="dtpEDate" Grid.Column="1" IsEnabled="True"
                             Style="{DynamicResource DatePickerSearch}" />
             </Grid>
-            
+
             <Grid Grid.Column="1" Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="10*" />
@@ -73,38 +73,8 @@
                         Click="btnToday_Click"/>
             </Grid>
 
-            <!--최종거래처-->
-            <Grid Grid.Row="0" Grid.Column="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="75*" />
-                    <ColumnDefinition Width="90*" />
-                    <ColumnDefinition Width="15*" />
-                </Grid.ColumnDefinitions>
-                <Label x:Name="lbInCustom" Grid.Column="0" 
-                       Style="{DynamicResource LabelSearch}"
-                       MouseLeftButtonUp="lbInCustom_MouseLeftButtonUp">
-                    <StackPanel Style="{DynamicResource StackPanelInLabel}">
-                        <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
-                            <CheckBox x:Name="chkInCustom" Checked="chkInCustom_Checked" 
-                                      Unchecked="chkInCustom_Unchecked" VerticalAlignment="Center"/>
-                        </Viewbox>
-                        <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}" >
-                            <TextBlock Text="최종거래처" 
-                                       Style="{DynamicResource TextBlockInViewBoxSearch}"/>
-                        </Viewbox>
-                    </StackPanel>
-                </Label>
-                <TextBox x:Name="txtInCustom" Grid.Column="1" 
-                         Style="{DynamicResource TextBoxSearch}"
-                         Keyboard.KeyDown="txtInCustom_KeyDown"/>
-                <Button x:Name="btnPfInCustom" Grid.Column="2" Margin="1" IsEnabled="False" 
-                        Click="btnPfInCustom_Click">
-                    <Image Source="{DynamicResource btiPlusFind}" />
-                </Button>
-            </Grid>
-            
             <!--거래처-->
-            <Grid Grid.Column="2" Grid.Row="1">
+            <Grid Grid.Column="2" Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -132,7 +102,7 @@
             </Grid>
 
             <!--품명-->
-            <Grid Grid.Column="2" Grid.Row="2">
+            <Grid Grid.Column="2" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -160,7 +130,7 @@
             </Grid>
 
             <!--품번-->
-            <Grid Grid.Row="3" Grid.Column="2"  >
+            <Grid Grid.Row="2" Grid.Column="2"  >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -189,7 +159,7 @@
                     <Image Source="{DynamicResource btiPlusFind}" />
                 </Button>
             </Grid>
-            
+
             <!--공정명-->
             <Grid Grid.Column="3" Grid.Row="0" >
                 <Grid.ColumnDefinitions>
@@ -213,7 +183,7 @@
                           Style="{DynamicResource ComboBoxSearchString}"
                           SelectionChanged="cboProcess_SelectionChanged" />
             </Grid>
-            
+
             <!--호기-->
             <Grid Grid.Column="3" Grid.Row="1" >
                 <Grid.ColumnDefinitions>
@@ -265,7 +235,7 @@
                     <Image Source="{DynamicResource btiPlusFind}" Style="{DynamicResource imgPlusFind}" />
                 </Button>-->
             </Grid>
-            
+
             <Grid Grid.Column="3" Grid.Row="3" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
@@ -376,7 +346,7 @@
                         </StackPanel>
                     </Button>
                 </Grid>
-                
+
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -393,7 +363,7 @@
                 </Grid>
             </Grid>
         </Grid>
-        
+
 
         <!-- 전체 중 하단 -->
         <Border Grid.Row="1" >
@@ -446,9 +416,9 @@
                         </DataGridTemplateColumn>
                         <!--<DataGridTemplateColumn Header="공정" SortMemberPath="Process">-->
                         <DataGridTemplateColumn Header="공정" >
-                                <DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Process}"  TextAlignment="Center" Padding="5 0"/>
+                                    <TextBlock Text="{Binding Process}"  TextAlignment="Left" Padding="5 0"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -460,7 +430,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        
+
                         <DataGridTemplateColumn Header="모델" SortMemberPath="BuyerModel" Visibility="Hidden">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -468,7 +438,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        
+
                         <DataGridTemplateColumn x:Name="dgdtpeOrderNo" Header="오더번호" Visibility="Visible" >
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -506,7 +476,7 @@
                         <DataGridTemplateColumn Header="거래처" >
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding KCustom}" Padding="5 0"/>
+                                    <TextBlock Text="{Binding KCustom}" Padding="5 0" TextAlignment="Left"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -583,7 +553,7 @@
                         <DataGridTemplateColumn Header="비가동 사유" SortMemberPath="NoReworkName">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding NoReworkName}" Padding="5 0"/>
+                                    <TextBlock Text="{Binding NoReworkName}" Padding="5 0" TextAlignment="Left"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -646,7 +616,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
-            
+
         </Border>
     </Grid>
 </UserControl>

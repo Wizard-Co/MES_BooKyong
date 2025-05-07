@@ -66,6 +66,7 @@ namespace WizMes_BooKyong
         private void SaveUpdateMode()
         {
             Lib.Instance.UiButtonEnableChange_SCControl(this);
+
             chkDay.IsEnabled = false;
             dtpSDate.IsEnabled = false;
             dtpEDate.IsEnabled = false;
@@ -86,6 +87,7 @@ namespace WizMes_BooKyong
 
             // 작업자, 호기 수정 가능 하도록
             txtWorker.IsEnabled = true;
+            cboMachine.IsEnabled = true;
           
             SaveUpdateHeaderFalseMode();
         }
@@ -138,7 +140,6 @@ namespace WizMes_BooKyong
         {
             Lib.Instance.UiButtonEnableChange_IUControl(this);
 
-            txtQty.IsEnabled = false;
             dtpProdDate.IsEnabled = false;
             txtProdScanTime.IsEnabled = false;
 
@@ -330,48 +331,6 @@ namespace WizMes_BooKyong
             }
         }
 
-        //최종거래처
-        private void lbInCustom_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (chkInCustom.IsChecked == true)
-            {
-                chkInCustom.IsChecked = false;
-            }
-            else
-            {
-                chkInCustom.IsChecked = true;
-            }
-        }
-
-        //최종거래처
-        private void chkInCustom_Checked(object sender, RoutedEventArgs e)
-        {
-            txtInCustom.IsEnabled = true;
-            btnPfInCustom.IsEnabled = true;
-            txtInCustom.Focus();
-        }
-
-        //최종거래처
-        private void chkInCustom_Unchecked(object sender, RoutedEventArgs e)
-        {
-            txtInCustom.IsEnabled = false;
-            btnPfInCustom.IsEnabled = false;
-        }
-
-        //최종거래처
-        private void txtInCustom_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                MainWindow.pf.ReturnCode(txtInCustom, 72, "");
-            }
-        }
-
-        //최종거래처
-        private void btnPfInCustom_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.pf.ReturnCode(txtInCustom, 72, "");
-        }
 
         //거래처
         private void lblCustom_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -1104,8 +1063,6 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("ndefect", chkDefectWork.IsChecked == true ? 1 : 0);
                 sqlParameter.Add("nWorkerName", chkWorkerName.IsChecked == true ? 1 : 0);
                 sqlParameter.Add("sWorkerName", chkWorkerName.IsChecked == true ? txtWorkerNameSearch.Text : "");
-                sqlParameter.Add("ChkInCustom", chkInCustom.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("InCustomID", chkInCustom.IsChecked == true ? (txtInCustom.Tag != null ? txtInCustom.Tag.ToString() : "") : "");
 
                 DataSet ds = DataStore.Instance.ProcedureToDataSet_LogWrite("xp_prd_sWKResult_WPF", sqlParameter, true, "R");
 
@@ -1716,54 +1673,12 @@ namespace WizMes_BooKyong
         #region 작업시간 자동계산
         private void txtStartTime_TextChanged(object sender, TextChangedEventArgs e)
         {
-            try
-            {
-                if (txtStartTime.Text != string.Empty && txtEndTime.Text != string.Empty && txtStartTime.Text.Length == 8)
-                {
-                    string SDate = txtStartTime.Text;
-                    string EDate = txtEndTime.Text;
-
-                    DateTime StartDate = Convert.ToDateTime(SDate);
-                    DateTime EndDate = Convert.ToDateTime(EDate);
-
-                    TimeSpan dateDiff = EndDate - StartDate;
-
-                    double totalMinutes = dateDiff.TotalMinutes;
-
-                    txtWorkMinute.Text = Math.Round(totalMinutes).ToString();
-                }
-            }
-            catch
-            {
-
-            }
-
+            calcurateTime();
         }
 
         private void txtEndTime_TextChanged(object sender, TextChangedEventArgs e)
         {
-            try
-            {
-                if (txtStartTime.Text != string.Empty && txtEndTime.Text != string.Empty && txtStartTime.Text.Length == 8)
-                {
-                    string SDate = txtStartTime.Text;
-                    string EDate = txtEndTime.Text;
-
-                    DateTime StartDate = Convert.ToDateTime(SDate);
-                    DateTime EndDate = Convert.ToDateTime(EDate);
-
-                    TimeSpan dateDiff = EndDate - StartDate;
-
-                    double totalMinutes = dateDiff.TotalMinutes;
-
-                    txtWorkMinute.Text = Math.Round(totalMinutes).ToString();
-                }
-            }
-            catch
-            {
-
-            }
-
+            calcurateTime();
         }
 
         #endregion
@@ -2165,9 +2080,51 @@ namespace WizMes_BooKyong
             }
         }
 
+
         #endregion
 
-        
+        private void dtpWorkStartDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            calcurateTime();
+        }
+
+        private void dtpWorkEndDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            calcurateTime();
+        }
+
+        public void calcurateTime()
+        {
+            try
+            {
+                if (txtStartTime.Text != string.Empty && txtEndTime.Text != string.Empty && txtStartTime.Text.Length == 8)
+                {
+                    string SDate = dtpWorkStartDate.SelectedDate.Value.ToString("yyyy-MM-dd") + " " + txtStartTime.Text;
+
+                    if (dtpWorkEndDate.SelectedDate.Value != null)
+                    {
+                        string EDate = dtpWorkEndDate.SelectedDate.Value.ToString("yyyy-MM-dd") + " " + txtEndTime.Text;
+                        DateTime StartDate = Convert.ToDateTime(SDate);
+                        DateTime EndDate = Convert.ToDateTime(EDate);
+
+                        TimeSpan dateDiff = EndDate - StartDate;
+
+                        double totalMinutes = dateDiff.TotalMinutes;
+
+                        txtWorkMinute.Text = Math.Round(totalMinutes).ToString();
+                    }
+                    else
+                    {
+                        MessageBox.Show("작업 종료 시간이 없습니다");
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
     }
 
     class Win_Prd_ProdResult_U_CodeView : BaseView

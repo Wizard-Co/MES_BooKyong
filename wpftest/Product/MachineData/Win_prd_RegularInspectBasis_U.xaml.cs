@@ -1043,12 +1043,10 @@ namespace WizMes_BooKyong
                         {
                             WinMcRegularSub = dgdSub.Items[i] as Win_prd_RegularInspectBasis_U_CodeView;
 
-                            WinMcRegularSub.McSeq = i;
-
                             sqlParameter = new Dictionary<string, object>();
                             sqlParameter.Clear();
                             sqlParameter.Add("McInspectBasisID", GetKey); //2020.01.13 strID는 null값이라
-                            sqlParameter.Add("McSeq", WinMcRegularSub.McSeq);
+                            sqlParameter.Add("McSeq", i + 1);
                             sqlParameter.Add("McInsGbn", WinMcRegularSub.McInsGbn);
                             sqlParameter.Add("McInsItemName", WinMcRegularSub.McInsItemName);
                             sqlParameter.Add("McInsContent", WinMcRegularSub.McInsContent);
@@ -1098,8 +1096,6 @@ namespace WizMes_BooKyong
 
                     }
 
-
-
                     #endregion
 
                     #region 수정
@@ -1121,13 +1117,11 @@ namespace WizMes_BooKyong
                         {
                             WinMcRegularSub = dgdSub.Items[i] as Win_prd_RegularInspectBasis_U_CodeView;
 
-                            WinMcRegularSub.McSeq = i;
-
                             //Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
                             sqlParameter = new Dictionary<string, object>();
                             sqlParameter.Clear();
                             sqlParameter.Add("McInspectBasisID", strID);
-                            sqlParameter.Add("McSeq", WinMcRegularSub.McSeq);
+                            sqlParameter.Add("McSeq", i + 1);
                             sqlParameter.Add("McInsGbn", WinMcRegularSub.McInsGbn);
                             sqlParameter.Add("McInsItemName", WinMcRegularSub.McInsItemName);
                             sqlParameter.Add("McInsContent", WinMcRegularSub.McInsContent);
@@ -1457,7 +1451,7 @@ namespace WizMes_BooKyong
             {
                 Num = index + 1,
                 McInspectBasisID = "",
-                McSeq = 0,
+                McSeq = index + 1,
                 McComments = "",
                 McInsContent = "",
                 McInsCycleDate = "",
@@ -1486,6 +1480,7 @@ namespace WizMes_BooKyong
                 }
                 else
                 {
+                    DelItems.Add(dgdSub.SelectedItem as Win_prd_RegularInspectBasis_U_CodeView);
                     dgdSub.Items.Remove((dgdSub.SelectedItem) as Win_prd_RegularInspectBasis_U_CodeView);
                 }
 

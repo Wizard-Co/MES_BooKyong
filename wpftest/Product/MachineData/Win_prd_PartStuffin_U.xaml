@@ -49,7 +49,7 @@
                 <DatePicker x:Name="dtpSDate" Grid.Column="1" 
                             Style="{DynamicResource DatePickerSearch}"/>
             </Grid>
-            
+
             <Grid Grid.Column="1" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
@@ -58,7 +58,7 @@
                 <DatePicker x:Name="dtpEDate" Grid.Column="1" 
                             Style="{DynamicResource DatePickerSearch}"/>
             </Grid>
-            
+
             <Grid Grid.Column="1" Grid.Row="2" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -122,7 +122,7 @@
                     <Image Source="{DynamicResource btiPlusFind}" />
                 </Button>
             </Grid>
-            
+
             <Grid Grid.Column="2" Grid.Row="1" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
@@ -152,7 +152,7 @@
                     <Image Source="{DynamicResource btiPlusFind}" Margin="-2"/>
                 </Button>
             </Grid>
-            
+
             <Grid Grid.Column="2" Grid.Row="2" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
@@ -269,7 +269,7 @@
                         </StackPanel>
                     </Label>
                 </Grid>
-                
+
             </Grid>
         </Grid>
 
@@ -286,174 +286,174 @@
                 </Grid.RowDefinitions>
                 <DataGrid x:Name="dgdGroup" Grid.Row ="0" SelectionChanged="dgdGroup_SelectionChanged" 
                       Style="{DynamicResource DataGridSet1}" FrozenColumnCount="5">
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="순번" SortMemberPath="Num" Width="auto">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Num}" Margin="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="사업장" Visibility="Hidden" Width="auto">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding KCompany}" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="입고일자" SortMemberPath="StuffDate" Width="auto">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding StuffDate}" Margin="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="설비명" SortMemberPath="MCNAME" Width="auto">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding MCNAME}" Margin="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="설비코드" SortMemberPath="MCID" Visibility="Visible">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding MCID}" Margin="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="순번" SortMemberPath="Num" Width="auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Num}" Margin="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="사업장" Visibility="Hidden" Width="auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding KCompany}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="입고일자" SortMemberPath="StuffDate" Width="auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding StuffDate}" Margin="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="설비명" SortMemberPath="MCNAME" Width="auto" Visibility="Hidden">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding MCNAME}" Margin="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="설비코드" SortMemberPath="MCID" Visibility="Hidden">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding MCID}" Margin="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn Header="거래처" SortMemberPath="CustomName">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding CustomName}" Margin="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="설비부품(예비품)코드" Visibility="Hidden">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding MCPartID}" Margin="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Tool/예비품" SortMemberPath="MCPartName">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding MCPartName}" Margin="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="입고구분1" Visibility="Hidden">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding StuffClss}" Margin="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="입고구분" SortMemberPath="stuffName" Visibility="Hidden">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding stuffName}" Margin="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="입고처명" SortMemberPath="Custom">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Custom}" Margin="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="입고수량" SortMemberPath="TotQty" Width="auto">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding TotQty, StringFormat='#,###.#'}" Margin="1" TextAlignment="Right"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="입고 단위" SortMemberPath="UnitClssName">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding UnitClssName}" Margin="1"
+                        <DataGridTemplateColumn Header="거래처" SortMemberPath="CustomName">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding CustomName}" Margin="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="설비부품(예비품)코드" Visibility="Hidden">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding MCPartID}" Margin="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Tool/예비품" SortMemberPath="MCPartName">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding MCPartName}" Margin="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="입고구분1" Visibility="Hidden">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding StuffClss}" Margin="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="입고구분" SortMemberPath="stuffName" Visibility="Hidden">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding stuffName}" Margin="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="입고처명" SortMemberPath="Custom">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Custom}" Margin="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="입고수량" SortMemberPath="TotQty" Width="auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding TotQty, StringFormat=N0}" Margin="1" TextAlignment="Right"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="입고 단위" SortMemberPath="UnitClssName">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding UnitClssName}" Margin="1"
                                            HorizontalAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="단가" SortMemberPath="UnitPrice">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding UnitPrice, StringFormat = '#,###.##'}" Margin="1" TextAlignment="Right"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="화폐 단위" SortMemberPath="PriceClssName">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding PriceClssName}" Margin="1" 
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="단가" SortMemberPath="UnitPrice">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding UnitPrice, StringFormat=N0}" Margin="1" TextAlignment="Right"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="화폐 단위" SortMemberPath="PriceClssName">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding PriceClssName}" Margin="1" 
                                            HorizontalAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="부가세 별도" SortMemberPath="Vat_Ind_YN">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Vat_Ind_YN}" Margin="1"
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="부가세 별도" SortMemberPath="Vat_Ind_YN">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Vat_Ind_YN}" Margin="1"
                                            HorizontalAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="환율" SortMemberPath="ExchRate">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ExchRate, StringFormat= '#,###.##'}" Margin="1" TextAlignment="Right"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="금액" SortMemberPath="amount">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding amount, StringFormat= '#,###.#'}" Margin="1" TextAlignment="Right"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="비고" SortMemberPath="Remark">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Remark}" Margin="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="입고번호" SortMemberPath="StuffInID">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding StuffInID}" Margin="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="거래처ID" Visibility="Hidden">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding CustomID}" Margin="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="단위ID" Visibility="Hidden">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding PriceClss}" Margin="1"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-                
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="환율" SortMemberPath="ExchRate">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ExchRate, StringFormat=N0}" Margin="1" TextAlignment="Right"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="금액" SortMemberPath="amount">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding amount, StringFormat=N0}" Margin="1" TextAlignment="Right"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="비고" SortMemberPath="Remark">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Remark}" Margin="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="입고번호" SortMemberPath="StuffInID">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding StuffInID}" Margin="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="거래처ID" Visibility="Hidden">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding CustomID}" Margin="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="단위ID" Visibility="Hidden">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding PriceClss}" Margin="1"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
                 <TextBlock x:Name="tbkCount" Grid.Row="1" VerticalAlignment="Center" Text="▶ 검색 결과 : "/>
-                
+
             </Grid>
-            
+
             <GridSplitter Grid.Column="1" Width="5" ResizeBehavior="PreviousAndNext" />
-            
+
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="22*"/>
@@ -463,7 +463,7 @@
                        Style="{DynamicResource LabelStateMessage}">
                     <TextBlock x:Name="tbkMsg" Text="자료 입력 (추가)중" />
                 </Label>
-                
+
                 <Border x:Name="bdrShowData" Grid.Row="1" IsEnabled="False">
                     <Grid x:Name="grdInput" >
                         <Grid.RowDefinitions>
@@ -670,7 +670,7 @@
                                      Style="{DynamicResource TextBoxMultiLine}"
                                      Text="{Binding Remark}"/>
 
-                            
+
                             <!--<Label Grid.Row="10" Grid.Column="1" Margin="1,0,1,0" Style="{DynamicResource noViewboxLabel}" Content="전체MC" FontSize="8"
                                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                         <Label Grid.Row="10" Grid.Column="3" Margin="1,0,1,0" Style="{DynamicResource noViewboxLabel}" Content="선택MC" FontSize="8"
@@ -707,9 +707,9 @@
                         </DataGrid>-->
 
                         </Grid>
-                        
-                        
-                        
+
+
+
                     </Grid>
                 </Border>
             </Grid>

@@ -174,49 +174,7 @@ namespace WizMes_BooKyong
         #endregion
 
         #region 체크박스&&라디오 버튼 이벤트
-        //최종거래처
-        private void lbInCustom_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (chkInCustom.IsChecked == true)
-            {
-                chkInCustom.IsChecked = false;
-            }
-            else
-            {
-                chkInCustom.IsChecked = true;
-            }
-        }
-
-        //최종거래처
-        private void chkInCustom_Checked(object sender, RoutedEventArgs e)
-        {
-            txtInCustom.IsEnabled = true;
-            btnPfInCustom.IsEnabled = true;
-            txtInCustom.Focus();
-        }
-
-        //최종거래처
-        private void chkInCustom_Unchecked(object sender, RoutedEventArgs e)
-        {
-            txtInCustom.IsEnabled = false;
-            btnPfInCustom.IsEnabled = false;
-        }
-
-        //최종거래처
-        private void txtInCustom_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                MainWindow.pf.ReturnCode(txtInCustom, 72, "");
-            }
-        }
-
-        //최종거래처
-        private void btnPfInCustom_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.pf.ReturnCode(txtInCustom, 72, "");
-        }
-
+       
         //공정명
         private void lblProcess_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -667,8 +625,7 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("nWorkerName", chkWorker.IsChecked == true ? 1 : 0);
                 sqlParameter.Add("sWorkerName", chkWorker.IsChecked == true && txtWorker.Text.Trim().Equals("") == false ? txtWorker.Text : "");
                 sqlParameter.Add("ndefect", chkDefect.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("ChkInCustom", chkInCustom.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("InCustomID", chkInCustom.IsChecked == true ? (txtInCustom.Tag != null ? txtInCustom.Tag.ToString() : "") : "");
+
 
                 DataSet ds = DataStore.Instance.ProcedureToDataSet_LogWrite("xp_prd_sWKResult_WPF_Q", sqlParameter, true, "R");
 

@@ -81,37 +81,7 @@
                     MouseLeftButtonDown="brDefectWork_MouseLeftButtonDown">                
             </Border>-->
 
-            <!--최종거래처-->
-            <Grid Grid.Row="0" Grid.Column="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="75*" />
-                    <ColumnDefinition Width="90*" />
-                    <ColumnDefinition Width="15*" />
-                </Grid.ColumnDefinitions>
-                <Label x:Name="lbInCustom" Grid.Column="0" 
-                       Style="{DynamicResource LabelSearch}"
-                       MouseLeftButtonUp="lbInCustom_MouseLeftButtonUp">
-                    <StackPanel Style="{DynamicResource StackPanelInLabel}">
-                        <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
-                            <CheckBox x:Name="chkInCustom" Checked="chkInCustom_Checked" 
-                                      Unchecked="chkInCustom_Unchecked" VerticalAlignment="Center"/>
-                        </Viewbox>
-                        <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}" >
-                            <TextBlock Text="최종거래처" 
-                                       Style="{DynamicResource TextBlockInViewBoxSearch}"/>
-                        </Viewbox>
-                    </StackPanel>
-                </Label>
-                <TextBox x:Name="txtInCustom" Grid.Column="1" 
-                         Style="{DynamicResource TextBoxSearch}"
-                         Keyboard.KeyDown="txtInCustom_KeyDown"/>
-                <Button x:Name="btnPfInCustom" Grid.Column="2" Margin="1" IsEnabled="False" 
-                        Click="btnPfInCustom_Click">
-                    <Image Source="{DynamicResource btiPlusFind}" />
-                </Button>
-            </Grid>
-
-            <Grid Grid.Column="2" Grid.Row="1">
+                <Grid Grid.Column="2" Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -125,7 +95,7 @@
                             <CheckBox x:Name="chkCustom" Click="chkCustom_Click" VerticalAlignment="Center"/>
                         </Viewbox>
                         <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}" >
-                            <TextBlock Text="거 래 처" 
+                            <TextBlock Text="고 객 사" 
                                        Style="{DynamicResource TextBlockInViewBoxSearch}"/>
                         </Viewbox>
                     </StackPanel>
@@ -138,7 +108,7 @@
                 </Button>
             </Grid>
             
-            <Grid Grid.Column="2" Grid.Row="2" >
+            <Grid Grid.Column="2" Grid.Row="1" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -165,7 +135,7 @@
                 </Button>
             </Grid>
 
-            <Grid Grid.Column="2" Grid.Row="3" >
+            <Grid Grid.Column="2" Grid.Row="2" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -211,7 +181,7 @@
             </Grid>
             
             <!-- 작업자 추가 -->
-            <Grid Grid.Column="3" Grid.Row="0" >
+            <Grid Grid.Column="3" Grid.Row="2" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -235,7 +205,7 @@
                          KeyDown="txtWorkerNameSearch_KeyDown"/>
             </Grid>
             
-            <Grid Grid.Column="2" Grid.Row="3" Visibility="Hidden" >
+            <Grid Grid.Column="2" Grid.Row="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -262,7 +232,7 @@
                 </Button>
             </Grid>
             
-            <Grid Grid.Column="3" Grid.Row="1" >
+            <Grid Grid.Column="3" Grid.Row="0" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -285,7 +255,7 @@
                           SelectionChanged="cboProcessSearch_SelectionChanged"/>
             </Grid>
             
-            <Grid Grid.Column="3" Grid.Row="2" >
+            <Grid Grid.Column="3" Grid.Row="1" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="75*" />
                     <ColumnDefinition Width="90*" />
@@ -498,7 +468,7 @@
                         <DataGridTemplateColumn Header="수량" Width="auto" SortMemberPath="WorkQty">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding WorkQty}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding WorkQty, StringFormat=N0}" TextAlignment="Right"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -573,21 +543,21 @@
                         <DataGridTemplateColumn Header="건수" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding WorkCnt }" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding WorkCnt, StringFormat='#,###' }" TextAlignment="Right"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="총수량" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding WorkQty}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding WorkQty, StringFormat='#,###'}" TextAlignment="Right"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="시간(Hour)" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding WorkHour}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding WorkHour, StringFormat='#,###'}" TextAlignment="Right"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -727,7 +697,7 @@
                         <Label Grid.Row="6" Grid.Column="0" 
                                Style="{DynamicResource LabelInputArea}" >
                             <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}" >
-                                <TextBlock Text="차     종" 
+                                <TextBlock Text="모     델" 
                                            Style="{DynamicResource TextBlockInViewBoxInput}" />
                             </Viewbox>
                         </Label>
@@ -743,7 +713,7 @@
                             </Viewbox>
                         </Label>
                         <TextBox x:Name="txtOrderQty" Grid.Row="7" Grid.Column="1" 
-                                 Text="{Binding OrderQty}" IsEnabled="False" 
+                                 Text="{Binding OrderQty, StringFormat=N0}" IsEnabled="False" 
                                  Style="{StaticResource InputCommaZeroTextBoxNoRight}"/>
 
                         <Label Grid.Row="8" Grid.Column="0" 
@@ -815,7 +785,7 @@
                         </Label>
                         <TextBox x:Name="txtQty" Grid.Row="2" Grid.Column="4" 
                                  Style="{DynamicResource TextBoxInputArea}"
-                                 Text="{Binding WorkQty}" IsEnabled="False" PreviewTextInput="txtQty_PreviewTextInput"/>
+                                 Text="{Binding WorkQty, StringFormat=N0}" IsEnabled="False" PreviewTextInput="txtQty_PreviewTextInput"/>
 
                         <Label Grid.Row="3" Grid.Column="3" 
                                Style="{DynamicResource LabelInputArea}">
@@ -874,7 +844,8 @@
                                     Text="{Binding WorkStartDate}"
                                     KeyDown="dtpWorkStartDate_KeyDown"
                                     PreviewKeyDown="dtpWorkStartDate_PreviewKeyDown"
-                                    CalendarClosed="dtpWorkStartDate_CalendarClosed"/>
+                                    CalendarClosed="dtpWorkStartDate_CalendarClosed"
+                                    SelectedDateChanged="dtpWorkStartDate_SelectedDateChanged"/>
                         <TextBox Grid.Row="6" x:Name="txtStartTime" Grid.Column="5" IsEnabled="False"
                                  Style="{DynamicResource TextBoxInputArea}"
                                  Text="{Binding WorkStartTime, StringFormat=HH:mm:ss}" 
@@ -890,7 +861,8 @@
                                     Text="{Binding WorkEndDate}"
                                     KeyDown="dtpWorkEndDate_KeyDown"
                                     PreviewKeyDown="dtpWorkEndDate_PreviewKeyDown"
-                                    CalendarClosed="dtpWorkEndDate_CalendarClosed"/>
+                                    CalendarClosed="dtpWorkEndDate_CalendarClosed"
+                                    SelectedDateChanged="dtpWorkEndDate_SelectedDateChanged"/>
                         <TextBox Grid.Row="7" x:Name="txtEndTime" Grid.Column="5" IsEnabled="False"
                                  Style="{DynamicResource TextBoxInputArea}"
                                  Text="{Binding WorkEndTime,StringFormat=HH:mm:ss}" 

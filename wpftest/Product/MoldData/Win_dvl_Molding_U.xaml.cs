@@ -23,6 +23,7 @@ using System.Net;
 using System.Windows.Forms.VisualStyles;
 using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using System.Diagnostics.Eventing.Reader;
 
 namespace WizMes_BooKyong
 {
@@ -36,27 +37,13 @@ namespace WizMes_BooKyong
         int rowNum = 0;
         bool MultiArticle = false;
 
-        string ArticleSrh1 = string.Empty;
-        string ArticleSrh2 = string.Empty;
-        string ArticleSrh3 = string.Empty;
-        string ArticleSrh4 = string.Empty;
-        string ArticleSrh5 = string.Empty;
+        Lib lib = new Lib();
 
         Win_dvl_Molding_U_CodeView WinMold = new Win_dvl_Molding_U_CodeView();
         Win_dvl_Molding_U_Parts_CodeView WinMoldParts = new Win_dvl_Molding_U_Parts_CodeView();
         MoldArticle_CodeView MoldArticleList = new MoldArticle_CodeView();
 
         // FTP 활용모음.
-        bool ftpDelete1 = false;
-        bool ftpDelete2 = false;
-        bool ftpDelete3 = false;
-        string strImagePath = string.Empty;
-        string strFullPath = string.Empty;
-
-        string strAttPath1 = string.Empty;
-        string strAttPath2 = string.Empty;
-        string strAttPath3 = string.Empty;
-
         string FullPath1 = string.Empty;
         string FullPath2 = string.Empty;
         string FullPath3 = string.Empty;
@@ -82,15 +69,13 @@ namespace WizMes_BooKyong
             File
         }
 
-        //string FTP_ADDRESS = "ftp://wizis.iptime.org/ImageData/Mold";
+
 #if DEBUG
         string FTP_ADDRESS = "ftp://wizis.iptime.org/ImageData/Mold";
 #else
         string FTP_ADDRESS = "ftp://" + LoadINI.FileSvr + ":"
             + LoadINI.FTPPort + LoadINI.FtpImagePath + "/Mold";
 #endif
-        //string FTP_ADDRESS = "ftp://222.104.222.145:25000/ImageData/Mold";
-        //string FTP_ADDRESS = "ftp://192.168.0.95/ImageData/Mold";
         private const string FTP_ID = "wizuser";
         private const string FTP_PASS = "wiz9999";
         private const string LOCAL_DOWN_PATH = "C:\\Temp";
@@ -105,6 +90,7 @@ namespace WizMes_BooKyong
         {
             stDate = DateTime.Now.ToString("yyyyMMdd");
             stTime = DateTime.Now.ToString("HHmm");
+            chkDate.IsChecked = true;
 
             Lib.Instance.UiLoading(this);
             SetComboBox();
@@ -120,6 +106,11 @@ namespace WizMes_BooKyong
             lstDvlYN.Add(strDvl_1);
             lstDvlYN.Add(strDvl_2);
 
+            ObservableCollection<CodeView> ovcDvlYN = ComboBoxUtil.Instance.Direct_SetComboBox(lstDvlYN);
+            this.cboMainUseYN.ItemsSource = ovcDvlYN;
+            this.cboMainUseYN.DisplayMemberPath = "code_name";
+            this.cboMainUseYN.SelectedValuePath = "code_id";
+
             List<string[]> lstDsiYN = new List<string[]>();
             string[] strDis_1 = { "N", "사용" };
             string[] strDis_2 = { "Y", "불용" };
@@ -127,6 +118,11 @@ namespace WizMes_BooKyong
             lstDsiYN.Add(strDis_1);
             lstDsiYN.Add(strDis_2);
             lstDsiYN.Add(strDis_3);
+
+            ObservableCollection<CodeView> ovcForUseSrh = ComboBoxUtil.Instance.Direct_SetComboBox(lstDsiYN);
+            this.cboDisCard.ItemsSource = ovcForUseSrh;
+            this.cboDisCard.DisplayMemberPath = "code_name";
+            this.cboDisCard.SelectedValuePath = "code_id";
 
             List<string[]> lstColor = new List<string[]>();
             string[] strColor_1 = { "N", "노랑" };
@@ -138,20 +134,11 @@ namespace WizMes_BooKyong
             lstColor.Add(strColor_3);
             lstColor.Add(strColor_4);
 
-            ObservableCollection<CodeView> ovcForUseSrh = ComboBoxUtil.Instance.Direct_SetComboBox(lstDsiYN);
-            this.cboDisCard.ItemsSource = ovcForUseSrh;
-            this.cboDisCard.DisplayMemberPath = "code_name";
-            this.cboDisCard.SelectedValuePath = "code_id";
-
-            ObservableCollection<CodeView> ovcDvlYN = ComboBoxUtil.Instance.Direct_SetComboBox(lstDvlYN);
-            this.cboDevYN.ItemsSource = ovcDvlYN;
-            this.cboDevYN.DisplayMemberPath = "code_name";
-            this.cboDevYN.SelectedValuePath = "code_id";
-
             ObservableCollection<CodeView> ovcColor = ComboBoxUtil.Instance.Direct_SetComboBox(lstColor);
             this.cboColor.ItemsSource = ovcColor;
             this.cboColor.DisplayMemberPath = "code_name";
             this.cboColor.SelectedValuePath = "code_id";
+
 
             ObservableCollection<CodeView> ovMoldPlace = ComboBoxUtil.Instance.Gf_DB_CM_GetComCodeDataset(null, "MOLDPLACE", "Y", "");
             this.cboStorgeLocation.ItemsSource = ovMoldPlace;
@@ -163,14 +150,9 @@ namespace WizMes_BooKyong
             this.cboBoxOwnerOneTimePayYn.DisplayMemberPath = "code_name";
             this.cboBoxOwnerOneTimePayYn.SelectedValuePath = "code_id";
 
-            List<string[]> lstMD = new List<string[]>();
-            string[] strMD_M = { "0", "월" };
-            string[] strMD_D = { "1", "일" };
-            lstMD.Add(strMD_M);
-            lstMD.Add(strMD_D);
         }
 
-#region 라벨 클릭 및 체크박스 이벤트
+        #region 라벨 클릭 및 체크박스 이벤트
 
         //금형발주일
         private void lblDate_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -206,7 +188,27 @@ namespace WizMes_BooKyong
             dtpSDate.SelectedDate = DateTime.Today;
             dtpEDate.SelectedDate = DateTime.Today;
         }
-
+        //금형 점검필요 
+        private void lblNeedInspectSrh_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (chkNeedInspectSrh.IsChecked == true)
+            {
+                chkNeedInspectSrh.IsChecked = false;
+            }
+            else
+            {
+                chkNeedInspectSrh.IsChecked = true;
+            }
+        }
+        //사용기한 경과
+        private void lblExpiredSrh_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (chkExpiredSrh.IsChecked == true)
+            {             
+                chkExpiredSrh.IsChecked = false;
+            }else {       
+                chkExpiredSrh.IsChecked = true; }
+        }
         //폐기건 포함
         private void lblDisCardSrh_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -214,35 +216,11 @@ namespace WizMes_BooKyong
             else { chkDisCardSrh.IsChecked = true; }
         }
 
-        //폐기건 포함
-        private void chkDisCardSrh_Checked(object sender, RoutedEventArgs e)
+        //세척점검필요
+        private void lblNeedWashing_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-
-        }
-
-        //폐기건 포함
-        private void chkDisCardSrh_Unchecked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        //타발 수 점검필요
-        private void lblCheckNeedMoldSrh_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (chkCheckNeedMoldSrh.IsChecked == true) { chkCheckNeedMoldSrh.IsChecked = false; }
-            else { chkCheckNeedMoldSrh.IsChecked = true; }
-        }
-
-        //타발 수 점검필요
-        private void chkCheckNeedMoldSrh_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        //타발 수 점검필요
-        private void chkCheckNeedMoldSrh_Unchecked(object sender, RoutedEventArgs e)
-        {
-
+            if (chkNeedWashing.IsChecked == true) { chkNeedWashing.IsChecked = false; }
+            else { chkNeedWashing.IsChecked = true; }
         }
 
         //금형LotNo(%)
@@ -300,62 +278,9 @@ namespace WizMes_BooKyong
             MainWindow.pf.ReturnCode(txtArticleSrh, 78, "");
         }
 
-        //거래처
-        private void lblCustomSrh_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (chkCustomSrh.IsChecked == true) { chkCustomSrh.IsChecked = false; }
-            else { chkCustomSrh.IsChecked = true; }
-        }
 
-        //거래처
-        private void chkCustomSrh_Checked(object sender, RoutedEventArgs e)
-        {
-            txtCustomSrh.IsEnabled = true;
-            btnPfCustomSrh.IsEnabled = true;
-        }
 
-        //거래처
-        private void chkCustomSrh_Unchecked(object sender, RoutedEventArgs e)
-        {
-            txtCustomSrh.IsEnabled = false;
-            btnPfCustomSrh.IsEnabled = false;
-        }
-
-        //거래처
-        private void txtCustomSrh_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                MainWindow.pf.ReturnCode(txtCustomSrh, (int)Defind_CodeFind.DCF_CUSTOM, "");
-            }
-        }
-
-        //거래처
-        private void btnPfCustomSrh_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.pf.ReturnCode(txtCustomSrh, (int)Defind_CodeFind.DCF_CUSTOM, "");
-        }
-
-        //개발/양산
-        private void lblDevYNSrh_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            //if (chkDevYNSrh.IsChecked == true) { chkDevYNSrh.IsChecked = false; }
-            //else { chkDevYNSrh.IsChecked = true; }
-        }
-
-        //개발/양산
-        private void chkDevYNSrh_Checked(object sender, RoutedEventArgs e)
-        {
-            // cboDevYNSrh.IsEnabled = true;
-        }
-
-        //개발/양산
-        private void chkDevYNSrh_Unchecked(object sender, RoutedEventArgs e)
-        {
-            // cboDevYNSrh.IsEnabled = false;
-        }
-
-#endregion
+        #endregion
 
         /// <summary>
         /// 수정,추가 저장 후
@@ -377,11 +302,9 @@ namespace WizMes_BooKyong
         {
             Lib.Instance.UiButtonEnableChange_SCControl(this);
             grdInput1.IsEnabled = true;
-            //gbxInput.IsEnabled = true;
             grxInput.IsEnabled = true;
-            //dgdMain.IsEnabled = false;
             dgdMain.IsHitTestVisible = false;
-            dgdMoldArticle.IsHitTestVisible=true;
+            dgdMoldArticle.IsHitTestVisible = true;
             btnMoldArticleAdd.IsEnabled = true;
             btnMoldArticleDelete.IsEnabled = true;
 
@@ -400,18 +323,22 @@ namespace WizMes_BooKyong
             //유지추가 버튼 false
             if (chkMainTain.IsChecked == false)
             {
-                if (dgdPartsCode.Items.Count > 0)
-                {
-                    dgdPartsCode.Items.Clear();
-                    dgdPartsCode.Refresh();
-                }
+                if (dgdPartsCode.Items.Count > 0) dgdPartsCode.Items.Clear();
+                if (dgdMoldArticle.Items.Count > 0) dgdMoldArticle.Items.Clear();
                 this.DataContext = null;
 
+                chkSetDate.IsChecked = false;
+                chkProdCompDate.IsChecked = false;
+                chkProdDueDate.IsChecked = false;
+                chkProdCompDate.IsChecked = false;
+                chkSetInitHitCountDate.IsChecked = false;
+                cboDisCard.SelectedIndex = 0;
+                cboStorgeLocation.SelectedIndex = 0;
+                cboMainUseYN.SelectedIndex = 0;
+                cboBoxOwnerOneTimePayYn.SelectedIndex = 0;
             }
+
             txtMoldID.Text = string.Empty;
-            dtpProdDueDate.SelectedDate = DateTime.Today;
-            dtpProdOrderDate.SelectedDate = DateTime.Today;
-            cboStorgeLocation.SelectedIndex = 0;
         }
 
         //수정
@@ -485,9 +412,6 @@ namespace WizMes_BooKyong
                 re_Search(rowNum);
                 strFlag = string.Empty;
                 dgdMain.IsHitTestVisible = true;
-                ftpDelete1 = false;
-                ftpDelete2 = false;
-                ftpDelete3 = false;
             }
             else
             {
@@ -518,39 +442,35 @@ namespace WizMes_BooKyong
         {
             DataTable dt = null;
             string Name = string.Empty;
+            Lib lib = new Lib();
 
-            string[] lst = new string[4];
-            lst[0] = "금형현황";
-            lst[1] = "사용 부품";
-            lst[2] = dgdMain.Name;
-            lst[3] = dgdPartsCode.Name;
+            string[] lst = new string[2];
+            lst[0] = "금형 현황";
+            lst[1] = dgdMain.Name;
 
             ExportExcelxaml ExpExc = new ExportExcelxaml(lst);
+
             ExpExc.ShowDialog();
 
             if (ExpExc.DialogResult.HasValue)
             {
                 if (ExpExc.choice.Equals(dgdMain.Name))
                 {
+                    DataStore.Instance.InsertLogByForm(this.GetType().Name, "E");
                     if (ExpExc.Check.Equals("Y"))
-                        dt = Lib.Instance.DataGridToDTinHidden(dgdMain);
+                        dt = lib.DataGridToDTinHidden(dgdMain);
                     else
-                        dt = Lib.Instance.DataGirdToDataTable(dgdMain);
+                        dt = lib.DataGirdToDataTable(dgdMain);
 
                     Name = dgdMain.Name;
-                    Lib.Instance.GenerateExcel(dt, Name);
-                    Lib.Instance.excel.Visible = true;
-                }
-                else if (ExpExc.choice.Equals(dgdPartsCode.Name))
-                {
-                    if (ExpExc.Check.Equals("Y"))
-                        dt = Lib.Instance.DataGridToDTinHidden(dgdPartsCode);
-                    else
-                        dt = Lib.Instance.DataGirdToDataTable(dgdPartsCode);
 
-                    Name = dgdPartsCode.Name;
-                    Lib.Instance.GenerateExcel(dt, Name);
-                    Lib.Instance.excel.Visible = true;
+                    if (lib.GenerateExcel(dt, Name))
+                    {
+                        lib.excel.Visible = true;
+                        lib.ReleaseExcelObject(lib.excel);
+                    }
+                    else
+                        return;
                 }
                 else
                 {
@@ -560,6 +480,7 @@ namespace WizMes_BooKyong
                     }
                 }
             }
+            lib = null;
         }
 
 
@@ -590,46 +511,8 @@ namespace WizMes_BooKyong
             try
             {
                 string sql = string.Empty;
-
-                if (ArticleSrh1 != string.Empty)
-                {
-                    sql = "ArticleID = " + ArticleSrh1 + " ";
-                }
-
-                if (ArticleSrh2 != string.Empty)
-                {
-                    if (sql == string.Empty)
-                        sql = "ArticleID = " + ArticleSrh2 + " ";
-                    else
-                        sql += "or ArticleID = " + ArticleSrh2 + " ";
-                }
-
-                if (ArticleSrh3 != string.Empty)
-                {
-                    if (sql == string.Empty)
-                        sql = "ArticleID = " + ArticleSrh3 + " ";
-                    else
-                        sql += "or ArticleID = " + ArticleSrh3 + " ";
-                }
-
-                if (ArticleSrh4 != string.Empty)
-                {
-                    if (sql == string.Empty)
-                        sql = "ArticleID = " + ArticleSrh4 + " ";
-                    else
-                        sql += "or ArticleID = " + ArticleSrh4 + " ";
-                }
-
-                if (ArticleSrh5 != string.Empty)
-                {
-                    if (sql == string.Empty)
-                        sql = "ArticleID = " + ArticleSrh5 + " ";
-                    else
-                        sql += "or ArticleID = " + ArticleSrh5 + " ";
-                }
-
-
                 DataSet ds = null;
+
                 Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
                 sqlParameter.Clear();
                 sqlParameter.Add("chkDate", chkDate.IsChecked == true ? 1 : 0);
@@ -639,16 +522,14 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("MoldNo", chkMoldNoSrh.IsChecked == true ? txtMoldNoSrh.Text : "");
 
                 sqlParameter.Add("nchkBuyerArticle", chkArticleSrh.IsChecked == true ? 1 : 0);   //품번
-                sqlParameter.Add("BuyerArticle", chkArticleSrh.IsChecked == true ?
-                    (txtArticleSrh.Tag != null ? txtArticleSrh.Tag.ToString() : "") : "");
-                sqlParameter.Add("nchkSabuns", chkCustomSrh.IsChecked == true ? 1 : 0);         //사번
-                sqlParameter.Add("Sabuns", chkCustomSrh.IsChecked == true ?
-                    (txtCustomSrh.Tag != null ? txtCustomSrh.Tag.ToString() : "") : "");
-                sqlParameter.Add("nNeedCheckMold", chkCheckNeedMoldSrh.IsChecked == true ? 1 : 0);
+                sqlParameter.Add("BuyerArticle", chkArticleSrh.IsChecked == true ? (txtArticleSrh.Tag != null ? txtArticleSrh.Tag.ToString() : "") : "");
+                sqlParameter.Add("chkArticle",  0);   //품번
+                sqlParameter.Add("ArticleID", "");
 
-                sqlParameter.Add("nCheckProdMold", chkCheckNeedMoldSrh.IsChecked == true ? 1 : 0);   //한계타발 설정
-                sqlParameter.Add("nCheckWashingMold", chkCheckNeedMoldSrh.IsChecked == true ? 1 : 0);   //세척 경과 항목
-                sqlParameter.Add("ChkIncDisCardYN", chkDisCardSrh.IsChecked == true ? "Y" : "N");
+                sqlParameter.Add("nNeedInspect", chkNeedInspectSrh.IsChecked == true ? 1 : 0); // 금형점검필요
+                sqlParameter.Add("nCheckExpired", chkExpiredSrh.IsChecked == true ? 1 : 0);  //사용기한 경과 
+                sqlParameter.Add("nCheckWashingMold", chkNeedWashing.IsChecked == true ? 1 : 0);   //세척필요
+                sqlParameter.Add("ChkIncDisCardYN", chkDisCardSrh.IsChecked == true ? "Y" : "N"); //폐기건 
 
                 ds = DataStore.Instance.ProcedureToDataSet("xp_dvlMold_sMold", sqlParameter, false);
 
@@ -663,8 +544,7 @@ namespace WizMes_BooKyong
                     }
                     else
                     {
-                        if (!MultiArticle)
-                        {
+                        
                             DataRowCollection drc = dt.Rows;
 
                             foreach (DataRow dr in drc)
@@ -672,328 +552,74 @@ namespace WizMes_BooKyong
                                 var WinMolding = new Win_dvl_Molding_U_CodeView()
                                 {
                                     Num = i + 1,
-                                    MoldID = dr["MoldID"].ToString(),
+                                    MoldID = dr["MoldID"].ToString(), //금형번호
 
-                                    MoldNo = dr["MoldNo"].ToString(),
-                                    MoldType = dr["MoldType"].ToString(),
-                                    ArticleID = dr["ProductionArticleID"].ToString(),
-                                    BuyerModelName = dr["BuyerModelID"].ToString(),  // BuyerModelName = dr["BuyerModelName"].ToString(),   
-                                    BuyerArticleNo = dr["BuyerArticleNo"].ToString(),
+                                    MoldNo = dr["MoldNo"].ToString(), //금형명 
+                                    MoldTypeID = dr["MoldTypeID"].ToString(), //금형종류
+                                    MoldType = dr["MoldType"].ToString(), //금형종류
+                                    MoldKind = dr["MoldKind"].ToString(), //금형종류
 
-                                    MoldSizeX = dr["MoldSizeX"].ToString(),
-                                    MoldSizeY = dr["MoldSizeY"].ToString(),
-                                    MoldSizeH = dr["MoldSizeH"].ToString(),
-                                    MoldQuality = dr["MoldQuality"].ToString(),
-                                    ProdCustomName = dr["ProdCustomName"].ToString(),
-                                    OwnerCustomName = dr["OwnerCustomName"].ToString(),
-                                    OwnerOneTimePayYn = dr["OwnerOneTimePayYn"].ToString(),
+                                    BuyerModelID = dr["BuyerModelID"].ToString(),  //차종ID
+                                    BuyerModel = dr["BuyerModel"].ToString(),  //차종
+                                    CustomID = dr["CustomID"].ToString(), //고객사ID 
+                                    KCustom = dr["KCustom"].ToString(), //고객사명 
+                                    BuyerArticleNo = dr["BuyerArticleNo"].ToString(), 
+                                    Article = dr["Article"].ToString(), 
 
-                                    SetDate = dr["SetDate"].ToString(),
-                                    DisCardYN = dr["DisCardYN"].ToString(),
-                                    StorgeLocationName = dr["StorgeLocationName"].ToString(),
-                                    MainUseYN = dr["MainUseYN"].ToString(),
-                                    MoldPerson = dr["MoldPerson"].ToString(),
-                                    Comments = dr["Comments"].ToString(),
+                                    MoldSizeX = Convert.ToDouble(dr["MoldSizeX"]), //가로
+                                    MoldSizeY = Convert.ToDouble(dr["MoldSizeY"]), //세로
+                                    MoldSizeH = Convert.ToDouble(dr["MoldSizeH"]), //높이
+                                    MoldQuality = dr["MoldQuality"].ToString(), //재질
+                                    Weight = Convert.ToDouble(dr["Weight"]), //중량
 
-                                    Article = dr["Article"].ToString(),
-                                    KCustom = dr["KCustom"].ToString(),
-                                    CustomID = dr["CustomID"].ToString(),
-                                    ProdOrderDate_CV = dr["ProdOrderDate"].ToString(),  // ProdOrderDate 
-                                    ProdOrderDate = dr["ProdOrderDate"].ToString(),  // ProdOrderDate 
-                                    ProdDueDate_CV = dr["ProdDueDate"].ToString(),  //ProdDueDate CV 차이 ??
-                                    ProdDueDate = dr["ProdDueDate"].ToString(),
-                                    ProdCompDate_CV = dr["ProdCompDate"].ToString(),
-                                    ProdCompDate = dr["ProdCompDate"].ToString(),
-                                    //SetCheckProdQty = dr["SetCheckProdQty"].ToString(),
-                                    //SetWashingProdQty = dr["SetWashingProdQty"].ToString(),
-                                    AfterRepairHitcount = dr["AfterRepairHitcount"].ToString(),
-                                    AfterWashHitcount = dr["AfterWashHitcount"].ToString(),
-
-                                    SetProdQty = dr["SetProdQty"].ToString(),
-                                    SetHitCount = dr["SetHitCount"].ToString(),//금형타발수
-                                    SetHitCountDate_CV = dr["SetHitCountDate"].ToString(),
-                                    SetHitCountDate = dr["SetHitCountDate"].ToString(),
-                                    EvalDate_CV = dr["EvalDate"].ToString(),
-                                    EvalDate = dr["EvalDate"].ToString(),
-                                    EvalGrade = dr["EvalGrade"].ToString(),
-                                    Evalscore = dr["Evalscore"].ToString(),
-
-                                    AttFile1 = dr["AttFile1"].ToString(),
-                                    AttFile2 = dr["AttFile2"].ToString(),
-                                    AttFile3 = dr["AttFile3"].ToString(),
-                                    AttPath1 = dr["AttPath1"].ToString(),
-                                    AttPath2 = dr["AttPath2"].ToString(),
-                                    AttPath3 = dr["AttPath3"].ToString(),
-
+                                    DisCardYN = dr["DisCardYN"].ToString(), //사용여부(폐기건)
                                     Cavity = dr["Cavity"].ToString(),
                                     RealCavity = dr["RealCavity"].ToString(),
-                                    HitCount = dr["HitCount"].ToString(),
-                                    Weight = dr["Weight"].ToString(),
-                                    StorgeLocation = dr["StorgeLocation"].ToString(),
-                                    //MoldKind = dr["MoldKind"].ToString(),
+                                    Storage = dr["Storage"].ToString(),
+                                    StorageName = dr["StorageName"].ToString(),
 
+                                    ProdCustomName = dr["ProdCustomName"].ToString(), //금형제작업체
+                                    OwnerCustomName = dr["OwnerCustomName"].ToString(), //금형소유업체
+                                    OwnerOneTimePayYn = dr["OwnerOneTimePayYn"].ToString(), //일시불 or 상각
+                                    OwnerOneTimePayYnName = dr["OwnerOneTimePayYnName"].ToString(), //일시불 or 상각
 
-                                    //Spec = dr["Spec"].ToString(),
+                                    SetDate = DatePickerFormat(dr["SetDate"].ToString()), //입고일
+                                    ProdOrderDate = DatePickerFormat(dr["ProdOrderDate"].ToString()),  //발주일 
+                                    ProdDueDate = DatePickerFormat(dr["ProdDueDate"].ToString()), //완료 예정일
+                                    ProdCompDate = DatePickerFormat(dr["ProdCompDate"].ToString()), // 완료일 
 
-                                    //MoldKindName = dr["MoldKindName"].ToString(),
-                                    //
+                                    MainUseYN = dr["MainUseYN"].ToString(), //주(main) 금형 여부 
+                                    Comments = dr["Comments"].ToString(), //비고
+                                    MoldPerson = dr["MoldPerson"].ToString(), //관리담당
 
-                                };
+                                    SetCheckProdQty = Convert.ToDouble(dr["SetCheckProdQty"]), // 점검주기 타발수
+                                    AfterRepairHitcount = Convert.ToDouble(dr["AfterRepairHitcount"]), //점검 후 타발수
+                                    SetWashingProdQty = Convert.ToDouble(dr["SetWashingProdQty"]), // 세척주기 타발수
+                                    AfterWashHitcount = Convert.ToDouble(dr["AfterWashHitcount"]), //세척 후 타발수
 
-                                if (WinMolding.ProdCompDate.Trim().Length > 0)
-                                {
-                                    WinMolding.ProdCompDate_CV = Lib.Instance.StrDateTimeBar(WinMolding.ProdCompDate);
-                                    WinMolding.flagProdCompDate = true;
-                                }
-                                else
-                                {
-                                    WinMolding.flagProdCompDate = false;
-                                }
+                                    SetProdQty = Convert.ToDouble(dr["SetProdQty"]), // 수명 타발수 
+                                    HitCount = Convert.ToDouble(dr["HitCount"]), //현재 타발수
 
-                                if (WinMolding.ProdDueDate.Trim().Length > 0)
-                                {
-                                    WinMolding.ProdDueDate_CV = Lib.Instance.StrDateTimeBar(WinMolding.ProdDueDate);
-                                    WinMolding.flagProdDueDate = true;
-                                }
-                                else
-                                {
-                                    WinMolding.flagProdDueDate = false;
-                                }
+                                    SetHitCount = Convert.ToDouble(dr["SetHitCount"]), // 초기설정 타발수
+                                    SetHitCountDate = DatePickerFormat(dr["SetHitCountDate"].ToString()), // 초기설정일 
+                               
+                                    EvalGrade = dr["EvalGrade"].ToString(), //등급
+                                    EvalScore = Convert.ToDouble(dr["EvalScore"]), //점수
 
-                                if (WinMolding.ProdOrderDate.Trim().Length > 0)
-                                {
-                                    WinMolding.ProdOrderDate_CV = Lib.Instance.StrDateTimeBar(WinMolding.ProdOrderDate);
-                                    WinMolding.flagProdOrderDate = true;
-                                }
-                                else
-                                {
-                                    WinMolding.flagProdOrderDate = false;
-                                }
-
-                                if (WinMolding.SetDate.Length > 0)
-                                {
-                                    if (WinMolding.SetDate.Replace(" ", "").Length == 6)
-                                    {
-                                        WinMolding.SetMD = "0";
-                                        WinMolding.SetDate_CV = (WinMolding.SetDate.Substring(0, 4) + "-" + WinMolding.SetDate.Substring(4, 2));
-                                    }
-                                    else if (WinMolding.SetDate.Replace(" ", "").Length == 8)
-                                    {
-                                        WinMolding.SetMD = "1";
-                                        WinMolding.SetDate_CV = Lib.Instance.StrDateTimeBar(WinMolding.SetDate);
-                                    }
-                                    else
-                                    {
-                                    }
-                                }
-
-                                if (WinMolding.EvalDate.Length > 0)
-                                {
-                                    WinMolding.EvalDate_CV = Lib.Instance.StrDateTimeBar(WinMolding.EvalDate);
-                                }
-
-                                if (WinMolding.SetHitCountDate.Trim().Length > 0)
-                                {
-                                    WinMolding.SetHitCountDate_CV = Lib.Instance.StrDateTimeBar(WinMolding.SetHitCountDate);
-                                    WinMolding.flagSetInitHitCountDate = true;
-                                }
-                                else
-                                {
-                                    WinMolding.flagSetInitHitCountDate = false;
-                                }
-
-                                if (Lib.Instance.IsNumOrAnother(WinMolding.SetCheckProdQty))
-                                {
-                                    WinMolding.SetCheckProdQty = Lib.Instance.returnNumStringZero(WinMolding.SetCheckProdQty);
-                                }
-                                if (Lib.Instance.IsNumOrAnother(WinMolding.AfterRepairHitcount))
-                                {
-                                    WinMolding.AfterRepairHitcount = Lib.Instance.returnNumStringZero(WinMolding.AfterRepairHitcount);
-                                }
-                                if (Lib.Instance.IsNumOrAnother(WinMolding.Hitcount))
-                                {
-                                    WinMolding.Hitcount = Lib.Instance.returnNumStringZero(WinMolding.Hitcount);
-                                }
-                                if (Lib.Instance.IsNumOrAnother(WinMolding.SetProdQty))
-                                {
-                                    WinMolding.SetProdQty = Lib.Instance.returnNumStringZero(WinMolding.SetProdQty);
-                                }
-
-                                if (Lib.Instance.IsNumOrAnother(WinMolding.SetWashingProdQty))
-                                {
-                                    WinMolding.SetWashingProdQty = Lib.Instance.returnNumStringZero(WinMolding.SetWashingProdQty);
-                                }
-                                if (Lib.Instance.IsNumOrAnother(WinMolding.SetHitCount))
-                                {
-                                    WinMolding.SetHitCount = Lib.Instance.returnNumStringZero(WinMolding.SetHitCount);
-                                }
-                                if (Lib.Instance.IsNumOrAnother(WinMolding.Weight))
-                                {
-                                    WinMolding.Weight = Lib.Instance.returnNumStringZero(WinMolding.Weight);
-                                }
-
-                                if (WinMolding.StorgeLocation.Trim().Equals(string.Empty))
-                                {
-                                    WinMolding.StorgeLocationName = "";
-                                }
-
-                                dgdMain.Items.Add(WinMolding);
-                                i++;
-                            }
-                        }
-                        else
-                        {
-                            foreach (DataRow dr in dt.Select(sql))
-                            {
-                                var WinMolding = new Win_dvl_Molding_U_CodeView()
-                                {
-                                    Num = i + 1,
-                                    MoldNo = dr["MoldNo"].ToString(),
-                                    Article = dr["Article"].ToString(),
-                                    MoldID = dr["MoldID"].ToString(),
-                                    Comments = dr["Comments"].ToString(),
-                                    AfterRepairHitcount = dr["AfterRepairHitcount"].ToString(),
-                                    AfterWashHitcount = dr["AfterWashHitcount"].ToString(),
                                     AttFile1 = dr["AttFile1"].ToString(),
-                                    AttFile2 = dr["AttFile2"].ToString(),
-                                    AttFile3 = dr["AttFile3"].ToString(),
                                     AttPath1 = dr["AttPath1"].ToString(),
+                                    AttFile2 = dr["AttFile2"].ToString(),
                                     AttPath2 = dr["AttPath2"].ToString(),
+                                    AttFile3 = dr["AttFile3"].ToString(),
                                     AttPath3 = dr["AttPath3"].ToString(),
-                                    BuyerArticleNo = dr["BuyerArticleNo"].ToString(),
-                                    BuyerModelID = dr["BuyerModelID"].ToString(),
-                                    BuyerModelName = dr["BuyerModelName"].ToString(),
-                                    ArticleID = dr["Sabuns"].ToString(),
-                                    Cavity = dr["Cavity"].ToString(),
-                                    DisCardYN = dr["DisCardYN"].ToString(),
-                                    dvlYN = dr["dvlYN"].ToString(),
-                                    EvalDate = dr["EvalDate"].ToString(),
-                                    EvalGrade = dr["EvalGrade"].ToString(),
-                                    Evalscore = dr["Evalscore"].ToString(),
-                                    Hitcount = dr["Hitcount"].ToString(),
-                                    MoldKind = dr["MoldKind"].ToString(),
-                                    MoldType = dr["MoldType"].ToString(),
-                                    MoldPerson = dr["MoldPerson"].ToString(),
-                                    MoldQuality = dr["MoldQuality"].ToString(),
-                                    ProdCompDate = dr["ProdCompDate"].ToString(),
-                                    ProdCustomName = dr["ProdCustomName"].ToString(),
-                                    ProdDueDate = dr["ProdDueDate"].ToString(),
-                                    ProdOrderDate = dr["ProdOrderDate"].ToString(),
-                                    RealCavity = dr["RealCavity"].ToString(),
-                                    SetCheckProdQty = dr["SetCheckProdQty"].ToString(),
-                                    SetDate = dr["SetDate"].ToString(),
-                                    SetHitCount = dr["SetHitCount"].ToString(),
-                                    SetHitCountDate = dr["SetHitCountDate"].ToString(),
-                                    SetProdQty = dr["SetProdQty"].ToString(),
-                                    SetWashingProdQty = dr["SetWashingProdQty"].ToString(),
-                                    Spec = dr["Spec"].ToString(),
-                                    StorgeLocation = dr["StorgeLocation"].ToString(),
-                                    StorgeLocationName = dr["StorgeLocationName"].ToString(),
-                                    Weight = dr["Weight"].ToString(),
-                                    MoldKindName = dr["MoldKindName"].ToString()
                                 };
 
-                                if (WinMolding.ProdCompDate.Trim().Length > 0)
-                                {
-                                    WinMolding.ProdCompDate_CV = Lib.Instance.StrDateTimeBar(WinMolding.ProdCompDate);
-                                    WinMolding.flagProdCompDate = true;
-                                }
-                                else
-                                {
-                                    WinMolding.flagProdCompDate = false;
-                                }
+                            i++;
+                            dgdMain.Items.Add(WinMolding);
 
-                                if (WinMolding.ProdDueDate.Trim().Length > 0)
-                                {
-                                    WinMolding.ProdDueDate_CV = Lib.Instance.StrDateTimeBar(WinMolding.ProdDueDate);
-                                    WinMolding.flagProdDueDate = true;
-                                }
-                                else
-                                {
-                                    WinMolding.flagProdDueDate = false;
-                                }
 
-                                if (WinMolding.ProdOrderDate.Trim().Length > 0)
-                                {
-                                    WinMolding.ProdOrderDate_CV = Lib.Instance.StrDateTimeBar(WinMolding.ProdOrderDate);
-                                    WinMolding.flagProdOrderDate = true;
-                                }
-                                else
-                                {
-                                    WinMolding.flagProdOrderDate = false;
-                                }
-
-                                if (WinMolding.SetDate.Length > 0)
-                                {
-                                    if (WinMolding.SetDate.Replace(" ", "").Length == 6)
-                                    {
-                                        WinMolding.SetMD = "0";
-                                        WinMolding.SetDate_CV = (WinMolding.SetDate.Substring(0, 4) + "-" + WinMolding.SetDate.Substring(4, 2));
-                                    }
-                                    else if (WinMolding.SetDate.Replace(" ", "").Length == 8)
-                                    {
-                                        WinMolding.SetMD = "1";
-                                        WinMolding.SetDate_CV = Lib.Instance.StrDateTimeBar(WinMolding.SetDate);
-                                    }
-                                    else
-                                    {
-                                    }
-                                }
-
-                                if (WinMolding.EvalDate.Length > 0)
-                                {
-                                    WinMolding.EvalDate_CV = Lib.Instance.StrDateTimeBar(WinMolding.EvalDate);
-                                }
-
-                                if (WinMolding.SetHitCountDate.Trim().Length > 0)
-                                {
-                                    WinMolding.SetHitCountDate_CV = Lib.Instance.StrDateTimeBar(WinMolding.SetHitCountDate);
-                                    WinMolding.flagSetInitHitCountDate = true;
-                                }
-                                else
-                                {
-                                    WinMolding.flagSetInitHitCountDate = false;
-                                }
-
-                                if (Lib.Instance.IsNumOrAnother(WinMolding.SetCheckProdQty))
-                                {
-                                    WinMolding.SetCheckProdQty = Lib.Instance.returnNumStringZero(WinMolding.SetCheckProdQty);
-                                }
-                                if (Lib.Instance.IsNumOrAnother(WinMolding.AfterRepairHitcount))
-                                {
-                                    WinMolding.AfterRepairHitcount = Lib.Instance.returnNumStringZero(WinMolding.AfterRepairHitcount);
-                                }
-                                if (Lib.Instance.IsNumOrAnother(WinMolding.Hitcount))
-                                {
-                                    WinMolding.Hitcount = Lib.Instance.returnNumStringZero(WinMolding.Hitcount);
-                                }
-                                if (Lib.Instance.IsNumOrAnother(WinMolding.SetProdQty))
-                                {
-                                    WinMolding.SetProdQty = Lib.Instance.returnNumStringZero(WinMolding.SetProdQty);
-                                }
-
-                                if (Lib.Instance.IsNumOrAnother(WinMolding.SetWashingProdQty))
-                                {
-                                    WinMolding.SetWashingProdQty = Lib.Instance.returnNumStringZero(WinMolding.SetWashingProdQty);
-                                }
-                                if (Lib.Instance.IsNumOrAnother(WinMolding.SetHitCount))
-                                {
-                                    WinMolding.SetHitCount = Lib.Instance.returnNumStringZero(WinMolding.SetHitCount);
-                                }
-                                if (Lib.Instance.IsNumOrAnother(WinMolding.Weight))
-                                {
-                                    WinMolding.Weight = Lib.Instance.returnNumStringZero(WinMolding.Weight);
-                                }
-
-                                if (WinMolding.StorgeLocation.Trim().Equals(string.Empty))
-                                {
-                                    WinMolding.StorgeLocationName = "";
-                                }
-
-                                dgdMain.Items.Add(WinMolding);
-                                i++;
                             }
-                        }
+                       
                     }
                 }
             }
@@ -1017,6 +643,12 @@ namespace WizMes_BooKyong
                 this.DataContext = WinMold;
                 FillGridPasts(WinMold.MoldID);
                 FillGridArticles(WinMold.MoldID);
+
+                chkSetDate.IsChecked = !string.IsNullOrWhiteSpace(WinMold.SetDate);
+                chkProdOrderDate.IsChecked = !string.IsNullOrWhiteSpace(WinMold.ProdOrderDate);
+                chkProdDueDate.IsChecked = !string.IsNullOrWhiteSpace(WinMold.ProdDueDate);
+                chkProdCompDate.IsChecked = !string.IsNullOrWhiteSpace(WinMold.ProdCompDate);
+                chkSetInitHitCountDate.IsChecked = !string.IsNullOrWhiteSpace(WinMold.SetHitCountDate);
             }
         }
 
@@ -1143,56 +775,46 @@ namespace WizMes_BooKyong
                 {
                     Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
                     sqlParameter.Add("MoldID", strMoldID);
-                    sqlParameter.Add("sCompanyID", "0001");
-                    sqlParameter.Add("MoldNo", txtMoldNo.Text); 
-                    //sqlParameter.Add("sProductionArticleID", txtArticle.Tag == null ? "" : txtArticle.Tag.ToString());
+                    sqlParameter.Add("CompanyID", "0001");
+                    sqlParameter.Add("MoldNo", txtMoldNo.Text);
+                    sqlParameter.Add("CustomID", txtKCustom.Tag?.ToString() ?? "");
+                    sqlParameter.Add("BuyerModelID", txtBuyerModel.Tag?.ToString() ?? "");
 
-                    sqlParameter.Add("BuyerModelID", txtBuyerModel.Text);
-                    //sqlParameter.Add("BuyerArticleNo", txtBuyerArticleNo.Text);
-                    sqlParameter.Add("MoldSizeX", TextBoxMoldSizeX.Text);
-                    sqlParameter.Add("MoldSizeY", TextBoxMoldSizeY.Text);
-                    sqlParameter.Add("MoldSizeH", TextBoxMoldSizeH.Text);
+                    sqlParameter.Add("MoldKind", txtMoldKind.Text ?? "");
+                    sqlParameter.Add("MoldTypeID", "");
+                    sqlParameter.Add("MoldQuality", txtMoldQuality.Text ?? "");
+                    sqlParameter.Add("MoldSizeX", double.TryParse(txtMoldSizeX.Text, out double x) ? x : 0);
+                    sqlParameter.Add("MoldSizeY", double.TryParse(txtMoldSizeY.Text, out double y) ? y : 0);
 
-                    sqlParameter.Add("Weight", txtWeight.Text != string.Empty ? txtWeight.Text.Replace(",", "") : "0");
-                    sqlParameter.Add("MoldQuality", txtMoldQuality.Text);
-                    sqlParameter.Add("ProdCustomName", txtProdCustomName.Text);
-                    sqlParameter.Add("OwnerCustomName", TextBoxOwnerCustomName.Text);
-                    sqlParameter.Add("OwnerOneTimePayYn", cboBoxOwnerOneTimePayYn.SelectedValue == null ? "" : cboBoxOwnerOneTimePayYn.SelectedValue.ToString());  //TextBoxOwnerOneTimePayYn.Text);
+                    sqlParameter.Add("MoldSizeH", double.TryParse(txtMoldSizeH.Text, out double h) ? h : 0);
+                    sqlParameter.Add("Weight", double.TryParse(txtWeight.Text, out double weight) ? weight : 0);
+                    sqlParameter.Add("DisCardYN", cboDisCard.SelectedValue?.ToString() ?? "");
+                    sqlParameter.Add("Cavity", double.TryParse(txtCavity.Text, out double cavity) ? cavity : 0);
+                    sqlParameter.Add("RealCavity", double.TryParse(txtRealCavity.Text, out double realCavity) ? realCavity : 0);
 
-                    sqlParameter.Add("SetDate", CheckboxSetDate.IsChecked == true ? (dtpSetDateD.SelectedDate.Value.ToString("yyyyMMdd")) : "");
-                    sqlParameter.Add("DisCardYN", cboDisCard.SelectedValue == null ? "" : cboDisCard.SelectedValue.ToString());
-                    sqlParameter.Add("Cavity", txtCavity.Text != string.Empty ? txtCavity.Text.Replace(",", "") : "0");
-                    sqlParameter.Add("RealCavity", txtRealCavity.Text != string.Empty ? txtRealCavity.Text.Replace(",", "") : "0");
-                    sqlParameter.Add("StorgeLocation", cboStorgeLocation.SelectedValue == null ? "" : cboStorgeLocation.SelectedValue.ToString());
-
-                    sqlParameter.Add("MainUseYN", cboDevYN.SelectedValue == null ? "" : cboDevYN.SelectedValue.ToString());
-                    sqlParameter.Add("MoldPerson", txtMoldPerson.Text);
-                    sqlParameter.Add("Comments", txtComments.Text);
-                    sqlParameter.Add("CustomID", txtKCustom.Tag.ToString()) ;
+                    sqlParameter.Add("Storage", cboStorgeLocation.SelectedValue?.ToString() ?? "");
+                    sqlParameter.Add("ProdCustomName", txtProdCustomName.Text ?? "");
+                    sqlParameter.Add("OwnerCustomName", TextBoxOwnerCustomName.Text ?? "");
+                    sqlParameter.Add("OwnerOneTimePayYn", cboBoxOwnerOneTimePayYn.SelectedValue?.ToString() ?? "");
+                    sqlParameter.Add("SetDate", chkSetDate.IsChecked == true ? dtpSetDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
+                    
                     sqlParameter.Add("ProdOrderDate", chkProdOrderDate.IsChecked == true ? dtpProdOrderDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
-
                     sqlParameter.Add("ProdDueDate", chkProdDueDate.IsChecked == true ? dtpProdDueDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
-                    sqlParameter.Add("ProdCompDate", CheckBoxProdCompDate.IsChecked == true ? DatePickerProdCompDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
-                    sqlParameter.Add("SetCheckProdQty", txtSetCheckProdQty.Text != string.Empty ? txtSetCheckProdQty.Text.Replace(",", "") : "0");
-                    sqlParameter.Add("SetWashingProdQty", txtSetWashingProdQty.Text != string.Empty ? txtSetWashingProdQty.Text.Replace(",", "") : "0");
-                    sqlParameter.Add("SetProdQty", txtSetProdQty.Text != string.Empty ? txtSetProdQty.Text.Replace(",", "") : "0");
+                    sqlParameter.Add("ProdCompDate", chkProdCompDate.IsChecked == true ? dtpProdCompDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
+                    sqlParameter.Add("MainUseYN", cboMainUseYN.SelectedValue?.ToString() ?? "");
+                    sqlParameter.Add("Comments", txtComments.Text);
 
-                    sqlParameter.Add("nSetHitCount", txtSetinitHitCount.Text != string.Empty ? txtSetinitHitCount.Text.Replace(",", "") : "0");
-                    sqlParameter.Add("sSetHitCountDate", chkSetInitHitCountDate.IsChecked == true ? dtpSetInitHitCountDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
-                    sqlParameter.Add("dvlYN", "");
-                    sqlParameter.Add("AttFile1", txtAttFile1.Text);
-                    sqlParameter.Add("AttPath1", "");
+                    sqlParameter.Add("MoldPerson", txtMoldPerson.Text);
+                    sqlParameter.Add("SetCheckProdQty", double.TryParse(txtSetCheckProdQty.Text, out double setCheckQty) ? setCheckQty : 0);
+                    sqlParameter.Add("SetWashingProdQty", double.TryParse(txtSetWashingProdQty.Text, out double setWashingQty) ? setWashingQty : 0);
+                    sqlParameter.Add("SetProdQty", double.TryParse(txtSetProdQty.Text, out double setProdQty) ? setProdQty : 0);
+                    sqlParameter.Add("SetHitCount", double.TryParse(txtSetinitHitCount.Text, out double setHitCount) ? setHitCount : 0);
+                   
+                    sqlParameter.Add("SetHitCountDate", chkSetInitHitCountDate.IsChecked == true ? dtpSetInitHitCountDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
+                    sqlParameter.Add("EvalGrade", txtEvalGrade.Text ?? "");
+                    sqlParameter.Add("EvalScore", double.TryParse(txtEvalScore.Text, out double score) ? score : 0);
 
-                    sqlParameter.Add("AttFile2", txtAttFile2.Text);
-                    sqlParameter.Add("AttPath2", "");
-                    sqlParameter.Add("AttFile3", txtAttFile3.Text);
-                    sqlParameter.Add("AttPath3", "");
-                    sqlParameter.Add("sMoldKind", "");
-
-                    sqlParameter.Add("sMoldTypeID", "");
-                    sqlParameter.Add("sEvalGrade", txtEvalGrade.Text.ToString());
-
-#region 추가
+                    #region 추가
 
                     if (strFlag.Equals("I"))
                     {
@@ -1248,7 +870,7 @@ namespace WizMes_BooKyong
                             Prolist.Add(pro3);
                             ListParameter.Add(sqlParameter);
                         }
-                        
+
                         List<KeyValue> list_Result = new List<KeyValue>();
                         list_Result = DataStore.Instance.ExecuteAllProcedureOutputGetCS(Prolist, ListParameter);
                         string sGetID = string.Empty;
@@ -1294,13 +916,13 @@ namespace WizMes_BooKyong
                         }
                     }
 
-#endregion
+                    #endregion
 
-#region 수정
+                    #region 수정
 
                     else if (strFlag.Equals("U"))
                     {
-                        sqlParameter.Add("UserID", MainWindow.CurrentUser);
+                        sqlParameter.Add("LastUpdateUserID", MainWindow.CurrentUser);
 
                         Procedure pro1 = new Procedure();
                         pro1.Name = "xp_dvlMold_uMold";
@@ -1388,7 +1010,7 @@ namespace WizMes_BooKyong
                         }
                     }
 
-#endregion
+                    #endregion
                 }
             }
             catch (Exception ex)
@@ -1451,19 +1073,17 @@ namespace WizMes_BooKyong
         {
             bool flag = true;
 
-            //금형LotNo txtBuyerArticleNo
-            if (txtMoldNo.Text == null && txtMoldNo.Text.ToString().Trim().Equals(""))
+            if (string.IsNullOrWhiteSpace(txtMoldNo.Text))
             {
                 flag = false;
-                MessageBox.Show("금형LotNo를 입력해주세요.", "필수입력 오류");
+                MessageBox.Show("금형명를 입력해주세요.", "필수입력 오류");
                 return flag;
             }
 
-            //차종 txtBuyerArticleNo
-            if (txtBuyerModel.Text == null && txtBuyerModel.Text.ToString().Trim().Equals(""))
+            if (string.IsNullOrWhiteSpace(txtMoldKind.Text))
             {
                 flag = false;
-                MessageBox.Show("차종을 입력해주세요.", "필수입력 오류");
+                MessageBox.Show("금형종류를 입력해주세요.", "필수입력 오류");
                 return flag;
             }
 
@@ -1476,21 +1096,14 @@ namespace WizMes_BooKyong
             }
 
             //고객사명 txtKCustom
-            if (txtKCustom.Text == null && txtKCustom.Text.ToString().Trim().Equals(""))
+            if (string.IsNullOrWhiteSpace(txtKCustom.Text))
             {
                 flag = false;
                 MessageBox.Show("고객사명을 입력해주세요.", "필수입력 오류");
                 return flag;
             }
 
-            //보관장소
-            if (cboStorgeLocation.SelectedValue == null || cboStorgeLocation.SelectedIndex == 0)
-            {
-                flag = false;
-                MessageBox.Show("보관위치를 선택해주세요.", "필수입력 오류");
-                return flag;
-            }
-
+         
             return flag;
         }
 
@@ -1592,29 +1205,11 @@ namespace WizMes_BooKyong
             }
         }
 
-        private void dgdtxtMCPartName_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (lblMsg.Visibility == Visibility.Visible)
-            {
-                WinMoldParts = dgdPartsCode.CurrentItem as Win_dvl_Molding_U_Parts_CodeView;
-
-                if (WinMoldParts != null)
-                {
-                    TextBox tb1 = sender as TextBox;
-
-                    if (tb1 != null)
-                    {
-                        WinMoldParts.MCPartName = tb1.Text;
-                    }
-
-                    sender = tb1;
-                }
-            }
-        }
+       
 
         private void dgdtxtMCPartName_KeyDown(object sender, KeyEventArgs e)
         {
-            if (lblMsg.Visibility == Visibility.Visible)
+            if (e.Key == Key.Enter)
             {
                 WinMoldParts = dgdPartsCode.CurrentItem as Win_dvl_Molding_U_Parts_CodeView;
 
@@ -1623,7 +1218,7 @@ namespace WizMes_BooKyong
                     TextBox tb1 = sender as TextBox;
                     MainWindow.pf.ReturnCode(tb1, (int)Defind_CodeFind.DCF_PART, "");
 
-                    if (tb1 != null)
+                    if (tb1.Tag != null)
                     {
                         WinMoldParts.McPartID = tb1.Tag.ToString();
                         WinMoldParts.MCPartName = tb1.Text;
@@ -1634,29 +1229,10 @@ namespace WizMes_BooKyong
             }
         }
 
-        private void dgdtxtMCPartID_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (lblMsg.Visibility == Visibility.Visible)
-            {
-                WinMoldParts = dgdPartsCode.CurrentItem as Win_dvl_Molding_U_Parts_CodeView;
-
-                if (WinMoldParts != null)
-                {
-                    TextBox tb1 = sender as TextBox;
-
-                    if (tb1 != null)
-                    {
-                        WinMoldParts.McPartID = tb1.Text;
-                    }
-
-                    sender = tb1;
-                }
-            }
-        }
-
+       
         private void dgdtxtMCPartID_KeyDown(object sender, KeyEventArgs e)
         {
-            if (lblMsg.Visibility == Visibility.Visible)
+            if (e.Key == Key.Enter)
             {
                 WinMoldParts = dgdPartsCode.CurrentItem as Win_dvl_Molding_U_Parts_CodeView;
 
@@ -1665,7 +1241,7 @@ namespace WizMes_BooKyong
                     TextBox tb1 = sender as TextBox;
                     MainWindow.pf.ReturnCode(tb1, (int)Defind_CodeFind.DCF_PART, "");
 
-                    if (tb1 != null)
+                    if (tb1.Tag != null)
                     {
                         WinMoldParts.McPartID = tb1.Tag.ToString();
                         WinMoldParts.MCPartName = tb1.Text;
@@ -1679,6 +1255,7 @@ namespace WizMes_BooKyong
         private void chkProdOrderDate_Checked(object sender, RoutedEventArgs e)
         {
             dtpProdOrderDate.IsEnabled = true;
+            if (dtpProdOrderDate.SelectedDate == null) dtpProdOrderDate.SelectedDate = DateTime.Today;
         }
 
         private void chkProdOrderDate_Unchecked(object sender, RoutedEventArgs e)
@@ -1689,20 +1266,22 @@ namespace WizMes_BooKyong
         private void chkProdDueDate_Checked(object sender, RoutedEventArgs e)
         {
             dtpProdDueDate.IsEnabled = true;
+            if (dtpProdDueDate.SelectedDate == null) dtpProdDueDate.SelectedDate = DateTime.Today;
         }
 
         private void chkProdDueDate_Unchecked(object sender, RoutedEventArgs e)
         {
             dtpProdDueDate.IsEnabled = false;
         }
-        private void CheckboxSetDate_Checked(object sender, RoutedEventArgs e)
+        private void chkSetDate_Checked(object sender, RoutedEventArgs e)
         {
-            dtpSetDateD.IsEnabled = true;
+            dtpSetDate.IsEnabled = true;
+            if (dtpSetDate.SelectedDate == null) dtpSetDate.SelectedDate = DateTime.Today;
         }
 
-        private void CheckboxSetDate_Unchecked(object sender, RoutedEventArgs e)
+        private void chkSetDate_Unchecked(object sender, RoutedEventArgs e)
         {
-            dtpSetDateD.IsEnabled = false;
+            dtpSetDate.IsEnabled = false;
         }
 
         // 파일 저장하기.
@@ -1748,10 +1327,6 @@ namespace WizMes_BooKyong
                 MessageBox.Show("파일업로드에 실패하였습니다.");
                 return;
             }
-
-            //if (FullPath == FullPath1) { txtAttPath1.Text = "/ImageData/Draw/" + str_remotepath; }
-            //if (FullPath == FullPath2) { txtAttPath2.Text = "/ImageData/Draw/" + str_remotepath; }
-            //if (FullPath == FullPath3) { txtAttPath3.Text = "/ImageData/Draw/" + str_remotepath; }
 
             if (FullPath == FullPath1) { txtAttFile1.Tag = "/ImageData/Mold/" + fileInfo_up.Filepath; }
             if (FullPath == FullPath2) { txtAttFile2.Tag = "/ImageData/Mold/" + fileInfo_up.Filepath; }
@@ -1881,7 +1456,6 @@ namespace WizMes_BooKyong
                         {
                             FTP_UploadFile_File_Delete(txtMoldID.Text, txtAttFile1.Text);
                         }
-                        ftpDelete1 = true;
                     }
 
                     txtAttFile1.Text = string.Empty;
@@ -1896,7 +1470,6 @@ namespace WizMes_BooKyong
                         {
                             FTP_UploadFile_File_Delete(txtMoldID.Text, txtAttFile2.Text);
                         }
-                        ftpDelete2 = true;
                     }
 
                     txtAttFile2.Text = string.Empty;
@@ -1910,7 +1483,6 @@ namespace WizMes_BooKyong
                         {
                             FTP_UploadFile_File_Delete(txtMoldID.Text, txtAttFile3.Text);
                         }
-                        ftpDelete3 = true;
                     }
 
                     txtAttFile3.Text = string.Empty;
@@ -2267,21 +1839,22 @@ namespace WizMes_BooKyong
             if (chkProdDueDate.IsChecked == true) { chkProdDueDate.IsChecked = false; dtpProdDueDate.IsEnabled = false; }
             else { chkProdDueDate.IsChecked = true; dtpProdDueDate.IsEnabled = true; }
         }
-        private void LabelProdCompDate_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void lblProdCompDate_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (CheckBoxProdCompDate.IsChecked == true) { CheckBoxProdCompDate.IsChecked = false; DatePickerProdCompDate.IsEnabled = false; }
-            else { CheckBoxProdCompDate.IsChecked = true; DatePickerProdCompDate.IsEnabled = true; }
+            if (chkProdCompDate.IsChecked == true) { chkProdCompDate.IsChecked = false; dtpProdCompDate.IsEnabled = false; }
+            else { chkProdCompDate.IsChecked = true; dtpProdCompDate.IsEnabled = true; }
         }
 
-        private void lblboxSetDate_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void lblSetDate_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (CheckboxSetDate.IsChecked == true) { CheckboxSetDate.IsChecked = false; dtpSetDateD.IsEnabled = false; }
-            else { CheckboxSetDate.IsChecked = true; dtpSetDateD.IsEnabled = true; }
+            if (chkSetDate.IsChecked == true) { chkSetDate.IsChecked = false; dtpSetDate.IsEnabled = false; }
+            else { chkSetDate.IsChecked = true; dtpSetDate.IsEnabled = true; }
         }
 
         private void chkSetInitHitCountDate_Checked(object sender, RoutedEventArgs e)
         {
             dtpSetInitHitCountDate.IsEnabled = true;
+            if(dtpSetInitHitCountDate.SelectedDate == null) dtpSetInitHitCountDate.SelectedDate = DateTime.Today;
         }
 
         private void chkSetInitHitCountDate_Unchecked(object sender, RoutedEventArgs e)
@@ -2289,174 +1862,15 @@ namespace WizMes_BooKyong
             dtpSetInitHitCountDate.IsEnabled = false;
         }
 
-        private void BtnMultiArticle_Click(object sender, RoutedEventArgs e)
+        private void chkProdCompDate_Checked(object sender, RoutedEventArgs e)
         {
-            MultiArticle = true;
-
-            if (popMultiArticle.IsOpen == false)
-                popMultiArticle.IsOpen = true;
+            dtpProdCompDate.IsEnabled = true;
+            if (dtpProdCompDate.SelectedDate == null) dtpProdCompDate.SelectedDate = DateTime.Today;
         }
 
-        private void TxtArticleSrh1_KeyDown(object sender, KeyEventArgs e)
+        private void chkProdCompDate_Unchecked(object sender, RoutedEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
-                MainWindow.pf.ReturnCode(txtArticleSrh1, 68, "");
-            }
-        }
-
-        private void TxtArticleSrh2_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                MainWindow.pf.ReturnCode(txtArticleSrh2, 68, "");
-            }
-        }
-
-        private void TxtArticleSrh3_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                MainWindow.pf.ReturnCode(txtArticleSrh3, 68, "");
-            }
-        }
-
-        private void TxtArticleSrh4_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                MainWindow.pf.ReturnCode(txtArticleSrh4, 68, "");
-            }
-        }
-
-        private void TxtArticleSrh5_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                MainWindow.pf.ReturnCode(txtArticleSrh5, 68, "");
-            }
-        }
-
-        private void BtnPfArticleSrh1_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.pf.ReturnCode(txtArticleSrh1, 68, "");
-        }
-
-        private void BtnPfArticleSrh2_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.pf.ReturnCode(txtArticleSrh2, 68, "");
-        }
-
-        private void BtnPfArticleSrh3_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.pf.ReturnCode(txtArticleSrh3, 68, "");
-        }
-
-        private void BtnPfArticleSrh4_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.pf.ReturnCode(txtArticleSrh4, 68, "");
-        }
-
-        private void BtnPfArticleSrh5_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.pf.ReturnCode(txtArticleSrh5, 68, "");
-        }
-
-        private void BtnMultiArticleOK_Click(object sender, RoutedEventArgs e)
-        {
-            if (txtArticleSrh1.Tag != null && !txtArticleSrh1.Text.Equals(string.Empty))
-                ArticleSrh1 = txtArticleSrh1.Tag.ToString().Trim();
-            else
-                ArticleSrh1 = string.Empty;
-
-            if (txtArticleSrh2.Tag != null && !txtArticleSrh2.Text.Equals(string.Empty))
-                ArticleSrh2 = txtArticleSrh2.Tag.ToString().Trim();
-            else
-                ArticleSrh2 = string.Empty;
-
-            if (txtArticleSrh3.Tag != null && !txtArticleSrh3.Text.Equals(string.Empty))
-                ArticleSrh3 = txtArticleSrh3.Tag.ToString().Trim();
-            else
-                ArticleSrh3 = string.Empty;
-
-            if (txtArticleSrh4.Tag != null && !txtArticleSrh4.Text.Equals(string.Empty))
-                ArticleSrh4 = txtArticleSrh4.Tag.ToString().Trim();
-            else
-                ArticleSrh4 = string.Empty;
-
-            if (txtArticleSrh5.Tag != null && !txtArticleSrh5.Text.Equals(string.Empty))
-                ArticleSrh5 = txtArticleSrh5.Tag.ToString().Trim();
-            else
-                ArticleSrh5 = string.Empty;
-
-            if (popMultiArticle.IsOpen == true)
-                popMultiArticle.IsOpen = false;
-        }
-
-        private void BtnMultiArticleCC_Click(object sender, RoutedEventArgs e)
-        {
-            if ((txtArticleSrh1.Tag != null && !txtArticleSrh1.Text.Equals(string.Empty)) ||
-                (txtArticleSrh2.Tag != null && !txtArticleSrh2.Text.Equals(string.Empty)) ||
-                (txtArticleSrh3.Tag != null && !txtArticleSrh3.Text.Equals(string.Empty)) ||
-                (txtArticleSrh4.Tag != null && !txtArticleSrh4.Text.Equals(string.Empty)) ||
-                (txtArticleSrh5.Tag != null && !txtArticleSrh5.Text.Equals(string.Empty)))
-                MultiArticle = true;
-            else
-                MultiArticle = false;
-
-            if (popMultiArticle.IsOpen == true)
-                popMultiArticle.IsOpen = false;
-        }
-
-        private void BtnMultiArticleClear_Click(object sender, RoutedEventArgs e)
-        {
-            MultiArticle = false;
-            txtArticleSrh1.Clear();
-            txtArticleSrh2.Clear();
-            txtArticleSrh3.Clear();
-            txtArticleSrh4.Clear();
-            txtArticleSrh5.Clear();
-
-            ArticleSrh1 = string.Empty;
-            ArticleSrh2 = string.Empty;
-            ArticleSrh3 = string.Empty;
-            ArticleSrh4 = string.Empty;
-            ArticleSrh5 = string.Empty;
-        }
-
-        private void BtnPfArticleSrh1Clear_Click(object sender, RoutedEventArgs e)
-        {
-            txtArticleSrh1.Clear();
-        }
-
-        private void BtnPfArticleSrh2Clear_Click(object sender, RoutedEventArgs e)
-        {
-            txtArticleSrh2.Clear();
-        }
-
-        private void BtnPfArticleSrh3Clear_Click(object sender, RoutedEventArgs e)
-        {
-            txtArticleSrh3.Clear();
-        }
-
-        private void BtnPfArticleSrh4Clear_Click(object sender, RoutedEventArgs e)
-        {
-            txtArticleSrh4.Clear();
-        }
-
-        private void BtnPfArticleSrh5Clear_Click(object sender, RoutedEventArgs e)
-        {
-            txtArticleSrh5.Clear();
-        }
-
-        private void CheckBoxProdCompDate_Checked(object sender, RoutedEventArgs e)
-        {
-            DatePickerProdCompDate.IsEnabled = true;
-        }
-
-        private void CheckBoxProdCompDate_Unchecked(object sender, RoutedEventArgs e)
-        {
-            DatePickerProdCompDate.IsEnabled = false;
+            dtpProdCompDate.IsEnabled = false;
         }
 
         private void txtBuyerArticleNo_KeyDown(object sender, KeyEventArgs e)
@@ -2464,7 +1878,6 @@ namespace WizMes_BooKyong
             if (e.Key == Key.Enter)
             {
                 //MainWindow.pf.ReturnCode(txtBuyerArticleNo, 76, "");
-                //SetBuyerArticleNo(txtBuyerArticleNo.Tag);
 
                 var MoldArticle = dgdMoldArticle.CurrentItem as MoldArticle_CodeView;
 
@@ -2527,7 +1940,7 @@ namespace WizMes_BooKyong
 
                 return getArticleInfo;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return null;
@@ -2550,6 +1963,9 @@ namespace WizMes_BooKyong
             SetBuyerArticleNo(txtKCustom.Tag);
         }
 
+
+
+        #region 품명 그리드 이벤트
         private void btnMoldArticleAdd_Click(object sender, RoutedEventArgs e)
         {
             int i = 1;
@@ -2583,22 +1999,6 @@ namespace WizMes_BooKyong
                 }
             }
         }
-
-        private void DataGird_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            try
-            {
-                if (e.Key == Key.Down || e.Key == Key.Up || e.Key == Key.Left || e.Key == Key.Right)
-                {
-                    DataGird_KeyDown(sender, e);
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-
         private void DataGird_KeyDown(object sender, KeyEventArgs e)
         {
             int currRow = dgdMoldArticle.Items.IndexOf(dgdMoldArticle.CurrentItem);
@@ -2622,14 +2022,7 @@ namespace WizMes_BooKyong
                 {
                     dgdMoldArticle.CurrentCell = new DataGridCellInfo(dgdMoldArticle.Items[currRow], dgdMoldArticle.Columns[currCol + 1]);
                 } // 마지막 열, 마지막 행
-                else if (endCol == currCol && dgdMoldArticle.Items.Count - 1 == currRow)
-                {
-                    //btnSave.Focus();
-                }
-                else
-                {
-                    MessageBox.Show("나머지가 있나..");
-                }
+
             }
             else if (e.Key == Key.Down)
             {
@@ -2739,113 +2132,103 @@ namespace WizMes_BooKyong
 
             Lib.Instance.DataGridINTextBoxFocusByMouseUP(sender, e);
         }
+
+        #endregion
+
+        #region 기타 메서드
+
+        private void onlyNemeric(object sender, TextCompositionEventArgs e)
+        {
+            lib.CheckIsNumeric((TextBox)sender, e);
+        }
+
+        // 데이터피커 포맷으로 변경
+        private string DatePickerFormat(string str)
+        {
+            string result = "";
+
+            if (str.Length == 8)
+            {
+                if (!str.Trim().Equals(""))
+                {
+                    result = str.Substring(0, 4) + "-" + str.Substring(4, 2) + "-" + str.Substring(6, 2);
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
+
     }
 
     class Win_dvl_Molding_U_CodeView : BaseView
     {
         public int Num { get; set; }
         public string MoldID { get; set; }
-        public string MoldKind { get; set; }
-        public string MoldType { get; set; }
-        public string ArticleID { get; set; }
-
-        public string Article { get; set; }
         public string MoldNo { get; set; }
+        public string MoldTypeID { get; set; }
+        public string MoldType { get; set; }
+        public string MoldKind { get; set; }
+
         public string BuyerModelID { get; set; }
-        public string BuyerModelName { get; set; }
-        public string BuyerArticleNo { get; set; }
+        public string BuyerModel { get; set; }
+        public string CustomID { get; set; }
+        public string KCustom { get; set; }
 
-        public string dvlYN { get; set; }
-        public string StorgeLocation { get; set; }
-        public string StorgeLocationName { get; set; }
+        public double MoldSizeX { get; set; }
+        public double MoldSizeY { get; set; }
+        public double MoldSizeH { get; set; }
         public string MoldQuality { get; set; }
+        public double Weight { get; set; }
+
+        public string DisCardYN { get; set; }
         public string Cavity { get; set; }
-
         public string RealCavity { get; set; }
-        public string Weight { get; set; }
-        public string Spec { get; set; }
-        public string ProdCustomName { get; set; }
-        public string SetDate { get; set; }
+        public string Storage { get; set; }
+        public string StorageName { get; set; }
 
+        public string ProdCustomName { get; set; }
+        public string OwnerCustomName { get; set; }
+        public string OwnerOneTimePayYn { get; set; }
+        public string OwnerOneTimePayYnName { get; set; }
+
+        public string SetDate { get; set; }
         public string ProdOrderDate { get; set; }
         public string ProdDueDate { get; set; }
         public string ProdCompDate { get; set; }
-        public string MoldPerson { get; set; }
-        public string Comments { get; set; }
 
-        public string SetCheckProdQty { get; set; }
-        public string AfterRepairHitcount { get; set; }
-        public string SetWashingProdQty { get; set; }
-        public string AfterWashHitcount { get; set; }
-        public string SetProdQty { get; set; }
-
-        public string Hitcount { get; set; }
-        public string Evalscore { get; set; }
-        public string EvalGrade { get; set; }
-        public string EvalDate { get; set; }
-        public string SetHitCount { get; set; }
-        public string HitCount { get; set; }
-        public string SetHitCountDate { get; set; }
-        public string AttPath1 { get; set; }
-        public string AttFile1 { get; set; }
-        public string AttPath2 { get; set; }
-        public string AttFile2 { get; set; }
-
-        public string AttPath3 { get; set; }
-        public string AttFile3 { get; set; }
-        public string DisCardYN { get; set; }
-        public string MoldKindName { get; set; }
-
-        public string SetDate_CV { get; set; }
-        public string ProdOrderDate_CV { get; set; }
-        public string ProdDueDate_CV { get; set; }
-        public string ProdCompDate_CV { get; set; }
-        public string EvalDate_CV { get; set; }
-        public string SetHitCountDate_CV { get; set; }
-
-        public string PeriodHitCount { get; set; }
-        public string AfterinitHitCount { get; set; }
-
-        public bool flagProdOrderDate { get; set; }
-        public bool flagProdDueDate { get; set; }
-        public bool flagProdCompDate { get; set; }
-        public bool flagSetInitHitCountDate { get; set; }
-        public string SetMD { get; set; }
-        public string MoldSizeX { get; set; }
-        public string MoldSizeY { get; set; }
-        public string MoldSizeH { get; set; }
-        public string OwnerCustomName { get; set; }
-        public string OwnerOneTimePayYn { get; set; }
         public string MainUseYN { get; set; }
-        public string KCustom { get; set; }
-        public string CustomID { get; set; }
-
-        public string Sabun { get; set; }
-    }
-
-    class Win_dvl_Molding_U_Sub_CodeView : BaseView
-    {
-        public int Num { get; set; }
-
-        public string MoldEvalID { get; set; }
-        public string EvalDate { get; set; }
-        public string MoldID { get; set; }
-        public string MoldNo { get; set; }
-        public string Article { get; set; }
-
-        public string BuyerArticleNo { get; set; }
-        public string AvgWorkHourScore { get; set; }
-        public string HitCount { get; set; }
-        public string QualPartEasyChangeRateScore { get; set; }
-        public string QualOccurRate { get; set; }
-
-        public string QualAvgRepairHour { get; set; }
-        public string Score { get; set; }
-        public string EvalGrade { get; set; }
-        public string EvalPersonName { get; set; }
         public string Comments { get; set; }
+        public string MoldPerson { get; set; }
+
+        public double SetCheckProdQty { get; set; }
+        public double AfterRepairHitcount { get; set; }
+        public double SetWashingProdQty { get; set; }
+        public double AfterWashHitcount { get; set; }
+
+        public double SetProdQty { get; set; }
+        public double HitCount { get; set; }
+
+        public double SetHitCount { get; set; }
+        public string SetHitCountDate { get; set; }
+
+        public string EvalGrade { get; set; }
+        public double EvalScore { get; set; }
+
+        public string AttFile1 { get; set; }
+        public string AttPath1 { get; set; }
+        public string AttFile2 { get; set; }
+        public string AttPath2 { get; set; }
+        public string AttFile3 { get; set; }
+        public string AttPath3 { get; set; }
+
+        public string Article { get; set; }
+        public string BuyerArticleNo { get; set; }
+
     }
 
+    
     class Win_dvl_Molding_U_Parts_CodeView : BaseView
     {
         public int Num { get; set; }

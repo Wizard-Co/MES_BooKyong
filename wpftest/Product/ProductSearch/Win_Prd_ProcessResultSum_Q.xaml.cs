@@ -174,49 +174,6 @@ namespace WizMes_BooKyong
 
         #region 체크 등 이벤트
 
-        //최종거래처
-        private void lbInCustom_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (chkInCustom.IsChecked == true)
-            {
-                chkInCustom.IsChecked = false;
-            }
-            else
-            {
-                chkInCustom.IsChecked = true;
-            }
-        }
-
-        //최종거래처
-        private void chkInCustom_Checked(object sender, RoutedEventArgs e)
-        {
-            txtInCustom.IsEnabled = true;
-            btnPfInCustom.IsEnabled = true;
-            txtInCustom.Focus();
-        }
-
-        //최종거래처
-        private void chkInCustom_Unchecked(object sender, RoutedEventArgs e)
-        {
-            txtInCustom.IsEnabled = false;
-            btnPfInCustom.IsEnabled = false;
-        }
-
-        //최종거래처
-        private void txtInCustom_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                MainWindow.pf.ReturnCode(txtInCustom, 72, "");
-            }
-        }
-
-        //최종거래처
-        private void btnPfInCustom_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow.pf.ReturnCode(txtInCustom, 72, "");
-        }
-
         //작업자
         private void lblPerson_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -616,8 +573,6 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("sWorker", chkPerson.IsChecked == true ? txtPerson.Text : "");
                 sqlParameter.Add("nBuySaleMainYN", chkMainItem.IsChecked == true ? 1 : 0);
                 sqlParameter.Add("BuyerArticleNoID", CheckBoxBuyerArticleNoSearch.IsChecked == true && TextBoxBuyerArticleNoSearch.Tag != null ? TextBoxBuyerArticleNoSearch.Tag.ToString() : "");
-                sqlParameter.Add("ChkInCustom", chkInCustom.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("InCustomID", chkInCustom.IsChecked == true ? (txtInCustom.Tag != null ? txtInCustom.Tag.ToString() : "") : "");
 
                 DataSet ds = DataStore.Instance.ProcedureToDataSet("xp_prd_sWKResultByProcessMachine", sqlParameter, false);
 
@@ -648,7 +603,7 @@ namespace WizMes_BooKyong
                                 WorkQty = Convert.ToDouble(dr["WorkQty"]),
                                 UnitPrice = stringFormatN0(dr["UnitPrice"]),
                                 Amount = stringFormatN0(dr["Amount"]),
-                                WorkTime = stringFormatN1(dr["WorkTime"]),
+                                //WorkTime = stringFormatN1(dr["WorkTime"]),
                                 Num = i
                             };
 
@@ -722,8 +677,6 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("sWorker", chkPerson.IsChecked == true ? txtPerson.Text : "");
                 sqlParameter.Add("nBuySaleMainYN", chkMainItem.IsChecked == true ? 1 : 0);
                 sqlParameter.Add("BuyerArticleNoID", CheckBoxBuyerArticleNoSearch.IsChecked == true && TextBoxBuyerArticleNoSearch.Tag != null ? TextBoxBuyerArticleNoSearch.Tag.ToString() : "");
-                sqlParameter.Add("ChkInCustom", chkInCustom.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("InCustomID", chkInCustom.IsChecked == true ? (txtInCustom.Tag != null ? txtInCustom.Tag.ToString() : "") : "");
 
                 DataSet ds = DataStore.Instance.ProcedureToDataSet("xp_prd_sWKResultByArticle", sqlParameter, false);
 
@@ -751,7 +704,6 @@ namespace WizMes_BooKyong
                                 ProcessID = dr["ProcessID"].ToString(),
                                 Process = dr["Process"].ToString(),
                                 WorkQty = Convert.ToDouble(dr["WorkQty"]),
-                                WorkTime = stringFormatN1(dr["WorkTime"]),
                                 ProdQtyPerBox = stringFormatN0(dr["ProdQtyPerBox"]),
                                 
                             };
@@ -815,8 +767,7 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("sWorker", chkPerson.IsChecked == true ? txtPerson.Text : "");
                 sqlParameter.Add("nBuySaleMainYN", chkMainItem.IsChecked == true ? 1 : 0);
                 sqlParameter.Add("BuyerArticleNoID", CheckBoxBuyerArticleNoSearch.IsChecked == true && TextBoxBuyerArticleNoSearch.Tag != null ? TextBoxBuyerArticleNoSearch.Tag.ToString() : "");
-                sqlParameter.Add("ChkInCustom", chkInCustom.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("InCustomID", chkInCustom.IsChecked == true ? (txtInCustom.Tag != null ? txtInCustom.Tag.ToString() : "") : "");
+
 
                 DataSet ds = DataStore.Instance.ProcedureToDataSet("xp_prd_sWKResultByWorker", sqlParameter, false);
 
@@ -922,8 +873,7 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("ChkBuySaleMainYN", chkMainItem.IsChecked == true ? 1 : 0);
                 sqlParameter.Add("ChkBuyerArticleNo", CheckBoxBuyerArticleNoSearch.IsChecked == true ? 1 : 0);
                 sqlParameter.Add("BuyerArticleNo", (CheckBoxBuyerArticleNoSearch.IsChecked == true && TextBoxBuyerArticleNoSearch.Tag != null) ? TextBoxBuyerArticleNoSearch.Tag.ToString() : "");
-                sqlParameter.Add("ChkInCustom", chkInCustom.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("InCustomID", chkInCustom.IsChecked == true ? (txtInCustom.Tag != null ? txtInCustom.Tag.ToString() : "") : "");
+
 
                 DataSet ds = DataStore.Instance.ProcedureToDataSet("xp_prd_sWKResult_Article_ThisMonth", sqlParameter, false);
 

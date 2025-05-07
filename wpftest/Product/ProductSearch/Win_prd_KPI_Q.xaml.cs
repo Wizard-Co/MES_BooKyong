@@ -14,6 +14,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WizMes_BooKyong.PopUP;
 using WizMes_BooKyong.PopUp;
+using LiveCharts.Wpf;
+using LiveCharts;
+using System.Windows.Markup;
+
 
 namespace WizMes_BooKyong
 {
@@ -195,35 +199,30 @@ namespace WizMes_BooKyong
                             {
                                 Num = i + 1,
 
-                                GbnName = dr["GbnName"].ToString(),
-                                ArticleNo = dr["ARTICLENO"].ToString(),
-                                Article = dr["article"].ToString(),
+                                WorkDate = DatePickerFormat(dr["WorkDate"].ToString()),
+          
                                 WorkQty = stringFormatN0(dr["WorkQty"]),
-                                WorkTime = lib.returnNumStringOne(dr["WorkTime"].ToString()),
-                                WorkQtyPerHour = stringFormatN1(dr["WorkQtyPerHour"]),
-                                OrderQty = stringFormatN0(dr["OrderQty"]),
-                                DiffOutDate = stringFormatN0(dr["DiffOutDate"]),
-                                DiffOutDayPerQty = stringFormatN1(dr["DiffOutDayPerQty"]),
-                                DiffOutUpRate = stringFormatN1(dr["DiffOutUpRate"]),
-                                DiffOutGoalRate = stringFormatN1(dr["DiffOutGoalRate"]),
+                                WorkTime = stringFormatN1(dr["WorkTime"]),
+                                WorkQtyPerHour = stringFormatN0(dr["WorkQtyPerHour"]),
+                                Daily_WorkQty = stringFormatN0(dr["Daily_WorkQty"]),
+                                DefectQty = stringFormatN0(dr["DefectQty"]),
+                                DefectWorkQty = stringFormatN0(dr["DefectWorkQty"]),
+                                DefectRate = stringFormatN2(dr["DefectRate"]),
+                                DefectUpRate = stringFormatN1(dr["DefectUpRate"]),
+                                DefectGoalRate = stringFormatN1(dr["DefectGoalRate"]),
                                 gbn = dr["gbn"].ToString(),
                                 Sort = dr["Sort"].ToString(),
-                                WorkUpRate = dr["WorkUpRate"].ToString(),
-                                WorkGoalRate = dr["WorkGoalRate"].ToString()
+                                WorkUpRate = stringFormatN1(dr["WorkUpRate"]),
+                                WorkGoalRate = stringFormatN1(dr["WorkGoalRate"])
                             };
-
-                            if (WPKQC.gbn == "D")
-                            {
-                                WPKQC.Goal = "19.1";
-                                dgdOut.Items.Add(WPKQC);
-                            }
-
                             if (WPKQC.gbn == "P")
                             {
-                                WPKQC.Goal = "213";
                                 dgdGonsu.Items.Add(WPKQC);
                             }
-
+                            if (WPKQC.gbn == "Q")
+                            {
+                                dgdOut.Items.Add(WPKQC);
+                            }
                             i++;
                         }
                     }
@@ -236,6 +235,153 @@ namespace WizMes_BooKyong
             finally
             {
                 DataStore.Instance.CloseConnection();
+            }
+        }
+
+        private void setGraphP(DataGrid dataGrid)
+        {
+            try
+            {
+                if (lvcChartP.Series != null)
+                {
+                    lvcChartP.Series.Clear();
+                }
+
+                ChartDTO chart = new ChartDTO();
+                chart.seriesCollection = new SeriesCollection();
+                chart.lineQty = new ChartValues<double>();
+                chart.varQty = new ChartValues<double>();
+                chart.Labels = new string[dataGrid.Items.Count];
+
+                int index = 0;
+                for (int i = 0; i < dataGrid.Items.Count; i++)
+                {
+                    var Rating = dataGrid.Items[i] as Win_prd_KPI_Q_CodeView;
+
+                    if (Rating != null)
+                    {
+                        chart.Labels[index] = Rating.WorkDate;
+                        index++;
+
+                        if (Rating.Daily_WorkQty != null)
+                        {
+                            chart.lineQty.Add(Convert.ToInt32(Rating.Daily_WorkQty.Replace("," , "")));
+                        }
+                        else
+                        {
+                            chart.lineQty.Add(0);
+                        }
+
+                        //if (Rating.WorkQty != null)
+                        //{
+                        //    chart.varQty.Add(Convert.ToInt32(Rating.WorkQty.Replace(",", "")));
+                        //}
+                        //else
+                        //{
+                        //    chart.varQty.Add(0);
+                        //}
+                    }
+                }
+
+                chart.Formatter = data => data.Y.ToString("N0") + "(개)";
+
+                chart.seriesCollection.Add(new LineSeries
+                {
+                    Values = chart.lineQty,
+                    DataLabels = true,
+                    Title = "일 생산량",
+                    LabelPoint = chart.Formatter
+                });
+
+                //chart.seriesCollection.Add(new ColumnSeries
+                //{
+                //    Values = chart.varQty,
+                //    DataLabels = true,
+                //    Title = "생산량",
+                //    LabelPoint = chart.Formatter
+                //});
+
+                lvcChartP.DataContext = chart;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void setGraphQ(DataGrid dataGrid)
+        {
+            try
+            {
+                if (lvcChartQ.Series != null)
+                {
+                    lvcChartQ.Series.Clear();
+                }
+
+                ChartDTO chart2 = new ChartDTO();
+                chart2.seriesCollection = new SeriesCollection();
+                chart2.lineQty = new ChartValues<double>();
+                chart2.varQty = new ChartValues<double>();
+                chart2.Labels = new string[dataGrid.Items.Count];
+      
+
+                int index = 0;
+                for (int i = 0; i < dataGrid.Items.Count; i++)
+                {
+                    var Rating = dataGrid.Items[i] as Win_prd_KPI_Q_CodeView;
+
+                    if (Rating != null)
+                    {
+                        chart2.Labels[index] = Rating.WorkDate;
+                        index++;
+
+                        if (Rating.DefectRate != null)
+                        {
+                            chart2.lineQty.Add(Convert.ToDouble(Rating.DefectRate));
+                        }
+                        else
+                        {
+                            chart2.lineQty.Add(0);
+                        }
+
+                        //if (Rating.DefectQty != null)
+                        //{
+                        //    chart2.varQty.Add(Convert.ToDouble(Rating.DefectQty));
+                        //}
+                        //else
+                        //{
+                        //    chart2.varQty.Add(0);
+                        //}
+                    }
+                }
+
+                chart2.PercentFormatter = data => data.Y + "(%)";
+                chart2.Formatter = data => data.Y + "(개)";
+
+                chart2.seriesCollection.Add(new LineSeries
+                {
+                    Values = chart2.lineQty,
+                    DataLabels = true,
+                    Title = "일 불량량",
+                    LabelPoint = chart2.PercentFormatter
+                });
+
+                //chart2.seriesCollection.Add(new ColumnSeries
+                //{
+                //    Values = chart2.varQty,
+                //    DataLabels = true,
+                //    Title = "불량량",
+                //    LabelPoint = chart2.Formatter
+                //});
+
+                
+
+                lvcChartQ.DataContext = chart2;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
         #endregion
@@ -254,12 +400,26 @@ namespace WizMes_BooKyong
                     using (Loading lw = new Loading(FillGrid))
                     {
                         lw.ShowDialog();
-                        
+
+                        if (dgdGonsu.Items.Count > 0)
+                        {
+                            setGraphP(dgdGonsu);
+                        }
+                        if (dgdOut.Items.Count > 0)
+                        {
+
+                            setGraphQ(dgdOut);
+                        }
+
                         if (dgdGonsu.Items.Count <= 0 || dgdOut.Items.Count <= 0)
                         {
                             MessageBox.Show("조회된 내용이 없습니다.");
                         }
+                        
+                       
+
                         btnSearch.IsEnabled = true;
+                        
                     }
                 }
                 catch (Exception ee)
@@ -437,6 +597,21 @@ namespace WizMes_BooKyong
                 MessageBox.Show("예외처리 - " + ee.ToString());
             }
         }
+        // 데이터피커 포맷으로 변경
+        private string DatePickerFormat(string str)
+        {
+            string result = "";
+
+            if (str.Length == 8)
+            {
+                if (!str.Trim().Equals(""))
+                {
+                    result = str.Substring(0, 4) + "-" + str.Substring(4, 2) + "-" + str.Substring(6, 2);
+                }
+            }
+
+            return result;
+        }
 
         // 천마리 콤마, 소수점 버리기
         private string stringFormatN0(object obj)
@@ -465,29 +640,39 @@ namespace WizMes_BooKyong
         }
 
         public int Num { get; set; }
-
-        public string GbnName { get; set; }
+        public string gbn
+        {
+            get; set;
+        }
+        public string WorkDate { get; set; }
         public string ArticleNo { get; internal set; }
         public string Article { get; internal set; }
         public string WorkQty { get; internal set; }
         public string WorkTime { get; internal set; }
         public string WorkQtyPerHour { get; internal set; }
-        public string WorkMan { get; set; }
+        public string Daily_WorkQty { get; internal set; }
         public string WorkUpRate { get; set; }
         public string WorkGoalRate { get; set; }
-        public string Gonsu { get; set; }
-        public string OrderQty { get; set; }
-        public string DiffOutDate { get; set; }
-        public string DiffOutDayPerQty { get; set; }
-        public string DiffOutUpRate { get; set; }
-        public string DiffOutGoalRate { get; set; }
+        public string DefectQty { get; set; }
+        public string DefectWorkQty { get; set; }
         public string DefectRate { get; set; }
-        public string gbn { get; set; }
+        public string DefectUpRate { get; set; }
+        public string DefectGoalRate { get; set; }
         public string Sort { get; set; }
-        public string Goal { get; set; }
-
 
     }
+
+    public class ChartDTO
+    {
+        public SeriesCollection seriesCollection { get; set; }
+        public string[] Labels { get; set; }
+        public Func<ChartPoint, string> Formatter { get; set; }
+        public Func<ChartPoint, string> PercentFormatter { get; set; }
+        public ColumnSeries columnSeries { get; set; }
+        public ChartValues<double> lineQty { get; set; }
+        public ChartValues<double> varQty { get; set; }
+    }
+
 
     #endregion
 

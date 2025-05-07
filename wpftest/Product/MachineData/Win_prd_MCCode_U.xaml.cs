@@ -225,6 +225,8 @@ namespace WizMes_BooKyong
             chkNotUse.IsChecked = false; //2021-11-15
             // 이미지 초기화
             imgSetting.Source = null;
+
+
         }
 
         //수정
@@ -287,7 +289,7 @@ namespace WizMes_BooKyong
                         re_Search(rowNum);
                     }
                 }
-            }        
+            }
         }
 
         //닫기
@@ -327,7 +329,8 @@ namespace WizMes_BooKyong
                         if (dgdMain.Items.Count <= 0)
                         {
                             MessageBox.Show("조회된 내용이 없습니다.");
-                        } else
+                        }
+                        else
                         {
                             dgdMain.SelectedIndex = rowNum;
                         }
@@ -526,7 +529,7 @@ namespace WizMes_BooKyong
                                 ModelName = dr["ModelName"].ToString(),
                                 ProductionDate = dr["ProductionDate"].ToString(),
                                 ProductionDate_CV = DatePickerFormat(dr["ProductionDate"].ToString()),
-                                UseClss = dr["UseClss"].ToString() //2021-11-15
+                                UseClss = dr["UseClss"].ToString(), //2021-11-15
                             };
 
                             dgdMain.Items.Add(WinMCCodeU);
@@ -559,7 +562,7 @@ namespace WizMes_BooKyong
             {
                 this.DataContext = WinMcCode;
                 //2021-11-15 사용 안함 체크 일 경우 체크표시 하기
-                if(WinMcCode.UseClss.ToString() == "*")
+                if (WinMcCode.UseClss.ToString() == "*")
                 {
                     chkNotUse.IsChecked = true;
                 }
@@ -878,7 +881,7 @@ namespace WizMes_BooKyong
 
                     sqlParameter.Add("sUseYear", ConvertInt(txtUseYear.Text.Replace(",", "")));
                     sqlParameter.Add("sSetHitQty", txtSetHitQty.Text.Replace(",", "").Length > 0 ? Convert.ToDouble(txtSetHitQty.Text.Replace(",", "")) : 0);
-                    sqlParameter.Add("sProcessID", WinMcCodeMachineMapping.ProcessID != null ? WinMcCodeMachineMapping.ProcessID : "") ;
+                    sqlParameter.Add("sProcessID", WinMcCodeMachineMapping.ProcessID != null ? WinMcCodeMachineMapping.ProcessID : "");
                     sqlParameter.Add("sMachineID", WinMcCodeMachineMapping.MachineID != null ? WinMcCodeMachineMapping.MachineID : "");
                     sqlParameter.Add("sLastChangeDate", DateTime.Today.ToString("yyyyMMdd"));
 
@@ -890,6 +893,7 @@ namespace WizMes_BooKyong
                     sqlParameter.Add("sModelName", txtModelName.Text);
 
                     sqlParameter.Add("sUseClss", chkNotUse.IsChecked == true ? "*" : ""); //2021-11-15 사용안함 추가
+
 
                     #region 추가
 
@@ -910,7 +914,7 @@ namespace WizMes_BooKyong
 
                         //동운씨가 만든 아웃풋 값 찾는 방법
                         List<KeyValue> list_Result = new List<KeyValue>();
-                        list_Result = DataStore.Instance.ExecuteAllProcedureOutputGetCS_NewLog(Prolist, ListParameter,"C");
+                        list_Result = DataStore.Instance.ExecuteAllProcedureOutputGetCS_NewLog(Prolist, ListParameter, "C");
 
                         Prolist.RemoveAt(0);
                         ListParameter.RemoveAt(0);
@@ -1065,7 +1069,7 @@ namespace WizMes_BooKyong
                         }
 
                         string[] Confirm = new string[2];
-                        Confirm = DataStore.Instance.ExecuteAllProcedureOutputNew_NewLog(Prolist, ListParameter,"U"); // 저장되는 소스
+                        Confirm = DataStore.Instance.ExecuteAllProcedureOutputNew_NewLog(Prolist, ListParameter, "U"); // 저장되는 소스
                         if (Confirm[0] != "success")
                         {
                             MessageBox.Show("[저장실패]\r\n" + Confirm[1].ToString());
@@ -1092,7 +1096,7 @@ namespace WizMes_BooKyong
 
                         if (listFtpFile.Count > 0) // /ImageData/McRIB/2020010001
                         {
-                            if(FTP_Save_File(listFtpFile, GetKey))
+                            if (FTP_Save_File(listFtpFile, GetKey))
                             {
                                 UpdateDBFtp(GetKey, txtImage.Text, @"/ImageData/McRIB/" + GetKey);
                             }
@@ -1183,28 +1187,28 @@ namespace WizMes_BooKyong
         {
             bool flag = true;
 
-            if (txtMCName.Text.Length <= 0 || txtMCName.Text.ToString().Trim().Equals("") || txtMCName.Text == null)
+            if (String.IsNullOrEmpty(txtMCName.Text))
             {
                 MessageBox.Show("설비명이 입력되지 않았습니다.");
                 flag = false;
                 return flag;
             }
 
-            if (txtCustom.Text.Length <= 0 || txtCustom.Tag.ToString().Trim().Equals("") || txtCustom.Tag == null)
+            if (String.IsNullOrEmpty(txtCustom.Text))
             {
                 MessageBox.Show("제작사가 입력되지 않았습니다.");
                 flag = false;
                 return flag;
             }
 
-            if (txtBuyCustom.Text.Length <= 0 || txtBuyCustom.Tag.ToString().Trim().Equals("") || txtBuyCustom.Tag == null)
+            if (String.IsNullOrEmpty(txtBuyCustom.Text))
             {
                 MessageBox.Show("구매처가 입력되지 않았습니다.");
                 flag = false;
                 return flag;
             }
 
-            if (txtPerson.Text.Length <= 0 || txtPerson.Tag.ToString().Trim().Equals("") || txtPerson.Tag == null)
+            if (String.IsNullOrEmpty(txtPerson.Text))
             {
                 MessageBox.Show("관리자가 입력되지 않았습니다.");
                 flag = false;
@@ -1493,7 +1497,7 @@ namespace WizMes_BooKyong
                             MessageBox.Show("공정을 먼저 선택해주세요.");
                             return;
                         }
-                        
+
                     }
                 }
             }
@@ -2096,25 +2100,25 @@ namespace WizMes_BooKyong
             {
                 //for (int i = 0; i < dgdMain.Items.Count; i++)
                 //{
-                    //var Main = dgdMain.Items[i] as Win_prd_MCCode_U_CodeView;
-                    //if (Main != null)
-                    //{
-                        sqlParameter = new Dictionary<string, object>();
-                        sqlParameter.Clear();
-                        //sqlParameter.Add("sMCID", Main.mcid);
-                        //sqlParameter.Add("sProcessID", Main.ProcessID);
-                        //sqlParameter.Add("sMachineID", Main.MachineID);
-                        sqlParameter.Add("CreateUserID", MainWindow.CurrentUser);
+                //var Main = dgdMain.Items[i] as Win_prd_MCCode_U_CodeView;
+                //if (Main != null)
+                //{
+                sqlParameter = new Dictionary<string, object>();
+                sqlParameter.Clear();
+                //sqlParameter.Add("sMCID", Main.mcid);
+                //sqlParameter.Add("sProcessID", Main.ProcessID);
+                //sqlParameter.Add("sMachineID", Main.MachineID);
+                sqlParameter.Add("CreateUserID", MainWindow.CurrentUser);
 
-                        Procedure pro3 = new Procedure();
-                        pro3.Name = "xp_McCode_iuMappingMachineCode_WPF";
-                        pro3.OutputUseYN = "N";
-                        pro3.OutputName = "sNewMCID";
-                        pro3.OutputLength = "10";
+                Procedure pro3 = new Procedure();
+                pro3.Name = "xp_McCode_iuMappingMachineCode_WPF";
+                pro3.OutputUseYN = "N";
+                pro3.OutputName = "sNewMCID";
+                pro3.OutputLength = "10";
 
-                        Prolist.Add(pro3);
-                        ListParameter.Add(sqlParameter);
-                    //}
+                Prolist.Add(pro3);
+                ListParameter.Add(sqlParameter);
+                //}
                 //}
 
                 string[] confirm = new string[2];
@@ -2266,7 +2270,7 @@ namespace WizMes_BooKyong
 
         #endregion
 
-        
+
 
         private void lblchkNotUse_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -2302,7 +2306,17 @@ namespace WizMes_BooKyong
             chkNoUse.IsChecked = false;
         }
 
-        
+        private void TextBoxCheckIsNumeric_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            try
+            {
+                lib.CheckIsNumeric((TextBox)sender, e);
+            }
+            catch (Exception ee)
+            {
+                MessageBox.Show("예외처리 - " + ee.ToString());
+            }
+        }
     }
 
     #region CoewView

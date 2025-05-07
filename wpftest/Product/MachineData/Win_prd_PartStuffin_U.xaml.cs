@@ -22,7 +22,7 @@ namespace WizMes_BooKyong
     /// Win_prd_PartStuffin_U.xaml에 대한 상호 작용 논리
     /// </summary>
     public partial class Win_prd_PartStuffin_U : UserControl
-    { 
+    {
         Win_prd_PartStuffin_U_CodeView WinPartStuff = new Win_prd_PartStuffin_U_CodeView();
         Lib lib = new Lib();
         string jobFlag = string.Empty;
@@ -100,11 +100,8 @@ namespace WizMes_BooKyong
             this.cboCompanyS.DisplayMemberPath = "code_name";
             this.cboCompanyS.SelectedValuePath = "code_id";
 
-            if (cboCompanyS.ItemsSource != null)
-            {
-                cboCompanyS.SelectedIndex = 1;
-                cboCompanyS.IsEnabled = false;
-            }
+
+
         }
 
         #endregion
@@ -320,7 +317,7 @@ namespace WizMes_BooKyong
 
 
             cboUnit.SelectedValue = "0";
-
+            cboCompanyS.SelectedIndex = 0;
             cboPriceClss.SelectedValue = "0";
             cboVatInd.SelectedValue = "Y";
 
@@ -362,7 +359,7 @@ namespace WizMes_BooKyong
                 MessageBox.Show("삭제할 데이터가 지정되지 않았습니다. 삭제데이터를 지정하고 눌러주세요");
                 return;
             }
-            else if(CheckStockQty(WinPartStuff.StuffInID, WinPartStuff.TotQty, WinPartStuff.MCPartID))
+            else if (CheckStockQty(WinPartStuff.StuffInID, WinPartStuff.TotQty, WinPartStuff.MCPartID))
             {
                 return;
             }
@@ -415,7 +412,7 @@ namespace WizMes_BooKyong
                 btnSearch.IsEnabled = true;
 
             }), System.Windows.Threading.DispatcherPriority.Background);
-            
+
 
         }
 
@@ -788,17 +785,17 @@ namespace WizMes_BooKyong
         //부품용도
         private void CboForUse_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-        //    if (cboForUse.SelectedValue != null)
-        //    {
-        //        if (cboForUse.SelectedValue.Equals("2"))
-        //        {
-        //            lblName.Content = "설비예비품명";
-        //        }
-        //        else if (cboForUse.SelectedValue.Equals("3"))
-        //        {
-        //            lblName.Content = "Tool명";
-        //        }
-        //    }
+            //    if (cboForUse.SelectedValue != null)
+            //    {
+            //        if (cboForUse.SelectedValue.Equals("2"))
+            //        {
+            //            lblName.Content = "설비예비품명";
+            //        }
+            //        else if (cboForUse.SelectedValue.Equals("3"))
+            //        {
+            //            lblName.Content = "Tool명";
+            //        }
+            //    }
         }
 
         #endregion
@@ -849,15 +846,12 @@ namespace WizMes_BooKyong
             List<Dictionary<string, object>> ListParameter = new List<Dictionary<string, object>>();
 
             WinPartStuff = dgdGroup.SelectedItem as Win_prd_PartStuffin_U_CodeView;
-            string stuffID = (WinPartStuff == null ?  "" : WinPartStuff.StuffInID );
+            string stuffID = (WinPartStuff == null ? "" : WinPartStuff.StuffInID);
 
             if (CheckData())
             {
                 try
                 {
-                    string sMCID = string.Empty;
-                    //string sMCGroupID = string.Empty;
-                    //string sdvlMoldID = string.Empty;
 
                     Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
                     sqlParameter.Add("nAfftecRows", 0);
@@ -865,47 +859,25 @@ namespace WizMes_BooKyong
                     sqlParameter.Add("StuffDate", dtpDayUpdate.SelectedDate.Value.ToString("yyyyMMdd"));
                     sqlParameter.Add("StuffInID", jobFlag.Equals("I") ? "" : stuffID);
                     sqlParameter.Add("CustomID", txtCustom.Tag.ToString());
+
                     sqlParameter.Add("InCustom", txtCustom.Text);
                     sqlParameter.Add("UnitClss", cboUnit.SelectedValue.ToString());
                     sqlParameter.Add("TotRoll", 0);
                     sqlParameter.Add("TotQty", Lib.Instance.IsNumOrAnother(txtInQty.Text) ? double.Parse(txtInQty.Text) : 0);
                     sqlParameter.Add("UnitPrice", Lib.Instance.IsNumOrAnother(txtUnitPrice.Text) ? double.Parse(txtUnitPrice.Text) : 0);
+
                     sqlParameter.Add("PriceClss", cboPriceClss.SelectedValue.ToString());
                     sqlParameter.Add("ExchRate", Lib.Instance.IsNumOrAnother(txtExchRate.Text) ? double.Parse(txtExchRate.Text) : 0);
                     sqlParameter.Add("Vat_Ind_YN", cboVatInd.SelectedValue.ToString());
                     sqlParameter.Add("Remark", txtRamark.Text);
-                    sqlParameter.Add("MCPartID", txtMCID.Tag.ToString()); 
-                    //sqlParameter.Add("CompanyID", cboCompanyS.SelectedValue.ToString());
-                    //sqlParameter.Add("StuffClss", cboStuffClss.SelectedValue.ToString());
-                    sqlParameter.Add("CompanyID", "0001");
+                    sqlParameter.Add("MCPartID", txtMCID.Tag.ToString());
+
+                    sqlParameter.Add("CompanyID", cboCompanyS.SelectedValue.ToString());
                     sqlParameter.Add("sUserID", MainWindow.CurrentUser);
                     sqlParameter.Add("ArticleSubID", "");
-
-                    if (cboForUse.SelectedValue.Equals("1"))
-                    {
-                        //sMCID = WinPartStuff.MCID;
-                        sMCID = (WinPartStuff == null ? "" : WinPartStuff.MCID);
-                        sqlParameter.Add("MCID", sMCID);
-                    }
-                    else if (cboForUse.SelectedValue.Equals("2"))
-                    {
-                        //sMCGroupID = txtMCID.Tag.ToString();
-                        //sqlParameter.Add("MCGroupID", sMCGroupID);
-
-                        //sMCID = WinPartStuff.MCID;
-                        sMCID = (WinPartStuff == null ? "" : WinPartStuff.MCID);
-                        sqlParameter.Add("MCID", sMCID);
-                    }
-                    else if (cboForUse.SelectedValue.Equals("3"))
-                    {
-                        //sdvlMoldID = txtMCID.Tag.ToString();
-                        //sqlParameter.Add("dvlMoldID", sdvlMoldID);
-
-                       
-                        sMCID = (WinPartStuff == null ? "" : WinPartStuff.MCID);
-                        sqlParameter.Add("MCID", sMCID);
-                    }
-
+                    sqlParameter.Add("MCID", "");
+                    sqlParameter.Add("ToolEndDate", "");
+                    sqlParameter.Add("sLOTID", "");
 
                     if (jobFlag.Equals("I"))
                     {
@@ -1071,7 +1043,7 @@ namespace WizMes_BooKyong
         {
 
             FillGrid();
-            
+
             if (dgdGroup.Items.Count > 0)
             {
                 dgdGroup.Focus();
@@ -1261,6 +1233,7 @@ namespace WizMes_BooKyong
                             };
 
                             partStuffIn.StuffDate = Lib.Instance.StrDateTimeBar(partStuffIn.StuffDate);
+                            partStuffIn.amount = partStuffIn.UnitPrice * partStuffIn.TotQty;
 
                             if (dicCompare.Count > 0)
                             {
@@ -1355,7 +1328,7 @@ namespace WizMes_BooKyong
 
                 DataSet ds = DataStore.Instance.ProcedureToDataSet("xp_mcPartStuffIn_CheckStockQty", sqlParameter, false);
 
-                if(ds != null && ds.Tables.Count > 0)
+                if (ds != null && ds.Tables.Count > 0)
                 {
                     DataTable dt = ds.Tables[0];
                     DataRow dr = dt.Rows[0];
@@ -1370,10 +1343,10 @@ namespace WizMes_BooKyong
                         result = false;
                     }
                 }
-                
+
 
             }
-            catch(Exception ee)
+            catch (Exception ee)
             {
                 MessageBox.Show("예외처리 - " + ee.ToString());
             }

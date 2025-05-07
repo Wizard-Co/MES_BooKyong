@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:WizMes_BooKyong"
              mc:Ignorable="d" Loaded="UserControl_Loaded"
              d:DesignHeight="620" d:DesignWidth="820">
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="88*"/>
@@ -50,7 +50,7 @@
                 <TextBox Grid.Column="1" x:Name="txtMcCodeSrh" 
                          Style="{DynamicResource TextBoxSearch}" />
             </Grid>
-            
+
             <Grid Grid.Column="3" Grid.Row="0" x:Name="grdSrh3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100*" />
@@ -256,7 +256,7 @@
                             <RowDefinition Height="22*" />
                             <RowDefinition Height="22*" />
                         </Grid.RowDefinitions>
-                        
+
                         <Label Grid.Column="0" Grid.Row="0" 
                                Style="{DynamicResource LabelInputArea}">
                             <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}" >
@@ -278,11 +278,11 @@
                         <TextBox x:Name="txtMCName" Grid.Column="1" Grid.Row="1" 
                                  Text="{Binding mcname}" 
                                  Style="{DynamicResource TextBoxInputNecessary}"
-                                 KeyDown="txtMCName_KeyDown"/>
+                                 />
                         <!--<Button x:Name="btntxtMCName" Grid.Column="2" Grid.Row="1" Click="btnMCName_Click">
                             <Image Source="{DynamicResource btiPlusFind}"  />
                         </Button>-->
-                        
+
                         <Label Grid.Column="0" Grid.Row="2" 
                                Style="{DynamicResource LabelInputArea}">
                             <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
@@ -419,6 +419,8 @@
                         <CheckBox x:Name="chkNotUse" Grid.Column="1" Grid.Row="12" 
                                   Style="{DynamicResource CheckBoxInputArea}"/>
 
+                        
+
                     </Grid>
                 </Grid>
             </Grid>
@@ -461,7 +463,7 @@
                                     </Viewbox>
                                 </StackPanel>
                             </Grid>
-                            
+
                             <Button x:Name="btnAddMachineMapping" Grid.Column="2" HorizontalContentAlignment="Center" 
                                 VerticalContentAlignment="Center" Padding="0" Content="추가"
                                 Click="btnAddMachineMapping_Click"/>
@@ -628,7 +630,7 @@
                                 VerticalContentAlignment="Center" Padding="0" Content="삭제"
                                 Click="btnSubDel_Click"/>
                         </Grid>
-                        
+
                         <DataGrid Grid.Row="1" x:Name="dgdUseMcPart" 
                                   Style="{DynamicResource DataGridSet1}">
                             <DataGrid.Columns>
@@ -661,11 +663,11 @@
                                 <DataGridTextColumn Header="점검/교체구분코드" Binding="{Binding ChangeCheckGbn}" Visibility="Hidden"/>
                             </DataGrid.Columns>
                         </DataGrid>
-                        
+
                     </Grid>
 
                 </Grid>
-                
+
             </Grid>
 
         </Grid>

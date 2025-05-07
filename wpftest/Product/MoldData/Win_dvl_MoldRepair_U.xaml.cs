@@ -21,13 +21,11 @@ namespace WizMes_BooKyong
         Win_dvl_MoldRepair_U_CodeView WinRepair = new Win_dvl_MoldRepair_U_CodeView();
         Win_dvl_MoldRepair_U_Sub_CodeView WinMoldRepairSub = new Win_dvl_MoldRepair_U_Sub_CodeView();
         Lib lib = new Lib();
-        PlusFinder pf = new PlusFinder();
+
         string strFlag = string.Empty;
-        int numSaveRowCout = 0;
-        bool IsEditable = false;
+        int rowNum = 0;
 
         Dictionary<string, object> dicCompare = new Dictionary<string, object>();
-        List<string> lstCompareValue = new List<string>();
 
         public Win_dvl_MoldRepair_U()
         {
@@ -38,6 +36,7 @@ namespace WizMes_BooKyong
         {
             dtpSDate.SelectedDate = DateTime.Today;
             dtpEDate.SelectedDate = DateTime.Today;
+            chkRepairDaySrh.IsChecked = true;
             setComboBox();
             lib.UiLoading(sender);
         }
@@ -50,18 +49,16 @@ namespace WizMes_BooKyong
             lstDvlYN.Add(strDvl_1);
             lstDvlYN.Add(strDvl_2);
 
-            List<string[]> lstRepairGubun = new List<string[]>();
-            string[] strRepairGubun_0 = { "0", "" };
-            string[] strRepairGubun_1 = { "1", "수리" };
-            string[] strRepairGubun_2 = { "2", "교체" };
-            lstRepairGubun.Add(strRepairGubun_0);
-            lstRepairGubun.Add(strRepairGubun_1);
-            lstRepairGubun.Add(strRepairGubun_2);
-
             ObservableCollection<CodeView> ovcDvlYN = ComboBoxUtil.Instance.Direct_SetComboBox(lstDvlYN);
             this.cboDvlYNSrh.ItemsSource = ovcDvlYN;
             this.cboDvlYNSrh.DisplayMemberPath = "code_name";
             this.cboDvlYNSrh.SelectedValuePath = "code_id";
+
+            List<string[]> lstRepairGubun = new List<string[]>();
+            string[] strRepairGubun_1 = { "1", "수리" };
+            string[] strRepairGubun_2 = { "2", "교체" };
+            lstRepairGubun.Add(strRepairGubun_1);
+            lstRepairGubun.Add(strRepairGubun_2);
 
             ObservableCollection<CodeView> ovcRepairGubun = ComboBoxUtil.Instance.Direct_SetComboBox(lstRepairGubun);
             this.cboRepairGubun.ItemsSource = ovcRepairGubun;
@@ -151,13 +148,13 @@ namespace WizMes_BooKyong
         {
             if (e.Key == Key.Enter)
             {
-                pf.ReturnCode(txtArticleSabunSrh, 79, "");
+                MainWindow.pf.ReturnCode(txtArticleSabunSrh, 79, "");
             }
         }
 
         private void btnPfArticleSabunSrh_Click(object sender, RoutedEventArgs e)
         {
-            pf.ReturnCode(txtArticleSabunSrh, 79, "");
+            MainWindow.pf.ReturnCode(txtArticleSabunSrh, 79, "");
         }
 
         //금형 라벨(금형임_변수는 처음에 잘못알아서 article)
@@ -187,14 +184,14 @@ namespace WizMes_BooKyong
         {
             if (e.Key == Key.Enter)
             {
-                pf.ReturnCode(txtArticelSrh,51,"");
+                MainWindow.pf.ReturnCode(txtArticelSrh,51,"");
             }
         }
 
         //금형 플러스파인더(금형임_변수는 처음에 잘못알아서 article)
         private void btnPfArticelSrh_Click(object sender, RoutedEventArgs e)
         {
-            pf.ReturnCode(txtArticelSrh, 51, "");
+            MainWindow.pf.ReturnCode(txtArticelSrh, 51, "");
         }
 
         //금형LotNo 라벨
@@ -289,7 +286,7 @@ namespace WizMes_BooKyong
             //취소 시 추가 전 자료를 선택하기 위해
             if (dgdMoldRepair.SelectedItem != null)
             {
-                numSaveRowCout = dgdMoldRepair.SelectedIndex;
+                rowNum = dgdMoldRepair.SelectedIndex;
             }
 
             cboRepairGubun.Focus();
@@ -309,7 +306,7 @@ namespace WizMes_BooKyong
                 strFlag = "U";
 
                 tbkMsg.Text = "자료 입력(수정) 중";
-                numSaveRowCout = dgdMoldRepair.SelectedIndex;
+                rowNum = dgdMoldRepair.SelectedIndex;
 
                 cboRepairGubun.Focus();
                 cboRepairGubun.IsDropDownOpen = true;
@@ -331,16 +328,16 @@ namespace WizMes_BooKyong
                 {
                     if (dgdMoldRepair.Items.Count > 0 && dgdMoldRepair.SelectedItem != null)
                     {
-                        numSaveRowCout = dgdMoldRepair.SelectedIndex;
+                        rowNum = dgdMoldRepair.SelectedIndex;
                     }
 
                     if (DeleteData(WinRepair.RepairID))
                     {
-                        if (numSaveRowCout > 0)
+                        if (rowNum > 0)
                         {
-                            numSaveRowCout -= 1;
+                            rowNum -= 1;
                         }
-                        re_Search(numSaveRowCout);
+                        re_Search(rowNum);
                     }
                 }
             }
@@ -358,9 +355,9 @@ namespace WizMes_BooKyong
         //조회
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            numSaveRowCout = 0;
+            rowNum = 0;
 
-            re_Search(numSaveRowCout);
+            re_Search(rowNum);
         }
 
         //저장
@@ -370,10 +367,10 @@ namespace WizMes_BooKyong
             {
                 if (InsertData())
                 {
-                    numSaveRowCout = 0; //추가 성공 시에는 첫 자료부터 조회
+                    rowNum = 0; //추가 성공 시에는 첫 자료부터 조회
 
                     ControlVisibleAndEnable_SC();
-                    re_Search(numSaveRowCout);
+                    re_Search(rowNum);
                 }
             }
             else  //U
@@ -381,7 +378,7 @@ namespace WizMes_BooKyong
                 if (UpdateData())
                 {
                     ControlVisibleAndEnable_SC();
-                    re_Search(numSaveRowCout);
+                    re_Search(rowNum);
                 }
             }
         }
@@ -392,7 +389,7 @@ namespace WizMes_BooKyong
             InputClear();
             ControlVisibleAndEnable_SC();
 
-            re_Search(numSaveRowCout);
+            re_Search(rowNum);
         }
 
         //입력 데이터 클리어
@@ -493,14 +490,9 @@ namespace WizMes_BooKyong
 
             if (dgdMoldRepair.Items.Count > 0)
             {
-                if (lstCompareValue.Count > 0)
-                {
-                    dgdMoldRepair.SelectedIndex = lib.reTrunIndex(dgdMoldRepair, lstCompareValue[0]);
-                }
-                else
-                {
+               
                     dgdMoldRepair.SelectedIndex = selectIndex;
-                }
+                
             }
             else
             {
@@ -508,7 +500,7 @@ namespace WizMes_BooKyong
             }
 
             dicCompare.Clear();
-            lstCompareValue.Clear();
+
         }
 
         #endregion
@@ -566,14 +558,6 @@ namespace WizMes_BooKyong
                             };
 
                             MoldRepair_DTO.repairdate = lib.StrDateTimeBar(MoldRepair_DTO.repairdate);
-
-                            if (dicCompare.Count > 0)
-                            {
-                                if (MoldRepair_DTO.RepairID.Equals(dicCompare["RepairID"].ToString()))
-                                {
-                                    lstCompareValue.Add(MoldRepair_DTO.ToString());
-                                }
-                            }
 
                             dgdMoldRepair.Items.Add(MoldRepair_DTO);
                         }
@@ -944,7 +928,7 @@ namespace WizMes_BooKyong
         {
             if (e.Key == Key.Enter)
             {
-                pf.ReturnCode(txtMold,51,"");
+                MainWindow.pf.ReturnCode(txtMold,51,"");
 
                 if (txtMold.Tag != null)
                 {
@@ -958,7 +942,7 @@ namespace WizMes_BooKyong
         //중단에 LotNo 옆의 버튼 눌렀을때
         private void btnfPfMold_Click(object sender, RoutedEventArgs e)
         {
-            pf.ReturnCode(txtMold, 51, "");
+            MainWindow.pf.ReturnCode(txtMold, 51, "");
 
             if (txtMold.Tag != null)
             {
@@ -1159,7 +1143,7 @@ namespace WizMes_BooKyong
             if (e.Key == Key.Enter)
             {
                 TextBox tb1 = sender as TextBox;
-                pf.ReturnCode(tb1, 13, "");
+                MainWindow.pf.ReturnCode(tb1, 13, "");
 
                 if (tb1.Tag != null)
                 {
@@ -1178,7 +1162,7 @@ namespace WizMes_BooKyong
             int rowCount = dgdMoldRepairSub.Items.IndexOf(dgdMoldRepairSub.CurrentItem);
 
             TextBox tb1 = sender as TextBox;
-            pf.ReturnCode(tb1, 13, "");
+            MainWindow.pf.ReturnCode(tb1, 13, "");
 
             if (tb1.Tag != null)
             {
@@ -1199,7 +1183,7 @@ namespace WizMes_BooKyong
                 if (WinMoldRepairSub != null)
                 {
                     TextBox tb1 = sender as TextBox;
-                    pf.ReturnCode(tb1, 13, "");
+                    MainWindow.pf.ReturnCode(tb1, 13, "");
 
                     if (tb1.Tag != null)
                     {
@@ -1254,7 +1238,7 @@ namespace WizMes_BooKyong
             if (e.Key == Key.Enter)
             {
                 TextBox tb1 = sender as TextBox;
-                pf.ReturnCode(tb1, 0, "");    //일단 0으로 ㅠㅠ
+                MainWindow.pf.ReturnCode(tb1, 0, "");    //일단 0으로 ㅠㅠ
 
                 //tb1.Text = "";
                 //tb1.Tag = "";
@@ -1298,7 +1282,7 @@ namespace WizMes_BooKyong
             int rowCount = dgdMoldRepairSub.Items.IndexOf(dgdMoldRepairSub.CurrentItem);
 
             TextBox tb1 = sender as TextBox;
-            pf.ReturnCode(tb1, 0, "");    //일단 0으로 ㅠㅠ
+            MainWindow.pf.ReturnCode(tb1, 0, "");    //일단 0으로 ㅠㅠ
 
             //tb1.Text = "";
             //tb1.Tag = "";

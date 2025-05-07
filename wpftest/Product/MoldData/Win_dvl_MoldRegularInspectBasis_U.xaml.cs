@@ -27,15 +27,14 @@ namespace WizMes_BooKyong
         string strFlag = "";
         int rowNum = 0;
 
-        //string FTP_ADDRESS = "ftp://192.168.0.28/MoldBasis";
-        string FTP_ADDRESS = "ftp://" + LoadINI.FileSvr + ":"
+#if DEBUG
+        string FTP_ADDRESS = "ftp://121.254.224.196/ImageData/MoldBasis";
+#else
+ string FTP_ADDRESS = "ftp://" + LoadINI.FileSvr + ":"
             + LoadINI.FTPPort + LoadINI.FtpImagePath + "/MoldBasis";
+#endif
 
         //FTP 활용모음
-        string strImagePath = string.Empty;
-        string strFullPath = string.Empty;
-        string strDelFileName = string.Empty;
-
         private const string FTP_ID = "wizuser";
         private const string FTP_PASS = "wiz9999";
         private const string LOCAL_DOWN_PATH = "C:\\Temp";
@@ -60,6 +59,16 @@ namespace WizMes_BooKyong
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             Lib.Instance.UiLoading(sender);
+            SetComboBox();
+        }
+
+        private void SetComboBox()
+        {
+            ObservableCollection<CodeView> ovcMcInsCycleGbnSrh = ComboBoxUtil.Instance.Gf_DB_CM_GetComCodeDataset(null, "MCCYCLEGBN", "Y", "", "");
+            this.cboInspectCycle.ItemsSource = ovcMcInsCycleGbnSrh;
+            this.cboInspectCycle.DisplayMemberPath = "code_name";
+            this.cboInspectCycle.SelectedValuePath = "code_id";
+
         }
 
         #region 추가 수정 모드 / 저장완료 취소 모드
@@ -378,32 +387,36 @@ namespace WizMes_BooKyong
             }
         }
 
-        private void SetArticle(object obj)
+        private void SetArticle(string moldID)
         {
-            string strArticleID = string.Empty;
-            string strArticle = string.Empty;
-            string strBuyerArticleNo = string.Empty;
-
-            if (obj != null)
+            try
             {
-                string sql = string.Empty;
-                sql += "  SELECT      ma.ArticleID, ma.Article, ma.BuyerArticleNo";
-                sql += "  FROM        dvl_Mold    dm";
-                sql += "  INNER JOIN  mt_Article  ma  WITH (NOLOCK) ON dm.ProductionArticleID = ma.ArticleID";
-                sql += "  WHERE       dm.MoldID = '" + obj.ToString() + "'   ";
+                Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
+                sqlParameter.Add("MoldID", moldID);
 
-                DataSet ds = DataStore.Instance.QueryToDataSet(sql);
+                DataSet ds = DataStore.Instance.ProcedureToDataSet("xp_dvlMold_getMoldArticle", sqlParameter, false);
                 if (ds != null && ds.Tables.Count > 0)
                 {
                     DataTable dt = ds.Tables[0];
                     if (dt.Rows.Count > 0)
                     {
-                        txtBuyerArticleNo.Tag = dt.Rows[0].ItemArray[0].ToString();
-                        txtArticle.Text = dt.Rows[0].ItemArray[1].ToString();
-                        txtBuyerArticleNo.Text = dt.Rows[0].ItemArray[2].ToString();
+                        DataRow dr = dt.Rows[0];
+
+                        txtArticle.Text = dr["Article"].ToString();
+                        txtBuyerArticleNo.Text = dr["BuyerArticleNo"].ToString();
                     }
                 }
+
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+          }
+            finally
+            {
+                DataStore.Instance.CloseConnection();
+            }
+            
         }
 
         // 개정일자
@@ -645,8 +658,6 @@ namespace WizMes_BooKyong
                     {
                         if (FTP_Upload_SetImage(MoldSub))
                         {
-                            // 이거 안먹힘
-                            //MoldSub.btnName = "삭제";
                             senderBtn.Content = "삭제";
 
                             int currRow = dgdSub.Items.IndexOf(dgdSub.CurrentItem);
@@ -692,7 +703,7 @@ namespace WizMes_BooKyong
                     Nullable<bool> result = OFdlg.ShowDialog();
                     if (result == true)
                     {
-                        strFullPath = OFdlg.FileName;
+                        string strFullPath = OFdlg.FileName;
 
                         string ImageFileName = OFdlg.SafeFileName;  //명.
                         string ImageFilePath = string.Empty;       // 경로
@@ -807,7 +818,13 @@ namespace WizMes_BooKyong
                 bitmapimage.BeginInit();
                 bitmapimage.StreamSource = memory;
                 bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
+
+                // 이미지 사이즈 제한 
+                bitmapimage.DecodePixelWidth = 200;
+                bitmapimage.DecodePixelHeight = 200;
+
                 bitmapimage.EndInit();
+                bitmapimage.Freeze();
 
                 return bitmapimage;
             }
@@ -815,19 +832,12 @@ namespace WizMes_BooKyong
 
         private BitmapImage SetImage(string ImageName, string FolderName)
         {
-            //bool ExistFile = false;
             BitmapImage bit = null;
             _ftp = new FTP_EX(FTP_ADDRESS, FTP_ID, FTP_PASS);
             if (_ftp == null) { return null; }
 
-            //string[] fileListDetail;
-            //fileListDetail = _ftp.directoryListSimple(FolderName, Encoding.Default);
-
-            //ExistFile = FileInfoAndFlag(fileListDetail, ImageName);
-            //if (ExistFile)
-            //{
             bit = DrawingImageByByte2(FTP_ADDRESS + '/' + FolderName + '/' + ImageName + "");
-            //}
+
 
             return bit;
         }
@@ -850,6 +860,11 @@ namespace WizMes_BooKyong
                     image.BeginInit();
                     image.StreamSource = stream;
                     image.CacheOption = BitmapCacheOption.OnLoad;
+
+                    // 이미지 사이즈 제한 
+                    image.DecodePixelWidth = 200;
+                    image.DecodePixelHeight = 200;
+
                     image.EndInit();
                     image.Freeze();
                 }
@@ -1218,7 +1233,7 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("MoldNo", chkMoldNoSrh.IsChecked == true ? txtMoldNoSrh.Text.ToString() : "");
                 sqlParameter.Add("Article", chkArticleSrh.IsChecked == true ? txtArticleSrh.Text.ToString() : "");
 
-                DataSet ds = DataStore.Instance.ProcedureToDataSet("xp_DvlMold_sMoldRegularInspectBasis_New", sqlParameter, false);
+                DataSet ds = DataStore.Instance.ProcedureToDataSet("xp_DvlMold_sInspectBasis", sqlParameter, false);
 
                 if (ds != null && ds.Tables.Count > 0)
                 {
@@ -1242,18 +1257,11 @@ namespace WizMes_BooKyong
                                 MoldNo = dr["MoldNo"].ToString(),
                                 Article = dr["Article"].ToString(),
                                 BuyerArticleNo = dr["BuyerArticleNo"].ToString(),
-                                MoldInspectBasisDate = dr["MoldInspectBasisDate"].ToString(),
-                                MoldInspectBasisDate_CV = DatePickerFormat(dr["MoldInspectBasisDate"].ToString()),
+                                MoldInspectBasisDate = DatePickerFormat(dr["MoldInspectBasisDate"].ToString()),
                                 MoldInspectContent = dr["MoldInspectContent"].ToString(),
                                 Comments = dr["Comments"].ToString(),
+                                InspectCycle = dr["InspectCycle"].ToString(),
                             };
-
-                            if (Mold.MoldInspectBasisDate.Trim().Length > 0)
-                            {
-
-                            }
-
-
                             dgdMain.Items.Add(Mold);
 
                         }
@@ -1389,6 +1397,7 @@ namespace WizMes_BooKyong
                     sqlParameter.Add("MoldInspectContent", txtMoldInspectContent.Text);
                     sqlParameter.Add("Comments", txtComments.Text);
                     sqlParameter.Add("UserID", MainWindow.CurrentUser);
+                    sqlParameter.Add("InspectCycle", cboInspectCycle.SelectedValue ?? "");
 
                     #region 추가
                     if (strFlag.Equals("I"))
@@ -1429,10 +1438,6 @@ namespace WizMes_BooKyong
                             Prolist.Add(pro2);
                             ListParameter.Add(sqlParameter);
 
-                            if (!inspectSub.MoldInspectImageFile.Replace(" ", "").Equals(""))
-                            {
-
-                            }
                         }
 
                         List<KeyValue> list_Result = new List<KeyValue>();
@@ -1452,27 +1457,6 @@ namespace WizMes_BooKyong
                                 }
                             }
 
-                            if (flag)
-                            {
-                                // 서브 그리드 이미지 저장
-                                //bool AttachYesNo = false;
-                                //if (txtAttFile1.Text != string.Empty)       //첨부파일 1
-                                //{
-                                //    AttachYesNo = true;
-                                //    FTP_Save_File(sGetID, txtAttFile1.Text, FullPath1);
-                                //}
-                                //if (txtAttFile2.Text != string.Empty)       //첨부파일 2
-                                //{
-                                //    AttachYesNo = true;
-                                //    FTP_Save_File(sGetID, txtAttFile2.Text, FullPath2);
-                                //}
-                                //if (txtAttFile3.Text != string.Empty)       //첨부파일 3
-                                //{
-                                //    AttachYesNo = true;
-                                //    FTP_Save_File(sGetID, txtAttFile3.Text, FullPath3);
-                                //}
-                                //if (AttachYesNo == true) { AttachFileUpdate(sGetID); }
-                            }
                         }
                         else
                         {
@@ -1523,10 +1507,6 @@ namespace WizMes_BooKyong
                             Prolist.Add(pro2);
                             ListParameter.Add(sqlParameter);
 
-                            if (!inspectSub.MoldInspectImageFile.Replace(" ", "").Equals(""))
-                            {
-
-                            }
                         }
 
                         string[] Confirm = new string[2];
@@ -1540,26 +1520,6 @@ namespace WizMes_BooKyong
                             flag = true;
                         }
 
-                        //if (flag)
-                        //{
-                        //    bool AttachYesNo = false;
-                        //    if (txtAttFile1.Text != string.Empty && ftpDelete1)       //첨부파일 1
-                        //    {
-                        //        AttachYesNo = true;
-                        //        FTP_Save_File(strMoldID, txtAttFile1.Text, FullPath1);
-                        //    }
-                        //    if (txtAttFile2.Text != string.Empty && ftpDelete2)       //첨부파일 2
-                        //    {
-                        //        AttachYesNo = true;
-                        //        FTP_Save_File(strMoldID, txtAttFile2.Text, FullPath2);
-                        //    }
-                        //    if (txtAttFile3.Text != string.Empty && ftpDelete3)       //첨부파일 3
-                        //    {
-                        //        AttachYesNo = true;
-                        //        FTP_Save_File(strMoldID, txtAttFile3.Text, FullPath3);
-                        //    }
-                        //    if (AttachYesNo == true) { AttachFileUpdate(strMoldID); }
-                        //}
                     }
 
                     #endregion
@@ -1987,6 +1947,11 @@ namespace WizMes_BooKyong
                 sender = cboMoldInspectRecordGbn;
             }
         }
+
+        private void txt_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Lib.Instance.CheckIsNumericOnly((TextBox)sender, e);
+        }
     }
 
     class Win_dvl_MoldRegularInspectBasis_U_CodeView : BaseView
@@ -2002,10 +1967,10 @@ namespace WizMes_BooKyong
         public string Mold_Comments { get; set; } // 철형 비고
 
         public string MoldInspectBasisDate { get; set; } // 개정일자
-        public string MoldInspectBasisDate_CV { get; set; } // 개정일자
         public string MoldInspectContent { get; set; } // 개정내용
         public string Comments { get; set; } // 비고
         public string Compliance { get; set; } // 점검시 준수사항
+        public string InspectCycle { get; set; } //
     }
 
     class Win_dvl_MoldRegularInspectBasis_U_CodeViewSub

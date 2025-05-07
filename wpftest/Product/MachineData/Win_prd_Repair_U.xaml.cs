@@ -26,7 +26,7 @@ namespace WizMes_BooKyong
     public partial class Win_prd_Repair_U : UserControl
     {
         #region 변수 선언 및 로드
-        
+
         int numRowCount = 0;
         string strFlag = string.Empty;
         Win_prd_Repair_U_Sub_CodeView WinMCRepairSub = new Win_prd_Repair_U_Sub_CodeView();
@@ -297,7 +297,7 @@ namespace WizMes_BooKyong
         //저장
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-           
+
 
             if (strFlag.Equals("I"))
             {
@@ -440,7 +440,7 @@ namespace WizMes_BooKyong
         //조회
         private void FillGrid()
         {
-            if(dgdMCRepair.Items.Count > 0)
+            if (dgdMCRepair.Items.Count > 0)
             {
                 dgdMCRepair.Items.Clear();
             }
@@ -475,7 +475,7 @@ namespace WizMes_BooKyong
                                 repairdate = dr["repairdate"].ToString(),
                                 repairTime = dr["repairTime"].ToString().Substring(0, 2) + ":" + dr["repairTime"].ToString().Substring(2, 2),
                                 RepairGubun = dr["RepairGubun"].ToString(),
-                                
+
                                 mcid = dr["mcid"].ToString(),
                                 mcname = dr["mcname"].ToString(),
                                 managerid = dr["managerid"].ToString(),
@@ -486,7 +486,7 @@ namespace WizMes_BooKyong
                                 personid = dr["personid"].ToString(),
                                 personname = dr["personname"].ToString(),
                                 RepairRemark = dr["RepairRemark"].ToString(),
-                                price = Convert.ToDouble(dr["price"])
+                                //price = Convert.ToDouble(dr["price"])
                             };
 
                             if (WinMCRepair.repairdate != null && !WinMCRepair.repairdate.Equals(""))
@@ -498,7 +498,7 @@ namespace WizMes_BooKyong
                             {
                                 WinMCRepair.RepairGubun_CV = "수리";
                             }
-                            else if(WinMCRepair.RepairGubun.Equals("2"))
+                            else if (WinMCRepair.RepairGubun.Equals("2"))
                             {
                                 WinMCRepair.RepairGubun_CV = "교체";
                             }
@@ -544,7 +544,7 @@ namespace WizMes_BooKyong
                 {
                     FillGridSub(winMCRepair.RepairID);
                 }
-       
+
                 this.DataContext = winMCRepair;
             }
         }
@@ -657,16 +657,19 @@ namespace WizMes_BooKyong
                     Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
                     sqlParameter.Add("RepairID", strRepairID);
                     sqlParameter.Add("repairdate", dtprepairdate.SelectedDate.Value.ToString("yyyyMMdd"));
-                    sqlParameter.Add("RepairTime", txtRepairTime.Text.Replace(":",""));
+                    sqlParameter.Add("RepairTime", txtRepairTime.Text.Replace(":", ""));
                     sqlParameter.Add("RepairGubun", cboRepairGubun.SelectedValue != null ? cboRepairGubun.SelectedValue : 0);
                     sqlParameter.Add("mcid", txtmcname.Tag.ToString());
+
                     sqlParameter.Add("managerid", txtmanagerid.Text);
                     sqlParameter.Add("customid", txtcustomname.Tag.ToString());
                     sqlParameter.Add("buycustomid", txtBuyCustomName.Tag.ToString());
                     sqlParameter.Add("personid", txtpersonname.Tag.ToString().Replace(" ", ""));
                     sqlParameter.Add("personname", txtpersonname.Text);
+
                     sqlParameter.Add("repairremark", txtRepairRemark.Text);
-                    sqlParameter.Add("price", !txtPrice.Text.Equals("") ? Convert.ToDouble(txtPrice.Text) : 0);
+
+                    //sqlParameter.Add("price", !txtPrice.Text.Equals("") ? Convert.ToDouble(txtPrice.Text) : 0);
 
                     if (strflag.Equals("I"))
                     {
@@ -687,28 +690,28 @@ namespace WizMes_BooKyong
                             DataGridRow dgr = Lib.Instance.GetRow(i, dgdMCRepair_Sub);
                             var WinSub = dgr.Item as Win_prd_Repair_U_Sub_CodeView;
 
-                            Dictionary<string, object> sqlParameter2 = new Dictionary<string, object>();
-                            sqlParameter2.Add("MCPartID", WinSub.MCPartID);
-                            sqlParameter2.Add("PartCnt", int.Parse(WinSub.partcnt.Replace(",", ""))); 
-                            DataSet ds2 = DataStore.Instance.ProcedureToDataSet("xp_mcRepair_StuffinOut", sqlParameter2, false);
-                            
-                            if (ds2 != null && ds2.Tables.Count > 0)
-                            {
-                                DataTable dt2 = ds2.Tables[0];
-                                DataRow dt3 = dt2.Rows[0];
-                                if (dt2.Rows.Count > 0 && !dt3["Msg"].ToString().ToUpper().Equals(""))
-                                {
-                                    MessageBox.Show("[저장실패]\r\n" + dt3["Msg"].ToString());
-                                    flag = false;
-                                    return false;
-                                }
-                            }
+                            //Dictionary<string, object> sqlParameter2 = new Dictionary<string, object>();
+                            //sqlParameter2.Add("MCPartID", WinSub.MCPartID);
+                            //sqlParameter2.Add("PartCnt", int.Parse(WinSub.partcnt.Replace(",", ""))); 
+                            //DataSet ds2 = DataStore.Instance.ProcedureToDataSet("xp_mcRepair_StuffinOut", sqlParameter2, false);
+
+                            //if (ds2 != null && ds2.Tables.Count > 0)
+                            //{
+                            //    DataTable dt2 = ds2.Tables[0];
+                            //    DataRow dt3 = dt2.Rows[0];
+                            //    if (dt2.Rows.Count > 0 && !dt3["Msg"].ToString().ToUpper().Equals(""))
+                            //    {
+                            //        MessageBox.Show("[저장실패]\r\n" + dt3["Msg"].ToString());
+                            //        flag = false;
+                            //        return false;
+                            //    }
+                            //}
                             sqlParameter = new Dictionary<string, object>();
                             sqlParameter.Add("RepairID", strRepairID);
                             sqlParameter.Add("repairsubseq", i + 1);
-                            sqlParameter.Add("MCPartID", WinSub.MCPartID);                            
+                            sqlParameter.Add("MCPartID", WinSub.MCPartID);
                             sqlParameter.Add("customid", WinSub.CustomID);
-                            sqlParameter.Add("partcnt", int.Parse(WinSub.partcnt.Replace(",", "")));                           
+                            sqlParameter.Add("partcnt", int.Parse(WinSub.partcnt.Replace(",", "")));
                             sqlParameter.Add("partprice", int.Parse(WinSub.partprice.Replace(",", "")));
                             sqlParameter.Add("reason", WinSub.reason);
                             sqlParameter.Add("partremark", WinSub.partremark);
@@ -879,7 +882,7 @@ namespace WizMes_BooKyong
                     DataGridRow dgr = Lib.Instance.GetRow(i, dgdMCRepair_Sub);
                     var WinSubGrid = dgr.Item as Win_prd_Repair_U_Sub_CodeView;
 
-                    if(WinSubGrid.MCPartID == null || WinSubGrid.MCPartID == "")
+                    if (WinSubGrid.MCPartID == null || WinSubGrid.MCPartID == "")
                     {
                         MessageBox.Show("예비품을 입력하지 않았습니다.");
                         flag = false;
@@ -910,7 +913,7 @@ namespace WizMes_BooKyong
                     //    return flag;
                     //}
                 }
-               
+
 
             }
             //else
@@ -1051,7 +1054,7 @@ namespace WizMes_BooKyong
                 {
                     WinMCRepairSub.MCPartName = tb1.Text;
                     WinMCRepairSub.MCPartID = tb1.Tag.ToString();
-       
+
                     String[] lst = GetMcPart(WinMCRepairSub.MCPartID);
                     if (lst != null)
                     {
@@ -1779,7 +1782,7 @@ namespace WizMes_BooKyong
             }
         }
 
-        
+
 
     }
 
@@ -1809,7 +1812,7 @@ namespace WizMes_BooKyong
         public string RepairGubun_CV { get; set; }
         public double price { get; set; }
     }
-
+    
     class Win_prd_Repair_U_Sub_CodeView : BaseView
     {
         public override string ToString()
