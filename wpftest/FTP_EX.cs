@@ -460,11 +460,42 @@ namespace WizMes_BooKyong
             return false;
         }
 
-        /* Create a New Directory on the FTP Server */
-        public bool createDirectory(string newDirectory)
+        ///* Create a New Directory on the FTP Server */
+        //public bool createDirectory(string newDirectory)
+        //{
+        //    try
+        //    {
+        //        /* Create an FTP Request */
+        //        ftpRequest = (FtpWebRequest)WebRequest.Create(host + "/" + newDirectory);
+        //        /* Log in to the FTP Server with the User Name and Password Provided */
+        //        ftpRequest.Credentials = new NetworkCredential(user, pass);
+        //        /* When in doubt, use these options */
+        //        ftpRequest.UseBinary = true;
+        //        ftpRequest.UsePassive = true;
+        //        ftpRequest.KeepAlive = true;
+        //        /* Specify the Type of FTP Request */
+        //        ftpRequest.Method = WebRequestMethods.Ftp.MakeDirectory;
+        //        /* Establish Return Communication with the FTP Server */
+        //        ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+        //        /* Resource Cleanup */
+        //        ftpResponse.Close();
+        //        ftpRequest = null;
+        //        return true;
+        //    }
+        //    catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+        //    return false;
+        //}
+
+        public bool createDirectory(string newDirectory, bool createParent = true)
         {
             try
             {
+                // 디렉토리가 이미 존재하는지 확인
+                if (directoryExists(newDirectory))
+                {
+                    return true; // 이미 존재하면 성공으로 간주
+                }
+
                 /* Create an FTP Request */
                 ftpRequest = (FtpWebRequest)WebRequest.Create(host + "/" + newDirectory);
                 /* Log in to the FTP Server with the User Name and Password Provided */
@@ -482,9 +513,112 @@ namespace WizMes_BooKyong
                 ftpRequest = null;
                 return true;
             }
-            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
-            return false;
+            catch (WebException ex)
+            {
+                FtpWebResponse response = (FtpWebResponse)ex.Response;
+                if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable && createParent)
+                {
+                    /* 상위 디렉토리를 만들어야 하는 경우 */
+                    if (createParentDirectories())
+                    {
+                        /*상위 폴더 생성 성공 시, 다시 현재 폴더 생성 시도 (재귀 호출 한 번만) */
+                        return createDirectory(newDirectory, false); // false로 설정하여 재귀 호출 제한
+                    }
+                }
+                else if (response.StatusCode == FtpStatusCode.ActionNotTakenFileUnavailable)
+                {
+                    // 이미 createParent=false인 상태에서 재시도 실패
+                    Console.WriteLine($"디렉토리 생성 실패: {newDirectory}");
+                }
+                Console.WriteLine($"FTP Error: {response.StatusCode} - {response.StatusDescription}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return false;
+            }
         }
+
+        // 디렉토리 존재 여부 확인 메서드 추가
+        private bool directoryExists(string directory)
+        {
+            try
+            {
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(host + "/" + directory);
+                request.Credentials = new NetworkCredential(user, pass);
+                request.Method = WebRequestMethods.Ftp.ListDirectory;
+
+                using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                {
+                    return true; // 폴더가 존재하고 접근 가능
+                }
+            }
+            catch
+            {
+                return false; // 폴더가 존재하지 않거나 접근 불가
+            }
+        }
+
+
+        private bool createParentDirectories()
+        {
+            try
+            {
+                // 프로토콜 이후의 시작 위치를 찾습니다
+                int protocolIndex = host.IndexOf("://");
+                // 포트 시작 위치를 찾습니다
+                int colonIndex = host.IndexOf(":", protocolIndex + 3);
+                // 포트 다음의 첫 슬래시 위치를 찾습니다
+                int slashIndex = host.IndexOf("/", colonIndex > -1 ? colonIndex : protocolIndex + 3);
+
+                if (slashIndex == -1) return true; // 기본 경로가 없는 경우
+
+                // host에서 기본 경로 추출 
+                string basePath = host.Substring(slashIndex + 1);
+                string[] pathParts = basePath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+
+                // 상위 경로들 순차적으로 생성
+                string currentPath = host.Substring(0, slashIndex + 1);
+
+                foreach (string part in pathParts)
+                {
+                    currentPath += part + "/";
+                    try
+                    {
+                        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(currentPath.TrimEnd('/'));
+                        request.Method = WebRequestMethods.Ftp.MakeDirectory;
+                        request.Credentials = new NetworkCredential(user, pass);
+                        request.UseBinary = true;
+                        request.UsePassive = true;
+                        request.KeepAlive = true;
+
+                        using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                        {
+                            // 폴더가 성공적으로 생성되거나 이미 존재하는 경우
+                        }
+                    }
+                    catch (WebException ex)
+                    {
+                        // 폴더가 이미 존재하는 경우는 무시하고 계속 진행
+                        FtpWebResponse response = (FtpWebResponse)ex.Response;
+                        if (response.StatusCode != FtpStatusCode.ActionNotTakenFileUnavailable)
+                        {
+                            Console.WriteLine($"Error creating directory {currentPath}: {response.StatusDescription}");
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in createParentDirectories: {ex.Message}");
+                return false;
+            }
+        }
+
+
 
         /* Get the Date/Time a File was Created */
         public string getFileCreatedDateTime(string fileName)
