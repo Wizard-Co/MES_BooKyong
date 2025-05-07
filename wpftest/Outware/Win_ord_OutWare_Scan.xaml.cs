@@ -11,6 +11,10 @@ using System.Drawing.Printing;
 using WizMes_BooKyong.PopUP;
 using WizMes_BooKyong.PopUp;
 using System.Runtime.InteropServices.ComTypes;
+using System.Text.RegularExpressions;
+using System.Windows.Data;
+using System.Windows.Media;
+using System.Windows.Controls.Primitives;
 
 /**************************************************************************************************
 '** 프로그램명 : Win_ord_OutWare_Scan
@@ -46,6 +50,8 @@ namespace WizMes_BooKyong
         private Microsoft.Office.Interop.Excel.Worksheet pastesheet;
         PopUp.NoticeMessage msg = new PopUp.NoticeMessage();
 
+        Dictionary<string, object> lstCheck = new Dictionary<string, object>();
+
         List<Win_ord_OutWare_Scan_CodeView> lstOutwarePrint = new List<Win_ord_OutWare_Scan_CodeView>();
 
         // 수정 정보를 보관하기 위한 변수
@@ -63,7 +69,8 @@ namespace WizMes_BooKyong
         int tmpRestQty = 0;
         int cnt = 0;
 
-        List<string> LabelGroupList = new List<string>();   // packing ID 스캔에 따른 LabelID를 모아 담을 리스트 그릇입니다.
+        Dictionary<string, object> LabelGroupInfo = new Dictionary<string, object>();
+        List<string> LabelGroupList = new List<string>();   // packing ID 스캔에 따른 LabelID를 모아 담을 리스트 그릇입니다.       
         bool EventStatus = false;                           // 추가 / 수정 상태확인을 위한 이벤트 bool
         bool preview_click = false;                         // 인쇄 미리보기 인지 아닌지
 
@@ -255,49 +262,17 @@ namespace WizMes_BooKyong
             }
         }
 
-        //거래처 라벨 클릭시
-        private void lblCustomer_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkCustomer.IsChecked == true)
-            {
-                chkCustomer.IsChecked = false;
-                txtCustomer.IsEnabled = false;
-                btnCustomer.IsEnabled = false;
-            }
-            else
-            {
-                chkCustomer.IsChecked = true;
-                txtCustomer.IsEnabled = true;
-                btnCustomer.IsEnabled = true;
-                txtCustomer.Focus();
-            }
-        }
+  
 
-        //거래처 체크
-        private void ChkCustomer_Checked(object sender, RoutedEventArgs e)
-        {
-            chkCustomer.IsChecked = true;
-            txtCustomer.IsEnabled = true;
-            btnCustomer.IsEnabled = true;
-            txtCustomer.Focus();
-        }
-
-        //거래처 체크 해제
-        private void ChkCustomer_Unchecked(object sender, RoutedEventArgs e)
-        {
-            chkCustomer.IsChecked = false;
-            txtCustomer.IsEnabled = false;
-            btnCustomer.IsEnabled = false;
-        }
-
+ 
         //거래처-조건 텍스트박스 키다운 이벤트
-        private void txtCustomer_KeyDown(object sender, KeyEventArgs e)
+        private void txtCustomerIDSrh_KeyDown(object sender, KeyEventArgs e)
         {
             try
             {
                 if (e.Key == Key.Enter)
                 {
-                    pf.ReturnCode(txtCustomer, 0, "");
+                    pf.ReturnCode(txtCustomIDSrh, 0, "");
                 }
             }
             catch (Exception ee)
@@ -307,11 +282,11 @@ namespace WizMes_BooKyong
         }
 
         //거래처-조건 플러스파인더 버튼
-        private void btnCustomer_Click(object sender, RoutedEventArgs e)
+        private void btnCustomerIDSrh_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                pf.ReturnCode(txtCustomer, 0, "");
+                pf.ReturnCode(txtCustomIDSrh, 0, "");
             }
             catch (Exception ee)
             {
@@ -387,50 +362,16 @@ namespace WizMes_BooKyong
 
 
 
-        //품명 라벨 클릭시
-        private void lblArticle_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkArticle.IsChecked == true)
-            {
-                chkArticle.IsChecked = false;
-                txtArticle.IsEnabled = false;
-                btnArticle.IsEnabled = false;
-
-            }
-            else
-            {
-                chkArticle.IsChecked = true;
-                txtArticle.IsEnabled = true;
-                btnArticle.IsEnabled = true;
-                txtArticle.Focus();
-            }
-        }
-
-        //품명 체크
-        private void ChkArticle_Checked(object sender, RoutedEventArgs e)
-        {
-            chkArticle.IsChecked = true;
-            txtArticle.IsEnabled = true;
-            btnArticle.IsEnabled = true;
-            txtArticle.Focus();
-        }
-
-        //품명 체크 해제
-        private void ChkArticle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            chkArticle.IsChecked = false;
-            txtArticle.IsEnabled = false;
-            btnArticle.IsEnabled = false;
-        }
+    
 
         //품명 텍스트박스 키다운 이벤트
-        private void txtArticle_KeyDown(object sender, KeyEventArgs e)
+        private void txtArticleIDSrh_KeyDown(object sender, KeyEventArgs e)
         {
             try
             {
                 if (e.Key == Key.Enter)
                 {
-                    pf.ReturnCode(txtArticle, 77, txtArticle.Text);
+                    pf.ReturnCode(txtArticleIDSrh, 77, txtArticleIDSrh.Text);
                 }
             }
             catch (Exception ee)
@@ -440,11 +381,11 @@ namespace WizMes_BooKyong
         }
 
         //품명 플러스파인더 버튼
-        private void btnArticle_Click(object sender, RoutedEventArgs e)
+        private void btnArticleIDSrh_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                pf.ReturnCode(txtArticle, 77, txtArticle.Text);
+                pf.ReturnCode(txtArticleIDSrh, 77, txtArticleIDSrh.Text);
             }
             catch (Exception ee)
             {
@@ -452,73 +393,7 @@ namespace WizMes_BooKyong
             }
         }
 
-
-
-        //지시번호 라벨 클릭시
-        private void lblReqID_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkReqID.IsChecked == true)
-            {
-                chkReqID.IsChecked = false;
-                txtReqID.IsEnabled = false;
-                btnReqID.IsEnabled = false;
-
-            }
-            else
-            {
-                chkReqID.IsChecked = true;
-                txtReqID.IsEnabled = true;
-                btnReqID.IsEnabled = true;
-                txtReqID.Focus();
-            }
-        }
-
-        //지시번호 체크
-        private void ChkReqID_Checked(object sender, RoutedEventArgs e)
-        {
-            chkReqID.IsChecked = true;
-            txtReqID.IsEnabled = true;
-            btnReqID.IsEnabled = true;
-            txtReqID.Focus();
-        }
-
-        //지시번호 체크 해제
-        private void ChkReqID_Unchecked(object sender, RoutedEventArgs e)
-        {
-            chkReqID.IsChecked = false;
-            txtReqID.IsEnabled = false;
-            btnReqID.IsEnabled = false;
-        }
-
-        //지시번호 텍스트박스 키다운 이벤트
-        private void txtReqID_KeyDown(object sender, KeyEventArgs e)
-        {
-            try
-            {
-                if (e.Key == Key.Enter)
-                {
-                    pf.ReturnCode(txtReqID, 97, txtReqID.Text);
-                }
-            }
-            catch (Exception ee)
-            {
-                MessageBox.Show("오류지점 - txtReqID_KeyDown : " + ee.ToString());
-            }
-        }
-
-        //지시번호 플러스파인더 버튼
-        private void btnReqID_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                pf.ReturnCode(txtReqID, 97, txtReqID.Text);
-            }
-            catch (Exception ee)
-            {
-                MessageBox.Show("오류지점 - btnReqID_Click : " + ee.ToString());
-            }
-        }
-
+    
 
         //관리번호 라벨 클릭시
         private void lblRadioOptionNum_Click(object sender, MouseButtonEventArgs e)
@@ -584,28 +459,22 @@ namespace WizMes_BooKyong
             if (rbnOrderNumber.IsChecked == true) //관리번호 클릭
             {
         
-                txtOutwareReqID.Visibility = Visibility.Hidden;
-                btnOutwareReqID.Visibility = Visibility.Hidden;
-                lblReqID.Visibility = Visibility.Hidden;
+              
                 txtOrderID.Visibility = Visibility.Visible;
                 btnOrderID.Visibility = Visibility.Visible;
                 lblOrderID.Visibility = Visibility.Visible;
 
                 dgdtxtcol_ManageNum.Visibility = Visibility.Visible;
-                dgdtxtcol_ReqID.Visibility = Visibility.Hidden;
 
             }
             else if (rbnReqID.IsChecked == true) //지시번호 클릭
             {
-                txtOutwareReqID.Visibility = Visibility.Visible;
-                btnOutwareReqID.Visibility = Visibility.Visible;
-                lblReqID.Visibility = Visibility.Visible;
+               
                 txtOrderID.Visibility = Visibility.Hidden;
                 btnOrderID.Visibility = Visibility.Hidden;
                 lblOrderID.Visibility = Visibility.Hidden;
 
                 dgdtxtcol_ManageNum.Visibility = Visibility.Hidden;
-                dgdtxtcol_ReqID.Visibility = Visibility.Visible;
             }
         }
 
@@ -751,16 +620,19 @@ namespace WizMes_BooKyong
 
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                CantBtnControl();           //버튼 컨트롤
+              //버튼 컨트롤
 
                 if (SaveData(strFlag))
                 {
+                    CantBtnControl();
+
                     if (strFlag.Equals("I"))
                     {
                         var outwareCount = dgdOutware.Items.Count;
                         rowNum = outwareCount;
                     }
-
+                    
+                    lstCheck.Clear();
                     strFlag = string.Empty;
                     TextBoxClear(); // 저장했으면 클리어 해야지
                     re_Search(rowNum);
@@ -779,6 +651,7 @@ namespace WizMes_BooKyong
                 EventStatus = false;
                 CantBtnControl();           //버튼 컨트롤
                 TextBoxClear();
+                lstCheck.Clear();
 
                 if (strFlag.Equals("I"))
                 {
@@ -1280,27 +1153,39 @@ namespace WizMes_BooKyong
         }
 
         //플러스파인더에서 대리자 이벤트로 가져온 수주량
+        #region ...
+        //private void plusFinder_replyOrderQty(string data)
+        //{
+        //    if(rbnReqID.IsChecked == true)
+        //    {
+
+
+        //        string[] values = data.Split(','); 
+
+        //        if (values.Length > 1)
+        //            replyOrderQty = values[1].Trim();
+        //        else
+        //            replyOrderQty = string.Empty;
+        //    }
+        //    else
+        //    {
+        //        string[] values = data.Split(',');
+        //        if (values.Length > 1)
+        //            replyOrderQty = values[0].Trim();
+        //        else
+        //            replyOrderQty = string.Empty;
+        //    }
+
+        //}
+        #endregion
+
         private void plusFinder_replyOrderQty(string data)
         {
-            if(rbnReqID.IsChecked == true)
-            {
-             
-                string[] values = data.Split(','); 
-              
-                if (values.Length > 1)
-                    replyOrderQty = values[1].Trim();
-                else
-                    replyOrderQty = string.Empty;
-            }
+            string[] values = data.Split(',');          
+            if (values.Length > 0)
+                replyOrderQty = values[0].Trim();
             else
-            {
-                string[] values = data.Split(',');
-                if (values.Length > 1)
-                    replyOrderQty = values[0].Trim();
-                else
-                    replyOrderQty = string.Empty;
-            }
-  
+                replyOrderQty = string.Empty;  
         }
 
         //플러스파인더에서 대리자 이벤트로 가져온 지시량
@@ -1324,37 +1209,7 @@ namespace WizMes_BooKyong
         }
 
         #region 키다운 이동 모음
-        //출고지시번호 텍스트박스 키다운 이벤트
-        private void txtOutwareReqID_KeyDown(object sender, KeyEventArgs e)
-        {
-            try
-            {
-                if (e.Key == Key.Enter)
-                {
-                    pf.refEvent += new PlusFinder.RefEventHandler(plusFinder_replyArticle);
-                    pf.refEvent += new PlusFinder.RefEventHandler(plusFinder_replyOrderQty);
-                    pf.refEvent += new PlusFinder.RefEventHandler(plusFinder_replyReqQty);
-                    pf.refEvent += new PlusFinder.RefEventHandler(plusFinder_replyReqRemainQty);
-                    pf.ReturnCode(txtOutwareReqID, 98, "");
-                    //MessageBox.Show(txtOutwareReqID.Tag.ToString());
-
-                    if (txtOutwareReqID.Text.Length > 0 )
-                    {
-                        //관리번호 기반_ 항목 뿌리기 작업.
-                        string orderID = txtOutwareReqID.Tag != null ? txtOutwareReqID.Tag.ToString() : "";
-                        string OutwareReqID = string.IsNullOrEmpty(txtOutwareReqID.Text) ? "" : txtOutwareReqID.Text;
-                        OrderID_OtherSearch(orderID, OutwareReqID);
-                    }
-
-                    //관리번호 입력 후 출고구분 콤보박스 포커스 이동
-                    cboOutClss.IsDropDownOpen = true;
-                }
-            }
-            catch (Exception ee)
-            {
-                MessageBox.Show("오류지점 - txtOutwareReqID_KeyDown : " + ee.ToString());
-            }
-        }
+   
 
         //관리번호 텍스트박스 키다운 이벤트
         private void txtOrderID_KeyDown(object sender, KeyEventArgs e)
@@ -1362,24 +1217,46 @@ namespace WizMes_BooKyong
             try
             {
                 if (e.Key == Key.Enter)
-                {
+                {                       
+
                     pf.refEvent += new PlusFinder.RefEventHandler(plusFinder_replyOrderQty);
-                    pf.ReturnCode(txtOrderID, 4, "");
+                    pf.ReturnCode(txtOrderID, 99, txtOrderID.Text);
 
                     if (txtOrderID.Text.Length > 0)
                     {
-                        //관리번호 기반_ 항목 뿌리기 작업.
+                  
                         OrderID_OtherSearch(txtOrderID.Text, "");
-                    }
 
-                    //관리번호 입력 후 출고구분 콤보박스 포커스 이동
-                    cboOutClss.IsDropDownOpen = true;
+                
+                    }                   
                 }
             }
             catch (Exception ee)
             {
                 MessageBox.Show("오류지점 - txtOrderID_KeyDown : " + ee.ToString());
             }
+        }
+
+        private void OutwareSubInput()
+        {
+
+            if(dgdOutwareSub.Items.Count > 0)
+            {
+                dgdOutwareSub.Items.Clear();
+            }
+
+            // 수량 입력시 라벨 없이 입력됨
+            Win_ord_OutWare_Scan_Sub_CodeView label = new Win_ord_OutWare_Scan_Sub_CodeView();
+
+            int num = dgdOutwareSub.Items.Count + 1;
+            label.Num = num;
+            label.LabelID = "";
+            label.Spec = "";
+            label.Orderseq = orderSeq;
+            label.OutQty = stringFormatN0(replyOrderQty);
+            dgdOutwareSub.Items.Add(label);
+
+            SumScanQty();
         }
 
         //품명 텍스트박스 키다운 이벤트
@@ -1506,15 +1383,9 @@ namespace WizMes_BooKyong
 
                 if (OutwareInfo != null)
                 {
-                    this.DataContext = OutwareInfo;
-                    // 2021-06-02; 태그는 안넣어지니깐 클릭했는테그 넣어야지
-                    txtKCustom.Tag = OutwareInfo.CustomID;
-                    txtBuyerName.Tag = OutwareInfo.DvlyCustomID;
-                    txtOutCustom.Tag = OutwareInfo.OutCustomID;
-                    txtOutwareReqID.Tag = OutwareInfo.OrderID;
+                    this.DataContext = OutwareInfo;                           
 
-                    String OutwareID = OutwareInfo.OutwareID;
-                    FillGridSub(OutwareID);
+                    FillGridSub(OutwareInfo.OutwareID);
                 }
             }
             catch (Exception ee)
@@ -1523,43 +1394,26 @@ namespace WizMes_BooKyong
             }
         }
 
-        //출고지시번호 플러스파인더 버튼 클릭
-        private void btnOutwareReqID_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                pf.refEvent += new PlusFinder.RefEventHandler(plusFinder_replyArticle);
-                pf.ReturnCode(txtOutwareReqID, 98, "");
-
-                if (txtOutwareReqID.Text.Length > 0)
-                {
-                    //관리번호 기반_ 항목 뿌리기 작업.
-                    string orderID = txtOutwareReqID.Tag != null ? txtOutwareReqID.Tag.ToString() : "";
-                    string OutwareReqID = string.IsNullOrEmpty(txtOutwareReqID.Text) ? "" : txtOutwareReqID.Text;
-                    OrderID_OtherSearch(orderID, OutwareReqID);
-                }
-
-                cboOutClss.IsDropDownOpen = true;
-            }
-            catch (Exception ee)
-            {
-                MessageBox.Show("오류지점 - btnOutwareReqID_Click : " + ee.ToString());
-            }
-        }
+  
 
         //관리번호 플러스파인더 버튼 클릭
         private void btnOrderID_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                pf.ReturnCode(txtOrderID, 4, "");
-
+                pf.refEvent += new PlusFinder.RefEventHandler(plusFinder_replyOrderQty);
+                pf.ReturnCode(txtOrderID, 99, txtOrderID.Text);
                 if (txtOrderID.Text.Length > 0)
                 {
                     //관리번호 기반_ 항목 뿌리기 작업.
                     OrderID_OtherSearch(txtOrderID.Text, "");
-                }
-                cboOutClss.IsDropDownOpen = true;
+
+                    //항목 뿌린후 Subgrid에 수량 자동입력
+                    //박스수량 계산
+                    OutwareSubInput();
+
+                    cboOutClss.IsDropDownOpen = true;
+                }               
             }
             catch (Exception ee)
             {
@@ -1592,26 +1446,34 @@ namespace WizMes_BooKyong
             {
                 if (e.Key == Key.Enter)
                 {
-                    if(rbnReqID.IsChecked == true)
+                    if (btnCustomerLabelScanYN.IsChecked == true)
                     {
-                        
-                        if (string.IsNullOrEmpty(txtOutwareReqID.Text))
+                        if (dgdOutwareSub.Items.Count > 0)
                         {
-                            MessageBox.Show("선택된 출고지시가 없습니다");
+                            for (int i = 0; i < dgdOutwareSub.Items.Count; i++)
+                            {
+                                var outwareSubitem = dgdOutwareSub.Items[i] as Win_ord_OutWare_Scan_Sub_CodeView;
+
+                                if (string.IsNullOrEmpty(outwareSubitem.CustomBoxID))
+                                {
+                                    outwareSubitem.CustomBoxID = txtScanData.Text;
+                                    txtScanData.Text = string.Empty;
+                                    return;
+                                }
+                                else
+                                {
+                                    MessageBox.Show("모든 행에 고객라벨을 전부 입력하였습니다.", "확인");
+                                    txtScanData.Text = string.Empty;
+                                    return;
+                                }
+                            };
+                        }
+                        else
+                        {
+                            MessageBox.Show("먼저 스캔하여 행을 추가하세요", "확인");
+                            txtScanData.Text = string.Empty;
                             return;
                         }
-                        if(txtOutwareReqID.Text.Length > 0)
-                        {
-
-                            if (ConvertInt(txtScanData.Text) > tmpRestQty || ConvertInt(txtScanData.Text) > RestOrderQty)
-                            {
-                                MessageBox.Show("출하량이 남은 지시수량" + "(" + RestOrderQty + ")" + "보다 많습니다");
-                                e.Handled = true;
-                                txtScanData.Text = string.Empty;
-                                return;
-                            }
-                        }
-
                     }
 
 
@@ -1631,24 +1493,25 @@ namespace WizMes_BooKyong
                             //2018.07.05 PACKINGID SCAN 과정 추가._허윤구.
                             // 지금 스캔된 녀석은 PACKING이다.
                             // 성공적으로 Packing List를 가져왔을 때,
-                            if (FindPackingLabelID(txtScanData.Text) == true)
-                            {
-                                string InsideLabelID = string.Empty;
+                            //if (FindPackingLabelID(txtScanData.Text) == true)
+                            //{
+                            //    string InsideLabelID = string.Empty;
 
-                                // 리스트 내부 LabelID를 돌면서 박스 스캔. > SUBGRID 추가(여러개)
-                                for (int j = 0; j < LabelGroupList.Count; j++)
-                                {
-                                    InsideLabelID = LabelGroupList[j].ToString();
+                            //    // 리스트 내부 LabelID를 돌면서 박스 스캔. > SUBGRID 추가(여러개)
+                            //    for (int j = 0; j < LabelGroupList.Count; j++)
+                            //    {
+                            //        InsideLabelID = LabelGroupList[j].ToString();
 
-                                    FindBoxScanData(InsideLabelID);
-                                }
-                            }
+                            //        FindBoxScanData(InsideLabelID);
+                            //    }
+                            //}
                         }
                         else
                         {
                             //부품식별표 박스ID 스캔 > SUBGRID 추가
                             FindBoxScanData(txtScanData.Text);
                         }
+
                         txtScanData.Text = string.Empty;
                     }
 
@@ -1711,9 +1574,11 @@ namespace WizMes_BooKyong
                     else
                     {
                         LabelGroupList.Clear();
+                        LabelGroupInfo.Clear();
                         for (int i = 0; i < dt.Rows.Count; i++)
                         {
                             LabelGroupList.Add(dt.Rows[i]["InBoxID"].ToString());
+                            LabelGroupInfo.Add(dt.Rows[i]["InBoxID"].ToString(), dt.Rows[i]["PackQty"].ToString());
                         }
                         return true;
                     }
@@ -1752,7 +1617,7 @@ namespace WizMes_BooKyong
 
                     if (dt.Rows.Count == 0)
                     {
-                        MessageBox.Show("존재하지 않거나, 생산, 검사되지 않은 바코드 입니다.\r\n" +
+                        MessageBox.Show("존재하지 않거나, 생산, 검사, 또는 수주등록 되지 않은 바코드 입니다.\r\n" +
                             "바코드 번호 :" + ScanData);
                         return;
                     }
@@ -1826,7 +1691,7 @@ namespace WizMes_BooKyong
                         }
 
 
-                        if (lib.returnNumStringZero(DR["qtyperbox"].ToString()) == "0")
+                        if (lib.returnNumStringZero(DR["StuffQty"].ToString()) == "0")
                         {
                             MessageBox.Show("출고가능한 수량이 없습니다.");
                             return;
@@ -1846,9 +1711,9 @@ namespace WizMes_BooKyong
                         {
                             if (txtArticle_InGroupBox.Tag.ToString() != DR["ArticleID"].ToString()) //품명 텍스트 박스에 기재된 품명과 받아온 품명이 다르면
                             {
-                                MessageBox.Show("서로 다른 품명을 동시에 출고처리 할 수 없습니다. \r\n 바코드를 확인해주세요.\n" +
-                                    "바코드    품명 :" + DR["Article"].ToString() + ". \r\n" +
-                                    "출고희망 품명 :" + txtArticle_InGroupBox.Text + ".");
+                                System.Windows.MessageBox.Show("서로 다른 품명을 동시에 출고처리 할 수 없습니다.\r\n바코드를 확인해주세요.\n" +
+                                    "바코드   품명 :" + DR["Article"].ToString() + " \r\n" +
+                                    "출고희망 품명 :" + txtArticle_InGroupBox.Text + "","확인",MessageBoxButton.OK, MessageBoxImage.Error);
                                 return;
                             }
                         }
@@ -1856,9 +1721,9 @@ namespace WizMes_BooKyong
                         {
                             if (txtKCustom.Tag.ToString() != DR["CustomID"].ToString())         //거래처 텍스트 박스에 기재된 거래처와 받아온 거래처가 다르면
                             {
-                                MessageBox.Show("서로 다른 거래처를 동시에 출고처리 할 수 없습니다. \r\n" +
+                                System.Windows.MessageBox.Show("서로 다른 거래처를 동시에 출고처리 할 수 없습니다. \r\n" +
                                     "바코드 거래처 :" + DR["CustomName"].ToString() + ". \r\n" +
-                                    "출고 거래처 :" + txtKCustom.Text + ".");
+                                    "출고 거래처 :" + txtKCustom.Text + ".","확인",MessageBoxButton.OK, MessageBoxImage.Error);
                                 return;
                             }
                         }
@@ -1874,8 +1739,8 @@ namespace WizMes_BooKyong
 
                             txtKCustom.Text = DR["CustomName"].ToString();
                             txtKCustom.Tag = DR["CustomID"].ToString();
-                            txtOutCustom.Text = DR["CustomName"].ToString();
-                            txtOutCustom.Tag = DR["CustomID"].ToString();
+                            txtOutCustom.Text = DR["OutCustom"].ToString();
+                            txtOutCustom.Tag = DR["OutCustomID"].ToString();
                             txtBuyerName.Text = DR["CustomName"].ToString();
                             txtBuyerName.Tag = DR["CustomID"].ToString();
                             if (txtArticle_InGroupBox.Text == string.Empty) { txtArticle_InGroupBox.Text = DR["Article"].ToString(); }
@@ -1904,8 +1769,8 @@ namespace WizMes_BooKyong
                         var Win_ord_OutWare_Scan_Insert = new Win_ord_OutWare_Scan_Sub_CodeView()
                         {
                             LabelID = ScanData,                         //바코드 번호
-                            OutQty = Lib.Instance.returnNumStringZero(DR["QtyPerBox"].ToString()),        //수량
-                            OutRealQty = Lib.Instance.returnNumStringZero(DR["QtyPerBox"].ToString()),
+                            OutQty = Lib.Instance.returnNumStringZero(DR["StuffQty"].ToString()),        //수량
+                            OutRealQty = Lib.Instance.returnNumStringZero(DR["StuffQty"].ToString()),
                             UnitPrice = DR["UNITPRICE"].ToString(),     //단가
                             Orderseq = DR["OrderSeq"].ToString(),       //수주순서?
                             Amount = DR["Amount"].ToString(),           //금액
@@ -1916,7 +1781,10 @@ namespace WizMes_BooKyong
                             ArticleID = DR["ArticleID"].ToString(),     //품명ID         
 
                             DeleteYN = "Y",
+
                         };
+
+                        lstCheck.Add(Win_ord_OutWare_Scan_Insert.LabelID, Win_ord_OutWare_Scan_Insert.OutQty);
 
                         //dgdOutwareSub.Items.Add(Win_ord_OutWare_Scan_Insert);
                         dgdOutwareSub.Items.Insert(0, Win_ord_OutWare_Scan_Insert); //2021-05-21 최근에 스캔 한 것이 위로 오게 수정
@@ -2004,6 +1872,7 @@ namespace WizMes_BooKyong
         #region 조회
         private void FillGrid()
         {
+            dgdOutware.Items.Clear();
             dgdTotal.Items.Clear();
 
             try
@@ -2015,43 +1884,24 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("EDate", chkOutwareDay.IsChecked == true ? dtpToDate.ToString().Substring(0, 10).Replace("-", "") : "");
 
                 // 거래처
-                sqlParameter.Add("ChkCustomID", chkCustomer.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("CustomID", chkCustomer.IsChecked == true ? (txtCustomer.Tag != null ? txtCustomer.Tag.ToString() : "") : "");
+                sqlParameter.Add("ChkCustomID", chkCustomIDSrh.IsChecked == true ? 1 : 0);
+                sqlParameter.Add("CustomID", chkCustomIDSrh.IsChecked == true ? (txtCustomIDSrh.Tag != null ? txtCustomIDSrh.Tag.ToString() : "") : "");
                 // 최종고객사
                 sqlParameter.Add("ChkInCustom", chkInCustomer.IsChecked == true ? 1 : 0);
                 sqlParameter.Add("InCustomID", chkInCustomer.IsChecked == true ? (txtInCustomer.Tag != null ? txtInCustomer.Tag.ToString() : "") : "");
 
-
                 // 품명
-                sqlParameter.Add("ChkArticleID", chkArticle.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("ArticleID", chkArticle.IsChecked == true ? (txtArticle.Tag != null ? txtArticle.Tag.ToString() : "") : "");
+                sqlParameter.Add("ChkArticleID", chkArticleIDSrh.IsChecked == true ? 1 : 0);
+                sqlParameter.Add("ArticleID", chkArticleIDSrh.IsChecked == true ? (txtArticleIDSrh.Tag != null ? txtArticleIDSrh.Tag.ToString() : "") : "");
 
                 // 품번
                 sqlParameter.Add("ChkBuyerArticleNo", chkpfBuyerArticleNo.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("BuyerArticleNo", chkpfBuyerArticleNo.IsChecked == true ? (txtpfBuyerArticleNo.Tag != null ? txtpfBuyerArticleNo.Tag.ToString() : "") : "");
-
-                // 지시번호
-                sqlParameter.Add("ChkOutwareReq", chkReqID.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("OutwareReqID", chkReqID.IsChecked == true ? (txtReqID.Text != null ? txtReqID.Text.ToString() : "") : "");
-
-
-                // 지시번호로 검색, 관리번호 사용안함
-                /*sqlParameter.Add("ChkOrder", chkRadioOptionNum.IsChecked == true ? (rbnManageNum.IsChecked == true ? 1 : 2) : 0);
-                sqlParameter.Add("Order", chkRadioOptionNum.IsChecked == true ? (txtRadioOptionNum.Text) : "");*/
-                sqlParameter.Add("ChkOrder", 0);
-                sqlParameter.Add("Order", "");
-                sqlParameter.Add("OutFlag", 0);             // OutType조회, 0이면 구분없이 전체 조회
-                sqlParameter.Add("OutClss", "");            // 출고구분 같은데, 빈값이면 전체 조회
-
-                sqlParameter.Add("FromLocID", "");          // 무슨 일자인지 몰라서 빈값으로 전체조회
-                sqlParameter.Add("ToLocID", "");            // 무슨 일자인지 몰라서 빈값으로 전체조회
-                sqlParameter.Add("BuyerDirectYN", "Y");     //왜 Y만 검색하지?
+                sqlParameter.Add("BuyerArticleNo", chkpfBuyerArticleNo.IsChecked == true ? (txtpfBuyerArticleNo.Tag != null ? txtpfBuyerArticleNo.Tag.ToString() : "") : "");  
+          
+                sqlParameter.Add("ChkOrder", rbnOrderNo.IsChecked == true ? 1 : 2);
+                sqlParameter.Add("Order", txtRadioOptionNum.Text);                
 
                 ds = DataStore.Instance.ProcedureToDataSet_LogWrite("xp_Outware_sOrder", sqlParameter, true, "R");
-
-                var Win_ord_OutWare_Scan_Total = new Win_ord_OutWare_Scan_dgdTotal_CodeView();
-
-                double _sum = 0;
 
                 if (ds != null && ds.Tables.Count > 0)
                 {
@@ -2064,110 +1914,55 @@ namespace WizMes_BooKyong
                     }
                     else
                     {
+                        int i = 0;
+                        int outqtySum = 0;
                         DataRowCollection drc = dt.Rows;
                         foreach (DataRow dr in drc)
                         {
-                            double RemainQty = 0;   //잔여수량?
-                            if ((lib.IsNumOrAnother(dr["OrderQty"].ToString()) == true) && (lib.IsNumOrAnother(dr["OutSumQty"].ToString()) == true))
-                            {   //수주량 - 출고합계수량 = 잔여수량?
-                                RemainQty = ConvertDouble(dr["OrderQty"].ToString()) - ConvertDouble(dr["OutSumQty"].ToString());
-                            }
-
-                            //double OutQty = 0;      //출고량
-                            //OutQty = Convert.ToDouble(dr["OutQty"].ToString());
-
-                            var Win_ord_OutWare_Scan_Insert = new Win_ord_OutWare_Scan_CodeView()
+                            i++;
+                            var OutWardInfo = new Win_ord_OutWare_Scan_CodeView()
                             {
+                                num = i,
                                 OutwareID = dr["OutwareID"].ToString(),       //출고번호
-                                OrderID = dr["OrderID"].ToString(),           //관리번호
-                                OutwareReqID = dr["OutwareReqID"].ToString(),      //출고지시번호
-                                OutSeq = dr["OutSeq"].ToString(),             //순번
-                                OrderNo = dr["OrderNo"].ToString(),           //OrderNo
-                                CustomID = dr["CustomID"].ToString(),         //거래처코드
+                                OrderID = dr["OrderID"].ToString(),
+                                OrderNo = dr["OrderNo"].ToString(),
+                                OutClss = dr["OutClss"].ToString(),
+                                OutDate = DateTypeHyphen(dr["Outdate"].ToString()),
+                                OutTime = TimeTypeColon(dr["OutTime"].ToString()),
+                                OutRoll = stringFormatN0(dr["OutRoll"]),
+                                OutQty = stringFormatN0(dr["OutQty"]),
+                                CustomID = dr["CustomID"].ToString(),
+                                KCustom = dr["KCustom"].ToString(),
+                                OutCustomID = dr["OutCustomID"].ToString(),
+                                OutCustom = dr["OutCustom"].ToString(),
+                                DvlyCustomID = dr["DvlyCustomID"].ToString(),
+                                DvlyCustom = dr["DvlyCustom"].ToString(),
 
-                                KCustom = dr["KCustom"].ToString(),           //수주거래처명
-                                OutDate = dr["OutDate"].ToString(),           //출고일자
-                                ArticleID = dr["ArticleID"].ToString(),       //품명코드
-                                Article = dr["Article"].ToString(),           //품명
-
-                                OutClss = dr["OutClss"].ToString(),           //출고구분
-                                WorkID = dr["WorkID"].ToString(),             //가공구분코드?? 
-                                OutRoll = dr["OutRoll"].ToString(),           //박스 수량
-                                OutQty = dr["OutQty"].ToString(),             //개별 수량
-                                OutRealQty = dr["OutRealQty"].ToString(),     //소요량??
-
-                                ResultDate = dr["ResultDate"].ToString(),     //무슨날? outdate랑 같은 날인데??
-                                RemainQty = RemainQty.ToString(),             //잔량
-                                OrderQty = dr["OrderQty"].ToString(),         //수주량
-                                UnitClss = dr["UnitClss"].ToString(),         //단위 
-                                WorkName = dr["WorkName"].ToString(),         //작업명??
-
-                                OutType = dr["OutType"].ToString(),           //출고구분(출고방식)
-                                Remark = dr["Remark"].ToString(),             //비고
-                                BuyerModel = dr["BuyerModel"].ToString(),     //차종
-                                OutSumQty = dr["OutSumQty"].ToString(),       //누계출고
-                                OutQtyY = dr["OutQtyY"].ToString(),           // ???
-
-                                StuffinQty = dr["StuffinQty"].ToString(),     //입고 수량인가요?
-                                OutWeight = dr["OutWeight"].ToString(),       //출고 중량??
-                                OutRealWeight = dr["OutRealWeight"].ToString(), //출고 실중량??
-                                BuyerDirectYN = dr["BuyerDirectYN"].ToString(), //납품처 직접출고
-
-                                Vat_Ind_YN = dr["Vat_Ind_YN"].ToString(),         //부가세별도여부
-                                InsStuffINYN = dr["InsStuffINYN"].ToString(),     //동시입고여부???
-                                ExchRate = dr["ExchRate"].ToString(),             //환율
-                                FromLocID = dr["FromLocID"].ToString(),           //?
-                                TOLocID = dr["TOLocID"].ToString(),               // ??
-                                UnitClssName = dr["UnitClssName"].ToString(),     //단위 EA, kg같은 거
-                                FromLocName = dr["FromLocName"].ToString(),       //전 창고명
-                                TOLocname = dr["TOLocname"].ToString(),           //후 창고명
-
-                                OutClssname = dr["OutClssname"].ToString(),       //출고구분
-                                UnitPrice = dr["UnitPrice"].ToString(),           //단가
-                                Amount = dr["Amount"].ToString(),                 //금액
-                                VatAmount = dr["VatAmount"].ToString(),           //vat금액
-
-                                DvlyCustomID = dr["DvlyCustomID"].ToString(),     //20210526
-                                DvlyCustom = dr["DvlyCustom"].ToString(),         //20210526
-
-                                BuyerArticleNo = dr["BuyerArticleNo"].ToString(), //품번
-                                OutCustomID = dr["OutCustomID"].ToString(),       //출고처코드
-                                BuyerID = dr["BuyerID"].ToString(),               //납품거래처 코드
-                                BuyerName = dr["BuyerName"].ToString(),           //납품거래처명
-                                OutCustom = dr["OutCustom"].ToString(),           //출고처
-
-                                //거래명세표에 필요한 데이터를 받아옴
-                                Buyer_Chief = dr["Buyer_Chief"].ToString(),       //공급받는 자 대표자
-                                Buyer_Address1 = dr["Buyer_Address1"].ToString(), //공급받는 자 주소
-                                Buyer_Address2 = dr["Buyer_Address2"].ToString(), //공급받는 자 주소
-                                Buyer_Address3 = dr["Buyer_Address3"].ToString(), //공급받는 자 주소
-                                CustomNo = dr["CustomNo"].ToString(),             //사업자등록번호
-                                Chief = dr["Chief"].ToString(),                   //공급하는 대표자명
-                                OutTime = dr["OutTime"].ToString(),
-                                //Condition = dr["Condition"].ToString(),           //업테 2021-05-31
-                                //Category = dr["Category"].ToString(),             //종목 2021-05-31
-
+                                Article = dr["Article"].ToString(),
+                                ArticleID = dr["ArticleID"].ToString(),
+                                BuyerArticleNo = dr["BuyerArticleNo"].ToString(),
+                                FromLocID = dr["FromLocID"].ToString(),
+                                Remark = dr["Remark"].ToString(),
+                                
+                                BuyerModel = dr["BuyerModel"].ToString(),
                             };
 
-                            Win_ord_OutWare_Scan_Total.totQty += ConvertDouble(Win_ord_OutWare_Scan_Insert.OutQty);
-                            //출고일자 데이트피커 포맷으로 변경
-                            Win_ord_OutWare_Scan_Insert.OutDate = DatePickerFormat(Win_ord_OutWare_Scan_Insert.OutDate);
-                            tboxOutTime.Text = Win_ord_OutWare_Scan_Insert.OutTime;
-                            //잔량, 수주량, 소요량, 출고량, 누계출고, 단가 소숫점 두자리 변환
-                            Win_ord_OutWare_Scan_Insert.RemainQty = Lib.Instance.returnNumStringZero(Win_ord_OutWare_Scan_Insert.RemainQty);
-                            Win_ord_OutWare_Scan_Insert.OrderQty = Lib.Instance.returnNumStringZero(Win_ord_OutWare_Scan_Insert.OrderQty);
-                            Win_ord_OutWare_Scan_Insert.OutRealQty = Lib.Instance.returnNumStringZero(Win_ord_OutWare_Scan_Insert.OutRealQty);
-                            Win_ord_OutWare_Scan_Insert.OutQty = Lib.Instance.returnNumStringZero(Win_ord_OutWare_Scan_Insert.OutQty);
-                            Win_ord_OutWare_Scan_Insert.OutSumQty = Lib.Instance.returnNumStringZero(Win_ord_OutWare_Scan_Insert.OutSumQty);
-                            Win_ord_OutWare_Scan_Insert.UnitPrice = Lib.Instance.returnNumStringOne(Win_ord_OutWare_Scan_Insert.UnitPrice);
+                            outqtySum += (int)RemoveComma(dr["OutQty"].ToString(), true);
 
-                            dgdOutware.Items.Add(Win_ord_OutWare_Scan_Insert);
-                            
-                            //MessageBox.Show(Win_ord_OutWare_Scan_Insert.TOLocID);
+                            dgdOutware.Items.Add(OutWardInfo);
+     
                         }
 
-                        dgdTotal.Items.Add(Win_ord_OutWare_Scan_Total);
-                   
+                        if(dgdOutware.Items.Count > 0)
+                        {
+                            var total = new Win_ord_OutWare_Scan_dgdTotal_CodeView
+                            {
+                                count = i,
+                                totQty = stringFormatN0(outqtySum)
+                            };
+
+                            dgdTotal.Items.Add(total);
+                        }
                       
                     }
                 }
@@ -2276,19 +2071,7 @@ namespace WizMes_BooKyong
             try
             {
                 if (CheckData())
-                {
-
-                    string orderID = string.Empty;
-
-                    if(txtOrderID.Tag != null)
-                    {
-                        orderID = txtOrderID.Tag.ToString();
-                    }
-                    else if(txtOutwareReqID.Tag != null)
-                    {
-                        orderID = txtOutwareReqID.Tag.ToString();
-                    }
-
+                {               
 
                     #region 추가
 
@@ -2298,46 +2081,43 @@ namespace WizMes_BooKyong
 
                         Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
                         sqlParameter.Clear();
-                        sqlParameter.Add("OrderID", orderID);                   //관리번호
-                        sqlParameter.Add("CompanyID", MainWindow.CompanyID);    //본인회사
+                        sqlParameter.Add("OrderID", txtOrderID.Text);                  
+                        sqlParameter.Add("CompanyID", MainWindow.CompanyID);    
                         sqlParameter.Add("OutSeq", "");
                         sqlParameter.Add("OutwareNo", "");
-                        sqlParameter.Add("OutClss", cboOutClss.SelectedValue.ToString());
+                        sqlParameter.Add("OutClss", cboOutClss.SelectedValue != null? cboOutClss.SelectedValue.ToString() : "");
 
                         sqlParameter.Add("CustomID", txtKCustom.Tag != null ? txtKCustom.Tag.ToString() : "");
                         sqlParameter.Add("BuyerDirectYN", "Y");
-                        sqlParameter.Add("WorkID", "0001");                 //지금은 샤프트가공 1개 뿐
+                        sqlParameter.Add("WorkID", "0001");                 
                         sqlParameter.Add("ExchRate", 0);
                         sqlParameter.Add("UnitPriceClss", "0");
 
-                        sqlParameter.Add("InsStuffInYN", "N");              //동시입고여부
-                        sqlParameter.Add("OutcustomID", txtOutCustom.Tag != null ? txtOutCustom.Tag.ToString() : "");                //20210526
+                        sqlParameter.Add("InsStuffInYN", "N");             
+                        sqlParameter.Add("OutcustomID", txtOutCustom.Tag != null ? txtOutCustom.Tag.ToString() : "");               
                         sqlParameter.Add("Outcustom", txtOutCustom.Text);
                         sqlParameter.Add("LossRate", 0);
                         sqlParameter.Add("LossQty", 0);
 
-                        sqlParameter.Add("OutRoll", txtOutRoll.Text.Equals("") == true ? 0 : Convert.ToInt32(txtOutRoll.Text.Replace(",", "")));
-                        sqlParameter.Add("OutQty", txtOutQty.Text.Equals("") == true ? 0 : ConvertDouble(txtOutQty.Text.Replace(",", "")));
-                        sqlParameter.Add("OutRealQty", ConvertDouble(txtOutQty.Text.Replace(",", ""))); //실출고량인데, = outQty
+                        sqlParameter.Add("OutRoll", RemoveComma(txtOutRoll.Text,true));
+                        sqlParameter.Add("OutQty", RemoveComma(txtOutQty.Text, true));
+                        sqlParameter.Add("OutRealQty", ConvertDouble(txtOutQty.Text.Replace(",", ""))); 
                         sqlParameter.Add("OutDate", dtpOutDate.Text.ToString().Substring(0, 10).Replace("-", ""));
                         sqlParameter.Add("ResultDate", dtpOutDate.Text.ToString().Substring(0, 10).Replace("-", ""));
 
                         sqlParameter.Add("Remark", txtRemark.Text.Equals("") ? "사무실에서 출고" : txtRemark.Text);
-                        sqlParameter.Add("OutType", "3");                //스캔출고형태가 3번
-                        sqlParameter.Add("OutSubType", "");              //안쓰니까 일단 빈값??
-                        sqlParameter.Add("Amount", 0);                   //안쓰니까 일단 빈값??
-                        sqlParameter.Add("VatAmount", 0);                //안쓰니까 일단 빈값??
+                        sqlParameter.Add("OutType", "3");                
+                        sqlParameter.Add("OutSubType", "");              
+                        sqlParameter.Add("Amount", 0);                   
+                        sqlParameter.Add("VatAmount", 0);                
 
-                        sqlParameter.Add("VatINDYN", "Y");                //안쓰니까 일단 빈값??
+                        sqlParameter.Add("VatINDYN", "Y");               
                         sqlParameter.Add("FromLocID", cboFromLoc.SelectedValue != null ? cboFromLoc.SelectedValue.ToString() : "");
                         sqlParameter.Add("ToLocID", cboToLoc.SelectedValue != null ? cboToLoc.SelectedValue.ToString() : "");
-                        sqlParameter.Add("UnitClss", 0);
-                        //sqlParameter.Add("ArticleID", txtArticleID_InGroupBox.Text != null ? txtArticleID_InGroupBox.Text : "");
+                        sqlParameter.Add("UnitClss", 0);                       
 
-                        sqlParameter.Add("DvlyCustomID", txtBuyerName.Tag == null ? "" : txtBuyerName.Tag.ToString()); //20210526
+                        sqlParameter.Add("DvlyCustomID", txtBuyerName.Tag != null ?  txtBuyerName.Tag.ToString() :""); 
                         sqlParameter.Add("UserID", MainWindow.CurrentUser);
-                        sqlParameter.Add("OutwareReqID", string.IsNullOrEmpty(txtOutwareReqID.Text) ? "" : txtOutwareReqID.Text);
-                        sqlParameter.Add("RestOrderQty", string.IsNullOrEmpty(RestOrderQty.ToString()) ? 0 : RestOrderQty);
                  
 
                         Procedure pro1 = new Procedure();
@@ -2384,7 +2164,7 @@ namespace WizMes_BooKyong
                             sqlParameter = new Dictionary<string, object>();
                             sqlParameter.Clear();
                             sqlParameter.Add("OutwareID", GetKey);
-                            sqlParameter.Add("OrderID", orderID);
+                            sqlParameter.Add("OrderID", txtOrderID.Text);
                             sqlParameter.Add("OutSeq", "");
                             sqlParameter.Add("OutSubSeq", i + 1);
                             sqlParameter.Add("OrderSeq", OutwareSub.Orderseq);
@@ -2396,20 +2176,20 @@ namespace WizMes_BooKyong
                             sqlParameter.Add("LabelGubun", "2");        //박스라벨출고는 2번
 
                             sqlParameter.Add("LotNo", "0");
-                            sqlParameter.Add("Gubun", "");              //용도를 몰라서 빈값
+                            sqlParameter.Add("Gubun", "");             
                             sqlParameter.Add("StuffQty", 0);
-                            sqlParameter.Add("OutQty", OutwareSub.OutQty.Replace(",", ""));
-                            sqlParameter.Add("OutRoll", 1); // 하나당 박스 1개로 처리 하니, 1로 저장한다고 함
+                            sqlParameter.Add("OutQty", RemoveComma(OutwareSub.OutQty, true));
+                            sqlParameter.Add("OutRoll", 1); 
 
-                            sqlParameter.Add("UnitPrice", OutwareSub.UnitPrice != null && !OutwareSub.UnitPrice.Trim().Equals("") ? ConvertDouble(OutwareSub.UnitPrice) : 0);
+                            sqlParameter.Add("UnitPrice", RemoveComma(OutwareSub.UnitPrice, true));
 
-                            //sqlParameter.Add("UnitPrice", OutwareSub.UnitPrice.Replace(",", ""));
-                            sqlParameter.Add("CustomBoxID", "");
-                            sqlParameter.Add("DefectID", "");           //결함사유라는데.. 빈값으로 
+                        
+                            sqlParameter.Add("CustomBoxID", OutwareSub.CustomBoxID);
+                            sqlParameter.Add("DefectID", "");            
                             sqlParameter.Add("BoxID", OutwareSub.LabelID);
                             //sqlParameter.Add("ArticleID", OutwareSub.ArticleID);
                             sqlParameter.Add("ArticleID", txtArticleID_InGroupBox.Text != null ? txtArticleID_InGroupBox.Text : "");
-                            sqlParameter.Add("SubRemark", "");
+                            sqlParameter.Add("SubRemark", "사무실에서 출고(출하스캔)");
                             //sqlParameter.Add("Spec", OutwareSub.Spec);
 
                             sqlParameter.Add("UserID", MainWindow.CurrentUser);
@@ -2427,8 +2207,7 @@ namespace WizMes_BooKyong
                             ListParameter.Add(sqlParameter);
 
                         }
-                        //ListParameter[0]["Amount"] = cnt.ToString();
-                        //ListParameter[0]["VatAmount"] = (cnt * 0.1).ToString();
+          
                     }
 
                     #endregion   추가
@@ -2436,16 +2215,12 @@ namespace WizMes_BooKyong
                     #region 수정
 
                     else if (strFlag == "U")
-                    {      // 1. outware 는 [xp_Outware_uOutware] : outware 수정 후 outwaresub, stuffin 도 같이 지우는 프로시저 
-                           // 2. outwaresub 다시 등록
-                           // 3. stuffin 다시 등록
-                           // ssw 20210616 파라미터 값 넘기게 수정 (vatYN, Amount, va tAmount, UnitPrice, OutQty)
-                        double cnt = 0;
+                    {    
 
                         Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
                         sqlParameter.Clear();
                         sqlParameter.Add("OutwareID", txtOutwareID.Text);
-                        sqlParameter.Add("OrderID", orderID);
+                        sqlParameter.Add("OrderID", txtOrderID.Text);
                         sqlParameter.Add("CompanyID", MainWindow.CompanyID);
                         sqlParameter.Add("OutClss", cboOutClss.SelectedValue.ToString());
 
@@ -2461,27 +2236,25 @@ namespace WizMes_BooKyong
                         sqlParameter.Add("LossRate", 0);
                         sqlParameter.Add("LossQty", 0);
 
-                        sqlParameter.Add("OutRoll", Convert.ToInt32(txtOutRoll.Text.Replace(",", "")));
-                        sqlParameter.Add("OutQty", txtOutQty.Text.Replace(",", ""));
-                        sqlParameter.Add("OutRealQty", txtOutQty.Text.Replace(",", ""));
-                        sqlParameter.Add("OutDate", dtpOutDate.Text.ToString().Substring(0, 10).Replace("-", ""));
-                        sqlParameter.Add("ResultDate", dtpOutDate.Text.ToString().Substring(0, 10).Replace("-", ""));
+                        sqlParameter.Add("OutRoll", RemoveComma(txtOutRoll.Text,true));
+                        sqlParameter.Add("OutQty", RemoveComma(txtOutQty.Text, true));
+                        sqlParameter.Add("OutRealQty", RemoveComma(txtOutQty.Text, true));
+                        sqlParameter.Add("OutDate", !IsDatePickerNull(dtpOutDate) ? ConvertDate(dtpOutDate) : "");
+                        sqlParameter.Add("ResultDate", !IsDatePickerNull(dtpOutDate) ? ConvertDate(dtpOutDate) : "");
 
-                        sqlParameter.Add("Remark", txtRemark.Text.Equals("") ? "사무실에서 출고" : txtRemark.Text);
+                        sqlParameter.Add("Remark", string.IsNullOrEmpty(txtRemark.Text) ? "사무실에서 출고" : txtRemark.Text);
                         sqlParameter.Add("OutType", "3");
                         sqlParameter.Add("OutSubType", "");
                         sqlParameter.Add("Amount", 0);
                         sqlParameter.Add("VatAmount", 0);
 
                         sqlParameter.Add("VatINDYN", 'Y');
-                        sqlParameter.Add("FromLocID", cboFromLoc.SelectedValue.ToString());
-                        sqlParameter.Add("ToLocID", cboToLoc.SelectedValue.ToString());
+                        sqlParameter.Add("FromLocID", cboFromLoc.SelectedValue != null ? cboFromLoc.SelectedValue.ToString() :"");
+                        sqlParameter.Add("ToLocID", cboToLoc.SelectedValue != null ? cboToLoc.SelectedValue.ToString() :"");
                         sqlParameter.Add("UnitClss", 0);
-                        //sqlParameter.Add("ArticleID", txtArticleID_InGroupBox.Text != null ? txtArticleID_InGroupBox.Text : "");
 
-                        sqlParameter.Add("DvlyCustomID", txtBuyerName.Tag == null ? "" : txtBuyerName.Tag.ToString()); //20210526
+                        sqlParameter.Add("DvlyCustomID", txtBuyerName.Tag != null ?  txtBuyerName.Tag.ToString() : "" ); //20210526
                         sqlParameter.Add("UserID", MainWindow.CurrentUser);
-                        sqlParameter.Add("OutwareReqID", string.IsNullOrEmpty(txtOutwareReqID.Text) ? "" : txtOutwareReqID.Text);
                         
 
                         Procedure pro3 = new Procedure();
@@ -2517,7 +2290,7 @@ namespace WizMes_BooKyong
                             sqlParameter = new Dictionary<string, object>();
                             sqlParameter.Clear();
                             sqlParameter.Add("OutwareID", txtOutwareID.Text);
-                            sqlParameter.Add("OrderID", orderID);
+                            sqlParameter.Add("OrderID", txtOrderID.Text);
                             sqlParameter.Add("OutSeq", "");
                             sqlParameter.Add("OutSubSeq", i + 1);
                             sqlParameter.Add("OrderSeq", OutwareSub.Orderseq);
@@ -2526,23 +2299,20 @@ namespace WizMes_BooKyong
                             sqlParameter.Add("LineSubSeq", 0);
                             sqlParameter.Add("RollSeq", i);
                             sqlParameter.Add("LabelID", OutwareSub.LabelID);
-                            sqlParameter.Add("LabelGubun", "2");        //박스라벨출고는 2번 3번은 로트아이디인 듯
+                            sqlParameter.Add("LabelGubun", "2");        
 
                             sqlParameter.Add("LotNo", "0");
-                            sqlParameter.Add("Gubun", "");              //용도를 몰라서 빈값
+                            sqlParameter.Add("Gubun", "");              
                             sqlParameter.Add("StuffQty", 0);
-                            sqlParameter.Add("OutQty", OutwareSub.OutQty.Replace(",", ""));
+                            sqlParameter.Add("OutQty", RemoveComma(OutwareSub.OutQty,true));
                             sqlParameter.Add("OutRoll", 1); // 하나당 박스 1개로 처리 하니, 1로 저장한다고 함
 
-                            sqlParameter.Add("UnitPrice", OutwareSub.UnitPrice != null && !OutwareSub.UnitPrice.Trim().Equals("") ? ConvertDouble(OutwareSub.UnitPrice) : 0);
-                            //sqlParameter.Add("UnitPrice", OutwareSub.UnitPrice.Replace(",", ""));
-                            sqlParameter.Add("CustomBoxID", "");
-                            sqlParameter.Add("DefectID", "");           //결함사유라는데.. 빈값으로 
+                            sqlParameter.Add("UnitPrice", RemoveComma(OutwareSub.UnitPrice, true));
+                            sqlParameter.Add("CustomBoxID", OutwareSub.CustomBoxID);
+                            sqlParameter.Add("DefectID", "");          
                             sqlParameter.Add("BoxID", OutwareSub.LabelID);
-                            //sqlParameter.Add("ArticleID", OutwareSub.ArticleID);
                             sqlParameter.Add("ArticleID", txtArticleID_InGroupBox.Text != null ? txtArticleID_InGroupBox.Text : "");
-                            sqlParameter.Add("SubRemark", OutwareSub.SubRemark);
-                            //sqlParameter.Add("Spec", OutwareSub.Spec);
+                            sqlParameter.Add("SubRemark", "사무실에서 출고(출하스캔)");
 
                             sqlParameter.Add("UserID", MainWindow.CurrentUser);
 
@@ -2581,8 +2351,9 @@ namespace WizMes_BooKyong
                 }
                 else
                 {
-                    btnAdd_Click(null, null);
+                    
                     txtScanData.Focus();
+                    flag = false;
                 }
 
             }
@@ -2607,36 +2378,12 @@ namespace WizMes_BooKyong
         {
             try
             {
-                //if (txtOrderID.Text == "")
-                //{
-                //    MessageBox.Show("관리번호를 반드시 입력하세요.");
-                //    return false;
-                //}
-                if(rbnReqID.IsChecked == true)
+                if (txtOrderID.Text == "")
                 {
-                    if (txtOutwareReqID.Text == "")
-                    {
-                        MessageBox.Show("출고지시번호를 반드시 입력하세요.");
-                        return false;
-                    }
-                }
-            
-
-                if (txtKCustom.Text == "")
-                {
-                    MessageBox.Show("거래처를 반드시 입력하세요.");
+                    MessageBox.Show("관리번호를 반드시 입력하세요.");
                     return false;
                 }
-                //if (lib.IsNumOrAnother(txtOutRoll.Text) == false)
-                //{
-                //    MessageBox.Show("출고박스 수량은 반드시 숫자로 입력하세요.");
-                //    return false;
-                //}
-                //if (lib.IsNumOrAnother(txtOutQty.Text) == false)
-                //{
-                //    MessageBox.Show("출고 수량은 반드시 숫자로 입력하세요.");
-                //    return false;
-                //}
+              
                 if (cboOutClss.SelectedIndex < 0)
                 {
                     MessageBox.Show("출고구분은 반드시 선택하세요.");
@@ -2652,36 +2399,27 @@ namespace WizMes_BooKyong
                     MessageBox.Show("스캔된 라벨 정보가 없습니다.");
                     return false;
                 }
-                #region 재고보다 많이 입력하고 저장하면 중단
-                if (strFlag == "I" && tgnMoveByID.IsChecked == true)
-                {
-               
-
-                    for (int i = 0; i < dgdOutwareSub.Items.Count; i++)
-                    {
-                        var OutwareSub = dgdOutwareSub.Items[i] as Win_ord_OutWare_Scan_Sub_CodeView;
-                        Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
-                        sqlParameter.Add("LabelID", OutwareSub.LabelID);
-                        sqlParameter.Add("Qty", OutwareSub.OutQty.Replace(",", ""));
-                        sqlParameter.Add("ArticleID", txtArticleID_InGroupBox.Text != null ? txtArticleID_InGroupBox.Text : "");
-                        DataTable dt = DataStore.Instance.ProcedureToDataSet("xp_Outware_chkiOutware", sqlParameter, false).Tables[0];
-                        if (dt.Rows[0][0].Equals("F"))
-                        {
-                            MessageBox.Show("재고에 있는 수량보다 많은 수량이 입력되었습니다.");
-                            return false;
-                        }
-                
-                        if(int.Parse(OutwareSub.OutQty) > RestOrderQty)
-                        {
-                            MessageBox.Show($"해당 지시번호 남은 지시량 [ {RestOrderQty} ](을)를 초과할 수 없습니다.");
-                            return false;
-                        }
-
-                    }
-
-                  
-                }
-                #endregion
+             
+                // 박스에 담긴 수량 체크
+                //if (tgnMoveByID.IsChecked == true)
+                //{
+                //    for (int i = 0; i < dgdOutwareSub.Items.Count; i++)
+                //    {
+                //        var OutwareSub = dgdOutwareSub.Items[i] as Win_ord_OutWare_Scan_Sub_CodeView;
+                //        foreach (KeyValuePair<string, object> kvp in lstCheck)
+                //        {
+                //            if (OutwareSub.LabelID == kvp.Key)
+                //            {
+                //                if (Convert.ToInt32(OutwareSub.OutQty) > Convert.ToInt32(kvp.Value))
+                //                {
+                //                    MessageBox.Show("박스ID(" + OutwareSub.LabelID + ")에 남은 수량을 초과하셨습니다");
+                //                    return false;
+                //                }
+                //            }
+                //        }
+                //    }
+                //}
+              
 
                 return true;
             }
@@ -2744,6 +2482,12 @@ namespace WizMes_BooKyong
                 if (OutwareSub != null)
                 {
                     dgdOutwareSub.Items.Remove(OutwareSub);
+
+                    // lstCheck에서 해당 항목 삭제
+                    if (lstCheck.ContainsKey(OutwareSub.LabelID))
+                    {
+                        lstCheck.Remove(OutwareSub.LabelID);
+                    }
                 }
 
                 SumScanQty();
@@ -2802,17 +2546,7 @@ namespace WizMes_BooKyong
 
                         txtBuyerArticleNo.Text = DR["BuyerArticleNo"].ToString();
                         orderSeq = DR["OrderSeq"].ToString();
-
-                        if(rbnReqID.IsChecked == true && txtOutwareReqID.Text.Length > 0)
-                        {
-                            ReqQty = ConvertInt(replyReqQty);
-                            OrderQty = ConvertInt(replyOrderQty);
-                            RestOrderQty = ConvertInt(replyReqRemainQty);
-                        }
-                        else if(rbnOrderNumber.IsChecked == true && txtOrderID.Text.Length > 0)
-                        {
-                            OrderQty = ConvertInt(replyOrderQty);
-                        }
+                    
                     }
                 }
 
@@ -2958,6 +2692,7 @@ namespace WizMes_BooKyong
             txtArticleID_InGroupBox.Text = string.Empty;
             txtArticle_InGroupBox.Text = string.Empty;
             txtArticle_InGroupBox.Tag = null;
+            txtBuyerArticleNo.Text = string.Empty;
             cboOutClss.SelectedIndex = 0;
             txtBuyerModel.Text = string.Empty;
             txtOutwareID.Text = string.Empty;
@@ -2971,6 +2706,7 @@ namespace WizMes_BooKyong
             txtBuyerName.Tag = null;
             txtRemark.Text = string.Empty;
             txtOutCustom.Text = string.Empty;
+            txtScanData.Text = string.Empty;
 
         }
 
@@ -2990,7 +2726,7 @@ namespace WizMes_BooKyong
                         OutQty += ConvertDouble(label.OutQty.ToString());
                 }
 
-                txtOutRoll.Text = stringFormatN0(OutRoll);
+                txtOutRoll.Text = dgdOutwareSub.Items.Count.ToString();
                 txtOutQty.Text = stringFormatN0(OutQty);
             }
             catch (Exception ee)
@@ -3157,44 +2893,7 @@ namespace WizMes_BooKyong
                 MessageBox.Show("오류지점 - txtQty_KeyDown : " + ee.ToString());
             }
 
-            //if (EventStatus == true)
-            //{
-            //    var ViewReceiver = dgdOutwareSub.CurrentCell.Item as Win_ord_OutWare_Scan_Sub_CodeView;  //선택 줄.
-            //    if (ViewReceiver != null)   // 널이 아니라면,
-            //    {
-            //        try
-            //        {
-            //            if (e.Key == Key.Enter)
-            //            {
-            //                e.Handled = true;
-            //                int point = dgdOutwareSub.Items.IndexOf(ViewReceiver);
-
-            //                double realQty = Double.Parse(ViewReceiver.OutRealQty);
-            //                double beforeQty = Double.Parse(ViewReceiver.OutQty);
-
-            //                DataGridCell tempOutQtyCell = lib.GetCell(point, 4, dgdOutwareSub);
-            //                TextBox tempOutQtyTB = lib.GetVisualChild<TextBox>(tempOutQtyCell);
-
-
-            //                if (Double.Parse(tempOutQtyTB.Text) > realQty)
-            //                {
-            //                    MessageBox.Show("입력하신 수량이 재고수량보다 많습니다. 남은재고는 [ " + ViewReceiver.OutRealQty + " ]입니다.");
-            //                }
-            //                else
-            //                {
-
-            //                    txtOutQty.Text = (Double.Parse(txtOutQty.Text) - beforeQty + Double.Parse(tempOutQtyTB.Text)).ToString();
-
-            //                    ViewReceiver.OutQty = tempOutQtyTB.Text;
-            //                }
-            //            }
-            //        }
-            //        catch (Exception ee)
-            //        {
-            //            MessageBox.Show("오류 시점 - 수량 입력후 엔터키" + ee.ToString());
-            //        }
-            //    }
-            //}
+        
         }
 
         private void dgdOutwareSubRequest_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -3625,127 +3324,6 @@ namespace WizMes_BooKyong
             }
         }
 
-        //입력값으로 지시잔량 초과하는지 보기
-        private bool ValidateInput(object sender, TextCompositionEventArgs e)
-        {
-            if (tgnMoveByQty.IsChecked == true)
-            {
-                TextBox textBox = (TextBox)sender;
-
-
-                //지시번호 파트
-                if (txtOutwareReqID.Text.Length > 0)
-                {          
-
-                    // 현재 텍스트박스의 값과 새로 입력하려는 값을 합친 값을 계산합니다.
-                    int tot = 0;
-                    string cleanText = txtOutQty.Text.Replace(",", ""); // 쉼표 제거
-                    int.TryParse(cleanText, out tot);
-
-                    int inputint = 0;
-                    int.TryParse(textBox.Text, out inputint);
-
-                    tmpRestQty = RestOrderQty - tot;   //plusfinder로 가져온 지시잔량과 총량을 뺍니다      
-        
-          
-                    if(RestOrderQty > tot)      // 총량이 지시잔량보다 적다면 입력해도 되니니까
-                    {
-                        if (inputint > RestOrderQty)
-                        {
-
-                            int currentValue;
-                            if (int.TryParse(textBox.Text, out currentValue))
-                            {
-
-                                int newValue = currentValue;
-                                if (int.TryParse(e.Text, out int inputValue))
-                                {
-                                    newValue = currentValue * 10 + inputValue;
-
-
-                                    if (tot > RestOrderQty) //입력 값이 지시량보다 총량이 더 많아지면
-                                    {
-                                        e.Handled = true; // 입력을 무시하고 경고창 띄운뒤 텍스트박스를 지움
-                                        MessageBox.Show($"해당 지시번호 남은 지시량 [ {RestOrderQty} ](을)를 초과할 수 없습니다.");
-                                        txtScanData.Text = string.Empty;
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else if(tmpRestQty == 0) //입력하고 난 뒤 남은 지시수량이 0이 되었을때
-                    {
-                        cnt++;
-                        e.Handled = true; //입력을 무시합니다
-                        if(cnt == 5)
-                        {
-                            MessageBox.Show("이미 남은 지시량"+"("+RestOrderQty+")"+"을 모두 입력하셨습니다."); 
-                            cnt = 0;
-                            return false;
-                        }
-                
-                    }
-
-                }
-                //관리번호 파트
-                else if(txtOrderID.Text.Length > 0)
-                {
-                    int tot = 0;
-                    string cleanText = txtOutQty.Text.Replace(",", ""); // 쉼표 제거
-                    int.TryParse(cleanText, out tot);
-
-                    int inputint = 0;
-                    int.TryParse(textBox.Text, out inputint);
-
-                    
-
-                    tmpRestQty = OrderQty - tot;
-
-                    if (OrderQty > tot)      // 총량이 수주량보다 적다면 입력해도 되니니까
-                    {
-                        if (inputint > OrderQty)
-                        {
-
-                            int currentValue;
-                            if (int.TryParse(textBox.Text, out currentValue))
-                            {
-
-                                int newValue = currentValue;
-                                if (int.TryParse(e.Text, out int inputValue))
-                                {
-                                    newValue = currentValue * 10 + inputValue;
-
-
-                                    if (tot > Convert.ToInt32(replyOrderQty)) //입력 값이 수주량보다 더 많아지면
-                                    {
-                                        e.Handled = true; // 입력을 무시하고 경고창 띄운뒤 텍스트박스를 지움
-                                        MessageBox.Show($"해당 관리번호 수주량 [ {stringFormatN0(OrderQty)} ](을)를 초과할 수 없습니다.");
-                                        txtScanData.Text = string.Empty;
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else if (tmpRestQty == 0) //입력하고 난 뒤 남은 수주수량이 0이 되었을때
-                    {
-                        cnt++;
-                        e.Handled = true; //입력을 무시합니다
-                        if (cnt == 5)
-                        {
-                            MessageBox.Show("이미 수주량" + "(" + stringFormatN0(OrderQty) + ")" + "을 모두 입력하셨습니다.");
-                            cnt = 0;
-                            return false;
-                        }
-
-                    }
-
-                }
-            }
-
-            return true;
-        }
 
      
 
@@ -3782,7 +3360,7 @@ namespace WizMes_BooKyong
         private void SumColorQty()
         {
             try
-            {
+            {                
                 double OutQty = 0;
 
                 for (int i = 0; i < dgdOutwareSub.Items.Count; i++)
@@ -3794,6 +3372,7 @@ namespace WizMes_BooKyong
                     }
                 }
 
+                txtOutRoll.Text = dgdOutwareSub.Items.Count.ToString();
                 txtOutQty.Text = lib.returnNumStringZero(OutQty.ToString());
 
             }
@@ -3884,13 +3463,7 @@ namespace WizMes_BooKyong
 
             return result;
         }
-
-        private void txtScanReqQtyCheck(object sender, TextCompositionEventArgs e)
-        {
-
-            ValidateInput(sender, e);
-  
-        }
+              
        
 
         private void lblpfBuyerArticleNo_Click(object sender, MouseButtonEventArgs e)
@@ -3956,6 +3529,478 @@ namespace WizMes_BooKyong
         {
             Check_SwitchOrderNoAndReqID();
         }
+
+        #region 기타 메서드 모음 ADD
+
+        //그리드 클리어
+        private void ClearGrdInput()
+        {
+            List<Grid> grids = new List<Grid> { grdInput };
+
+            foreach (Grid grid in grids)
+            {
+                FindUiObject(grid, child =>
+                {
+                    if (child is TextBox txtbox)
+                    {
+                        txtbox.Text = string.Empty;
+                        txtbox.Tag = null;
+                    }
+                    else if (child is DatePicker dtp)
+                    {
+                        dtp.SelectedDate = null;
+                    }
+                    else if (child is ComboBox cb)
+                    {
+                        cb.SelectedValue = null;
+                    }
+                    //else if (child is DataGrid dgd)
+                    //{
+                    //    if (dgd.ItemsSource != null)
+                    //    {
+                    //        var originalCollection = dgd.ItemsSource;
+                    //        dgd.ItemsSource = null;
+
+                    //        if (originalCollection is IList list)
+                    //        {
+                    //            list.Clear();
+                    //            dgd.ItemsSource = originalCollection;
+                    //        }
+                    //        else if (originalCollection is ObservableCollection<object> ovc)
+                    //        {
+                    //            ovc.Clear();
+                    //            dgd.ItemsSource = originalCollection;
+                    //        }
+
+                    //    }
+                    //    else
+                    //    {
+                    //        dgd.Items.Clear();
+                    //    }
+                    //}
+
+                });
+            }
+        }
+
+        //라벨클릭, 체크박스 토글 코드가 너무 반복 되어서 작성
+        private void CommonControl_Click(object sender, EventArgs e)
+        {
+            CheckBox checkBox = null;
+            DependencyObject parentGrid = null;
+
+            if (sender is Label label)
+            {
+                // 라벨의 부모 그리드 찾기
+                parentGrid = FindVisualParent<Grid>(label);
+                if (parentGrid != null)
+                {
+                    // 같은 그리드 내에서 체크박스 찾기
+                    checkBox = FindChild<CheckBox>(parentGrid);
+                    if (checkBox != null)
+                    {
+                        // 체크박스 상태 토글
+                        checkBox.IsChecked = !checkBox.IsChecked;
+                    }
+                }
+            }
+            else if (sender is CheckBox clickedCheckBox)
+            {
+                // 클릭된 것이 체크박스인 경우
+                checkBox = clickedCheckBox;
+                parentGrid = FindVisualParent<Grid>(checkBox);
+            }
+
+            // 체크박스와 부모 그리드가 있으면 컨트롤 활성화/비활성화 처리
+            if (checkBox != null && parentGrid != null)
+            {
+                List<Control> controlsToToggle = new List<Control>();
+
+                // 그리드 내 모든 Control 찾기 (체크박스 제외)
+                FindUiObject(parentGrid, obj => {
+                    if (obj is Control control && obj != checkBox && !(obj is Label) && !(obj is CheckBox))
+                    {
+                        controlsToToggle.Add(control);
+                    }
+                });
+
+                // 컨트롤 활성화/비활성화
+                foreach (var control in controlsToToggle)
+                {
+                    control.IsEnabled = checkBox.IsChecked == true;
+                }
+            }
+        }
+
+        //UI컨트롤 요소찾기
+        private void FindUiObject(DependencyObject parent, Action<DependencyObject> action)
+        {
+            int childCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                action?.Invoke(child);
+
+                FindUiObject(child, action);
+            }
+        }
+
+        //컨트롤 안 특정 타입의 자식 컨트롤을 찾는 함수 (그리드내에서)
+        //var parentContainer = VisualTreeHelper.GetParent(checkbox);
+        //var datePicker = FindChild<DatePicker>(parentContainer);
+        private T FindChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            int childCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T typedChild)
+                {
+                    return typedChild;
+                }
+
+                // 재귀적으로 자식의 자식들도 검색
+                var result = FindChild<T>(child);
+                if (result != null)
+                    return result;
+            }
+            return null;
+        }
+
+
+        // 자식요소 안에서 부모요소 찾기
+        //DataGridRow row = FindVisualParent<DataGridRow>(checkBox); 데이터그리드안의 행속 체크박스의 부모행 찾기
+        //DataGrid parentGrid = FindVisualParent<DataGrid>(row); 데이터그리드 행의 부모 데이터그리드 찾기
+        private T FindVisualParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+
+            if (parentObject == null)
+                return null;
+
+            T parent = parentObject as T;
+            if (parent != null)
+                return parent;
+            else
+                return FindVisualParent<T>(parentObject);
+        }
+
+        //8자리 char형태 날짜 년도-월-일 하이픈 삽입
+        //16자리 일경우 8자리 사이에 ~ 삽입
+        private string DateTypeHyphen(string DigitsDate)
+        {
+            string pattern1 = @"(\d{4})(\d{2})(\d{2})";
+            string pattern2 = @"(\d{4})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})";
+
+            if (DigitsDate.Length == 8)
+            {
+                DigitsDate = Regex.Replace(DigitsDate, pattern1, "$1-$2-$3");
+            }
+            else if (DigitsDate.Length == 16)
+            {
+                DigitsDate = Regex.Replace(DigitsDate, pattern2, "$1-$2-$3 ~ $4-$5-$6");
+            }
+            else if (DigitsDate.Length == 0)
+            {
+                DigitsDate = string.Empty;
+            }
+
+            return DigitsDate;
+        }
+
+
+        private string TimeTypeColon(string DigitsTime)
+        {
+            string pattern1 = @"(\d{2})(\d{2})";
+
+            if (DigitsTime.Length == 4)
+            {
+                DigitsTime = Regex.Replace(DigitsTime, pattern1, "$1:$2");
+            }
+
+            return DigitsTime;
+        }
+        private object RemoveComma(object obj, bool returnAsNumber = false, Type returnType = null)
+        {
+            //파라미터가 만약 null일때
+            if (obj == null)
+            {
+                //숫자타입이 false면 string으로 내보내기
+                if (!returnAsNumber) return "0";
+
+                // 만약 숫자타입을 써야되면 returnType파라미터의 받은 형태로 전달
+                // null일 때도 returnType에 따라 적절한 타입의 0 반환
+                switch (returnType?.Name)
+                {
+                    case "Decimal": return (object)0m;  //monetary
+                    case "Double": return (object)0d;   //double
+                    case "Int64": return (object)0L;    //long
+                    default: return (object)0;          //int
+                }
+            }
+
+            string digits = obj.ToString()
+                              .Trim()
+                              .Replace(",", "");
+
+            //만약 빈공백(blank)이더라도 0으로 내보내야한다.
+            if (string.IsNullOrEmpty(digits))
+            {
+                if (!returnAsNumber) return "0";
+
+                // returnType을 활용해서 적절한 타입으로 반환
+                switch (returnType?.Name)
+                {
+                    case "Decimal": return (object)0m;
+                    case "Double": return (object)0d;
+                    case "Int64": return (object)0L;
+                    default: return (object)0;
+                }
+            }
+
+
+            try
+            {
+                Type targetType = returnType ?? typeof(int);
+
+                //혹시나 하는 예외처리
+                //입력 컨트롤간에 LostFocus나 TextChanged같은 걸로 계산을 할 때
+                //처리 가능한 숫자 범위를 초과하면 오류가 발생하므로
+                //초과하면 해당 자료형타입이 처리할 수 있는 최대 숫자를 표시해줌
+                switch (targetType.Name)
+                {
+                    case "Int32":
+                        if (decimal.TryParse(digits, out decimal intParsed))
+                        {
+                            if (intParsed > int.MaxValue) return int.MaxValue;
+                            if (intParsed < int.MinValue) return int.MinValue;
+                            return (int)intParsed;
+                        }
+                        return int.MaxValue;
+
+                    case "Int64":
+                        if (decimal.TryParse(digits, out decimal longParsed))
+                        {
+                            if (longParsed > long.MaxValue) return long.MaxValue;
+                            if (longParsed < long.MinValue) return long.MinValue;
+                            return (long)longParsed;
+                        }
+                        return long.MaxValue;
+
+                    case "Double":
+                        if (double.TryParse(digits, out double doubleParsed))
+                        {
+                            return doubleParsed;
+                        }
+                        return double.MaxValue;
+
+                    case "Decimal":
+                        if (decimal.TryParse(digits, out decimal decimalParsed))
+                        {
+                            return decimalParsed;
+                        }
+                        return decimal.MaxValue;
+
+                    default:
+                        return int.MaxValue;
+                }
+            }
+            catch
+            {
+
+                if (returnType != null)
+                {
+                    switch (returnType.Name)
+                    {
+                        case "Int32":
+                            return int.MaxValue;
+                        case "Int64":
+                            return long.MaxValue;
+                        case "Double":
+                            return double.MaxValue;
+                        case "Decimal":
+                            return decimal.MaxValue;
+                        default:
+                            return int.MaxValue;
+                    }
+                }
+                return int.MaxValue;
+            }
+        }
+
+        private string ConvertDate(DatePicker datePicker)
+        {
+            if (datePicker.SelectedDate != null)
+                return datePicker.SelectedDate.Value.ToString("yyyyMMdd");
+            else
+                return string.Empty;
+        }
+
+        private bool IsDatePickerNull(DatePicker datePicker)
+        {
+            if (datePicker.SelectedDate == null)
+                return true;
+            else
+                return false;
+        }
+
+
+
+        //텍스트박스 , DatePicker, 콤보박스의 바인딩 값과 넘겨주는 오브젝트 value가 일치하는 곳에
+        //자동으로 바인딩
+        //사용하려하면 바인딩하려는 UI개체에 updateSourceTrigger를 propertyChange, Tag값도 변경하려면 mode=TwoWay를 작성하세요
+        private void AutoBindDataToControls(object dataObject, DependencyObject parent)
+        {
+            var properties = dataObject.GetType().GetProperties()
+                .ToDictionary(p => p.Name.ToLower(), p => p);
+
+            // TextBox 처리
+            var textBoxes = FindAllControls<TextBox>(parent);
+            foreach (var textBox in textBoxes)
+            {
+                // Text 바인딩 처리
+                var textBinding = BindingOperations.GetBinding(textBox, TextBox.TextProperty);
+                if (textBinding != null && !string.IsNullOrEmpty(textBinding.Path.Path))
+                {
+                    var textPropertyName = textBinding.Path.Path.ToLower();
+                    if (properties.TryGetValue(textPropertyName, out var textProperty))
+                    {
+                        var textValue = textProperty.GetValue(dataObject)?.ToString();
+                        if (decimal.TryParse(textValue, out _))
+                            textBox.Text = stringFormatN0(textValue);
+                        else
+                            textBox.Text = textValue;
+                    }
+                }
+
+                // Tag 바인딩 처리
+                var tagBinding = BindingOperations.GetBinding(textBox, TextBox.TagProperty);
+                if (tagBinding != null && !string.IsNullOrEmpty(tagBinding.Path.Path))
+                {
+                    var tagPropertyName = tagBinding.Path.Path.ToLower();
+                    if (properties.TryGetValue(tagPropertyName, out var tagProperty))
+                    {
+                        textBox.Tag = tagProperty.GetValue(dataObject)?.ToString();
+                    }
+                }
+            }
+
+            // DatePicker 처리
+            var datePickers = FindAllControls<DatePicker>(parent);
+            foreach (var datePicker in datePickers)
+            {
+                var binding = BindingOperations.GetBinding(datePicker, DatePicker.SelectedDateProperty);
+                if (binding != null && !string.IsNullOrEmpty(binding.Path.Path))
+                {
+                    var propertyName = binding.Path.Path.ToLower();
+                    if (properties.TryGetValue(propertyName, out var property))
+                    {
+                        datePicker.SelectedDate = ConvertToDateTime(property.GetValue(dataObject)?.ToString());
+                    }
+                }
+            }
+
+            // ComboBox 처리
+            var comboBoxes = FindAllControls<ComboBox>(parent);
+            foreach (var comboBox in comboBoxes)
+            {
+                var binding = BindingOperations.GetBinding(comboBox, ComboBox.SelectedValueProperty);
+                if (binding != null && !string.IsNullOrEmpty(binding.Path.Path))
+                {
+                    var propertyName = binding.Path.Path.ToLower();
+                    if (properties.TryGetValue(propertyName, out var property))
+                    {
+                        comboBox.SelectedValue = property.GetValue(dataObject)?.ToString();
+                    }
+                }
+            }
+        }
+
+        private IEnumerable<T> FindAllControls<T>(DependencyObject parent) where T : DependencyObject
+        {
+            var count = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < count; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                if (child is T control)
+                    yield return control;
+
+                foreach (var descendant in FindAllControls<T>(child))
+                    yield return descendant;
+            }
+        }
+
+        // 단일 컨트롤을 찾는 메서드도 필요할 수 있습니다
+        private T FindControl<T>(DependencyObject parent, string name) where T : FrameworkElement
+        {
+            if (parent == null) return null;
+
+            var count = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < count; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                if (child is T control && control.Name == name)
+                    return control;
+
+                var result = FindControl<T>(child, name);
+                if (result != null)
+                    return result;
+            }
+
+            return null;
+        }
+
+        private DateTime? ConvertToDateTime(string dateStr)
+        {
+            if (string.IsNullOrEmpty(dateStr?.Trim()))
+                return null;
+
+            // 특수문자 제거 (숫자만 남김)
+            string cleanDate = new string(dateStr.Where(char.IsDigit).ToArray());
+
+            // 8자리가 아닌 경우 null 반환
+            if (cleanDate.Length != 8)
+                return null;
+
+            try
+            {
+                return DateTime.ParseExact(cleanDate, "yyyyMMdd", null);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+
+
+
+
+
+        #endregion
+
+        private void btnCustomLabelScanYN_Checked(object sender, RoutedEventArgs e)
+        {
+            ToolTip tooltip = new ToolTip();
+            tooltip.Content = "입력한 바코드가 고객라벨에 입력됩니다.";
+
+            ToggleButton tbn = sender as ToggleButton;
+            tbn.ToolTip = tooltip;
+            tooltip.IsOpen = true;
+
+            System.Windows.Threading.DispatcherTimer timer = new System.Windows.Threading.DispatcherTimer();
+
+            timer.Interval = TimeSpan.FromSeconds(2);
+            timer.Tick += (s, args) => {
+                tooltip.IsOpen = false;
+                timer.Stop();
+            };
+            timer.Start();
+        }
     }
 
 
@@ -3963,7 +4008,7 @@ namespace WizMes_BooKyong
     {
 
         public bool Chk { get; set; }
-
+        public int num { get; set; }
         public string OutwareID { get; set; }
         public string OrderID { get; set; }
         public string OutwareReqID { get; set; }
@@ -3986,6 +4031,7 @@ namespace WizMes_BooKyong
         public string OutType { get; set; }
         public string Remark { get; set; }
         public string BuyerModel { get; set; }
+        public string BuyerModelID { get; set; }
         public string OutSumQty { get; set; }
         public string OutQtyY { get; set; }
         public string StuffinQty { get; set; }
@@ -4086,7 +4132,8 @@ namespace WizMes_BooKyong
 
     public class Win_ord_OutWare_Scan_dgdTotal_CodeView : BaseView
     {
-        public double totQty { get; set; }
+        public int count { get; set; }
+        public string totQty { get; set; }
     
     }
 
