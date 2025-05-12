@@ -650,25 +650,25 @@ namespace WizMes_BooKyong
             Lib.Instance.ChildMenuClose(this.ToString());
         }
 
-        public string GetDefaultPrinter()
-        {
-            PrinterSettings settings = new PrinterSettings();
-            foreach (string printer in PrinterSettings.InstalledPrinters)
-            {
-                settings.PrinterName = printer;
+        //public string GetDefaultPrinter()
+        //{
+        //    PrinterSettings settings = new PrinterSettings();
+        //    foreach (string printer in PrinterSettings.InstalledPrinters)
+        //    {
+        //        settings.PrinterName = printer;
 
-                // 지금은 기본프린터 상태가 아니라서 임시로 막아놓음
-                //if (settings.IsDefaultPrinter && (printer.Contains("TSC"))) //기본 프린트일때
-                //{
-                //    return printer;
-                //}
-                if (settings.IsDefaultPrinter || (printer.Contains("TSC"))) //기본 프린트일때
-                {
-                    return printer;
-                }
-            }
-            return string.Empty;
-        }
+        //        // 지금은 기본프린터 상태가 아니라서 임시로 막아놓음
+        //        //if (settings.IsDefaultPrinter && (printer.Contains("TSC"))) //기본 프린트일때
+        //        //{
+        //        //    return printer;
+        //        //}
+        //        if (settings.IsDefaultPrinter || (printer.Contains("TSC"))) //기본 프린트일때
+        //        {
+        //            return printer;
+        //        }
+        //    }
+        //    return string.Empty;
+        //}
 
         // 거래명세서 인쇄 버튼 이벤트
         private void btnPrint_Click(object sender, RoutedEventArgs e)
@@ -3192,6 +3192,424 @@ namespace WizMes_BooKyong
                 chkMtrLOTIDSrh.IsChecked = true;
             }
         }
+
+        //바코드 출력
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            List<TagPrint_CodeView> lstTagPrint = new List<TagPrint_CodeView>();
+
+            // 실제 라벨 객체에 담기
+            for (int i = 0; i < ovcStuffIN.Count; i++)
+            {
+                var OcStuffin = ovcStuffIN[i];
+
+                var Tag = new TagPrint_CodeView()
+                {
+                    Custom = OcStuffin.Custom,
+                    //Article = OcStuffin.Article,
+                    BuyerArticle = OcStuffin.Article,
+                    Date = OcStuffin.StuffDate_CV,
+                    Qty = OcStuffin.StuffQty,
+                    UnitClssName = OcStuffin.UnitClssName,
+                    Barcode = OcStuffin.Lotid
+                };
+
+                lstTagPrint.Add(Tag);
+            }
+
+
+            if (MessageBox.Show("총 " + lstTagPrint.Count + "장의 라벨을 출력하시겠습니까?", "라벨 인쇄 전 확인", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                string PrintName = GetDefaultPrinter();
+                TSCLIB_DLL.openport(PrintName);
+
+
+                if (SendWindowDllCommand(lstTagPrint, "013", 1, 0))
+                {
+
+                    MessageBox.Show("성공");
+                }
+                else
+                {
+
+                    MessageBox.Show("실패");
+                }
+                TSCLIB_DLL.clearbuffer();
+                TSCLIB_DLL.closeport();
+
+            }
+
+
+        }
+
+        // 기본 프린터 이름 가져오기
+        private string GetDefaultPrinter()
+        {
+            PrinterSettings settings = new PrinterSettings();
+            foreach (string printer in PrinterSettings.InstalledPrinters)
+            {
+                settings.PrinterName = printer;
+                if (settings.IsDefaultPrinter && (printer.Contains("TSC"))) //기본 프린트일때
+                {
+                    return printer;
+                }
+
+            }
+            return string.Empty;
+        }
+
+        // 인쇄
+        private bool SendWindowDllCommand(List<TagPrint_CodeView> lstTagPrint, string sTagID, int nPrintCount, int nDefectCnt)
+        {
+
+            bool flag = false;
+
+            for (int m = 0; m < lstTagPrint.Count; m++)
+            {
+                List<string> vData = new List<string>();
+                vData.Add(lstTagPrint[m].Barcode);
+
+                vData.Add(lstTagPrint[m].Custom);
+                //vData.Add(lstTagPrint[m].Article);
+                vData.Add(lstTagPrint[m].BuyerArticle);
+                vData.Add(lstTagPrint[m].Qty);
+                vData.Add(lstTagPrint[m].UnitClssName);
+                vData.Add(lstTagPrint[m].Date);
+                //vData.Add(lstTagPrint[m].Barcode);
+                var Tag = new mt_Tag_CodeView();
+                var TagSub = new mt_TagSub_CodeView();
+
+                List<mt_TagSub_CodeView> lstTagSub = new List<mt_TagSub_CodeView>();
+
+                try
+                {
+                    // mt_Tag
+                    Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
+                    sqlParameter.Clear();
+
+                    sqlParameter.Add("TagID", sTagID);
+
+                    DataSet ds = DataStore.Instance.ProcedureToDataSet("xp_WizWork_sMtTag", sqlParameter, false);
+
+                    if (ds != null && ds.Tables.Count > 0)
+                    {
+                        DataTable dt = ds.Tables[0];
+
+                        if (dt.Rows.Count > 0)
+                        {
+                            foreach (DataRow dr in dt.Rows)
+                            {
+                                Tag.TagID = dr["TagID"].ToString();
+                                Tag.Tag = dr["Tag"].ToString();
+                                Tag.Width = ConvertInt(dr["Width"].ToString());
+                                Tag.Height = ConvertInt(dr["Height"].ToString());
+
+                                Tag.DefHeight = ConvertInt(dr["DefHeight"].ToString());
+                                Tag.DefBaseY = ConvertInt(dr["DefBaseY"].ToString());
+                                Tag.DefBaseX1 = ConvertInt(dr["DefBaseX1"].ToString());
+                                Tag.DefBaseX2 = ConvertInt(dr["DefBaseX2"].ToString());
+                                Tag.DefBaseX3 = ConvertInt(dr["DefBaseX3"].ToString());
+
+                                Tag.DefGapY = ConvertInt(dr["DefGapY"].ToString());
+                                Tag.DefGapX1 = ConvertInt(dr["DefGapX1"].ToString());
+                                Tag.DefGapX2 = ConvertInt(dr["DefGapX2"].ToString());
+                                Tag.DefLength = ConvertInt(dr["DefLength"].ToString());
+                                Tag.DefHCount = ConvertInt(dr["DefHCount"].ToString());
+
+                                Tag.DefBarClss = ConvertInt(dr["DefBarClss"].ToString());
+                                Tag.Direct = dr["Direct"].ToString();
+                            }
+                        }
+                    }
+
+                    // mt_TagSub
+                    sqlParameter = new Dictionary<string, object>();
+                    sqlParameter.Clear();
+
+                    sqlParameter.Add("TagID", sTagID);
+
+                    DataSet ds2 = DataStore.Instance.ProcedureToDataSet("xp_WizWork_sMtTagSub", sqlParameter, false);
+
+                    if (ds2 != null && ds.Tables.Count > 0)
+                    {
+                        DataTable dt = ds2.Tables[0];
+
+                        if (dt.Rows.Count > 0)
+                        {
+                            int j = 0;
+                            foreach (DataRow dr in dt.Rows)
+                            {
+                                lstTagSub.Add(new mt_TagSub_CodeView());
+
+                                lstTagSub[j].Name = dr["Name"].ToString();
+                                lstTagSub[j].Type = ConvertInt(dr["Type"].ToString());
+                                lstTagSub[j].Align = ConvertInt(dr["Align"].ToString());
+                                lstTagSub[j].x = ConvertInt(dr["x"].ToString());
+                                lstTagSub[j].y = ConvertInt(dr["y"].ToString());
+                                lstTagSub[j].Font = ConvertInt(dr["Font"].ToString());
+                                lstTagSub[j].Length = ConvertInt(dr["Length"].ToString());
+                                lstTagSub[j].HMulti = ConvertInt(dr["HMulti"].ToString());
+                                lstTagSub[j].VMulti = ConvertInt(dr["VMulti"].ToString());
+                                lstTagSub[j].Relation = ConvertInt(dr["Relation"].ToString());
+                                lstTagSub[j].Rotation = ConvertInt(dr["Rotation"].ToString());
+                                lstTagSub[j].Space = ConvertInt(dr["Space"].ToString());
+
+                                lstTagSub[j].PrevItem = ConvertInt(dr["PrevItem"].ToString());
+                                lstTagSub[j].BarType = ConvertInt(dr["BarType"].ToString());
+                                lstTagSub[j].BarHeight = ConvertInt(dr["BarHeight"].ToString());
+                                lstTagSub[j].FigureWidth = ConvertInt(dr["FigureWidth"].ToString());
+                                lstTagSub[j].FigureHeight = ConvertInt(dr["FigureHeight"].ToString());
+                                lstTagSub[j].Thickness = ConvertInt(dr["Thickness"].ToString());
+                                lstTagSub[j].ImageFile = dr["ImageFile"].ToString();
+                                lstTagSub[j].Width = ConvertInt(dr["Width"].ToString());
+                                lstTagSub[j].Height = ConvertInt(dr["Height"].ToString());
+                                lstTagSub[j].Visible = ConvertInt(dr["Visible"].ToString());
+
+                                lstTagSub[j].FontName = dr["FontName"].ToString();
+                                lstTagSub[j].FontStyle = dr["FontStyle"].ToString();
+                                lstTagSub[j].FontUnderLine = dr["FontUnderLine"].ToString();
+
+                                //20171011 김종영 수정 type 변경
+                                //if (list_m_tItem[i].nType == 1 && list_m_tItem[i].sName.Substring(0, 1).ToUpper() == "D")
+                                if ((lstTagSub[j].Type < 2 || lstTagSub[j].Type == 1) && lstTagSub[j].Name.Substring(0, 1).ToUpper() == "D")
+                                {
+                                    if (lstTagSub[j].Relation == 0 && lstTagSub[j].Type == 1)//바코드
+                                    {
+                                        lstTagSub[j].Text = vData[0];
+                                    }
+
+                                    else if (lstTagSub[j].Relation > 0 && lstTagSub[j].Type == 0)
+                                    {
+                                        if (vData.Count > lstTagSub[j].Relation)
+                                        {
+                                            lstTagSub[j].Text = vData[lstTagSub[j].Relation];
+                                        }
+                                        else
+                                        {
+                                            lstTagSub[j].Text = "";
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    lstTagSub[j].Text = dr["Text"].ToString();
+                                }
+
+                                //if (lstTagSub[j].nType < 2 && lstTagSub[j].sName.Substring(0, 1).ToUpper() == "D")
+                                //{
+                                //    if (lstTagSub[j].nRelation == 0 && lstTagSub[i].nType == 1)//바코드
+                                //    {
+                                //        lstTagSub[i].sText = vData[0];
+                                //    }
+
+                                //    else if (lstTagSub[i].nRelation > 0 && lstTagSub[i].nType == 0)
+                                //    {
+                                //        if (vData.Count > lstTagSub[i].nRelation)
+                                //        {
+                                //            lstTagSub[i].sText = vData[lstTagSub[i].nRelation];
+                                //        }
+                                //        else
+                                //        {
+                                //            lstTagSub[i].sText = "";
+                                //        }
+                                //    }
+                                //}
+                                //else
+                                //{
+                                //    lstTagSub[i].sText = dr["Text"].ToString();
+                                //}
+
+                                j++;
+                            } // foreach 끝
+
+                            string strWidth = "";
+                            string strHeight = "";
+                            try
+                            {
+                                if (Tag.Width.ToString() != "0")
+                                {
+                                    strWidth = (Tag.Width / 10F).ToString();
+                                }
+                                if (Tag.Height.ToString() != "0")
+                                {
+                                    strHeight = (Tag.Height / 10F).ToString();
+                                }
+                            }
+                            catch
+                            {
+                                strWidth = "0";
+                                strHeight = "0";
+                            }
+
+                            TSCLIB_DLL.setup(strWidth, strHeight, "8", "15", "0", "3", "0");//기존소스
+                                                                                            //TSCLIB_DLL.setup(strWidth, strHeight, "8", "15", "0", "0", "0");//감열지 테스트용
+                            TSCLIB_DLL.sendcommand("DIRECTION " + Tag.Direct);
+
+                            TSCLIB_DLL.clearbuffer();
+                            string sText = "";
+                            string[] sBarType = new string[2];
+
+                            for (int i = 0; i < lstTagSub.Count; i++)
+                            {
+                                if (lstTagSub[i].Visible > 0)//출력여부
+                                {
+                                    ////'QR CODE
+                                    //if (lstTagSub[i].Type == EnumItem.IO_QRcode)
+                                    //{
+                                    //    //QRCODE x, y, ECC Level,cell width, mode, rotation,[model, mask,]"content"
+
+                                    //    string qr_command = "QRCODE " + lstTagSub[i].x.ToString() + "," +
+                                    //                lstTagSub[i].y.ToString() + "," +
+                                    //                "L" + "," +     // ECC Level (L,M,Q,H)
+                                    //                lstTagSub[i].FigureWidth.ToString() + "," +
+                                    //                "M" + "," +         // MODE (A,M)
+                                    //                "0" + "," +
+                                    //                "M2" + "," +
+                                    //                "S1" + "," +
+                                    //                "\"A" + lstTagSub[0].Text + "\"";
+
+
+                                    //    //string qr_command = "QRCODE 100,80,L,7,M,0,M2,S1," + "\"A" + list_m_tItem[0].sText + "\"";
+
+                                    //    TSCLIB_DLL.sendcommand(qr_command);
+
+                                    //    //TSCLIB_DLL.windowsfont(lstTagSub[i].x, lstTagSub[i].y, fontheight, rotation, fontstyle, fontunderline, szFaceName, content);
+                                    //}
+                                    ////'바코드
+                                    //else if (lstTagSub[i].Type == EnumItem.IO_BARCODE)
+                                    //{
+                                    //    if (lstTagSub[i].PrevItem == 0)
+                                    //    {
+                                    //        if (lstTagSub[i].BarType == 0)// 1:1 Code
+                                    //        {
+                                    //            sBarType[0] = "1";
+                                    //            sBarType[1] = "1";
+                                    //        }
+                                    //        else                            // 2:5 Code
+                                    //        {
+                                    //            sBarType[0] = "2";
+                                    //            sBarType[1] = "5";
+                                    //        }
+                                    //        TSCLIB_DLL.barcode(lstTagSub[i].x.ToString(), // x
+                                    //                           lstTagSub[i].y.ToString(), // x
+                                    //                           "39", // type
+                                    //                           lstTagSub[i].BarHeight.ToString(), // 높이
+                                    //                           "1", // ReadAble
+                                    //                           lstTagSub[i].Rotation.ToString(), // Rotation
+                                    //                           sBarType[0], // Narrow
+                                    //                           sBarType[1], // Wide
+                                    //                           lstTagSub[0].Text
+                                    //                           );
+                                    //    }
+                                    //}
+                                    //'바코드
+                                    if (lstTagSub[i].Type == EnumItem.IO_BARCODE)
+                                    {
+                                        if (lstTagSub[i].PrevItem == 0)
+                                        {
+                                            if (lstTagSub[i].BarType == 0)// 1:1 Code
+                                            {
+                                                sBarType[0] = "1";
+                                                sBarType[1] = "1";
+                                            }
+                                            else                            // 2:5 Code
+                                            {
+                                                sBarType[0] = "2";
+                                                sBarType[1] = "5";
+                                            }
+                                            TSCLIB_DLL.barcode(lstTagSub[i].x.ToString(),
+                                                               lstTagSub[i].y.ToString(),
+                                                               "39",
+                                                               lstTagSub[i].BarHeight.ToString(),
+                                                               "1",
+                                                               lstTagSub[i].Rotation.ToString(),
+                                                               sBarType[0],
+                                                               sBarType[1],
+                                                               lstTagSub[i].Text
+                                                               );
+                                        }
+                                    }
+                                    //데이터 OR 문자
+                                    else if (lstTagSub[i].Type == EnumItem.IO_DATA || lstTagSub[i].Type == EnumItem.IO_TEXT)
+                                    {
+                                        sText = lstTagSub[i].Text;
+                                        int intx = lstTagSub[i].x;
+                                        int inty = lstTagSub[i].y;
+                                        int fontheight = ConvertInt((lstTagSub[i].Font).ToString());
+                                        int rotation = lstTagSub[i].Rotation;
+                                        int fontstyle = ConvertInt(lstTagSub[i].FontStyle);
+                                        int fontunderline = ConvertInt(lstTagSub[i].FontUnderLine);
+                                        string szFaceName = lstTagSub[i].FontName;
+                                        string content = sText.Trim();
+
+                                        TSCLIB_DLL.windowsfont(intx, inty, fontheight, rotation, fontstyle, fontunderline, szFaceName, content);
+                                    }
+                                    //'선(Line)-5이하
+                                    else if (lstTagSub[i].Type == EnumItem.IO_LINE)// && (list_m_tItem[i].nFigureHeight <= 5 || list_m_tItem[i].nFigureWidth <= 5))
+                                    {
+                                        int x1 = 0;
+                                        int x2 = 0;
+                                        int y1 = 0;
+                                        int y2 = 0;
+                                        int.TryParse(lstTagSub[i].x.ToString(), out x1);
+                                        int.TryParse(lstTagSub[i].y.ToString(), out y1);
+                                        int.TryParse(lstTagSub[i].FigureWidth.ToString(), out x2);
+                                        int.TryParse(lstTagSub[i].FigureHeight.ToString(), out y2);
+
+                                        string IsDllStr = "BAR " + x1.ToString() + ", " + y1.ToString() + ", " + x2.ToString() + ", " + y2.ToString();
+
+                                        TSCLIB_DLL.sendcommand(IsDllStr);
+                                    }
+                                    else if (lstTagSub[i].Type == EnumItem.IO_BOX)
+                                    {
+                                        int x1 = 0;
+                                        int x2 = 0;
+                                        int y1 = 0;
+                                        int y2 = 0;
+                                        int nTh = 0;
+                                        int.TryParse(lstTagSub[i].x.ToString(), out x1);
+                                        int.TryParse(lstTagSub[i].y.ToString(), out y1);
+                                        int.TryParse(lstTagSub[i].FigureWidth.ToString(), out x2);
+                                        int.TryParse(lstTagSub[i].FigureHeight.ToString(), out y2);
+                                        int.TryParse(lstTagSub[i].Thickness.ToString(), out nTh);
+
+                                        string IsDllStr = "BOX " + x1.ToString() + ", " + y1.ToString() + ", " + x2.ToString() + ", " + y2.ToString() + ", " + nTh.ToString();
+
+                                        TSCLIB_DLL.sendcommand(IsDllStr);
+                                    }
+
+                                }
+                            }
+                            //if (m_ProcessID == "0405")
+                            //{
+                            //    nPrintCount = 2;
+                            //}
+
+                            TSCLIB_DLL.printlabel("1", nPrintCount.ToString());
+
+                            //list_m_tItem = new List<TTagSub>();
+                            vData = new List<string>();
+                            flag = true;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                    //WizCommon.Popup.MyMessageBox.ShowBox(string.Format("오류! 관리자에게 문의<SendWindowDllCommand>\r\n{0}", excpt.Message), "[오류]", 0, 1);
+                    flag = false;
+                }
+                finally
+                {
+                    DataStore.Instance.CloseConnection();
+                }
+            }
+
+
+
+            return flag;
+        }
+
     }
 
     #region CodeView(코드뷰)
@@ -3413,5 +3831,23 @@ namespace WizMes_BooKyong
 
 
     }
+
+
+    // Tag 코드 뷰
+    class TagPrint_CodeView : BaseView
+    {
+        public string Num { get; set; }
+        public string Custom { get; set; }
+        public string Article { get; set; }
+        public string Date { get; set; }
+        public string Spec { get; set; }
+        public string UnitClssName { get; set; }
+        public string Qty { get; set; }
+        public string Barcode { get; set; }
+        public string BuyerArticle { get; set; }
+    }
+
+
+
     #endregion
 }
