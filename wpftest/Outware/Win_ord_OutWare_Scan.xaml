@@ -348,7 +348,7 @@
                 </Grid>
 
                 <!-- 인쇄버튼 -->
-                <Grid Grid.Column="3" Grid.Row="2" Visibility="Hidden">
+                <Grid Grid.Column="3" Grid.Row="2">
                     <Button x:Name="btnPrint" Click="btnPrint_Click"   Margin="1" >
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{DynamicResource btiPrint}" Style="{DynamicResource imgSize}" VerticalAlignment="Center"/>
@@ -431,7 +431,6 @@
                         <DataGridTextColumn Header="차종" Binding="{Binding BuyerModel}" ElementStyle="{DynamicResource DataGridCellCenter}"/>
                         <DataGridTextColumn Header="품번" Binding="{Binding BuyerArticleNo}" ElementStyle="{DynamicResource DataGridCellCenter}"/>
                         <DataGridTextColumn Header="수량" Binding="{Binding OutQty}" ElementStyle="{DynamicResource DataGridCellCenter}"/>
-                        <DataGridTextColumn/>
                     </DataGrid.Columns>
                 </DataGrid>
                 <Grid Grid.Row="1">
@@ -443,7 +442,7 @@
                         <TextBlock Text="합" Foreground="White" HorizontalAlignment="Center" FontSize="18"/>
                         <TextBlock Text="계" Foreground="White" HorizontalAlignment="Center" FontSize="18"/>
                     </StackPanel>
-                    <DataGrid Grid.Column="1" x:Name="dgdTotal" HeadersVisibility="Column" Style="{DynamicResource DataGridSet1}" >
+                    <DataGrid Grid.Column="1" x:Name="dgdTotal" HeadersVisibility="Column" Style="{DynamicResource DataGridSet1}" ColumnHeaderHeight="20" >
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="건수" Width="*" Binding="{Binding count}" ElementStyle="{DynamicResource DataGridCellCenter}"/>
                             <DataGridTextColumn Header="수량" Width="*" Binding="{Binding totQty, StringFormat={}{0:N0}}" ElementStyle="{StaticResource DataGridCellCenter}"/>
