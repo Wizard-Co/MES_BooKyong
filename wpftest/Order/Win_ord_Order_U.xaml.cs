@@ -664,7 +664,7 @@ namespace WizMes_BooKyong
                     if (msg != string.Empty && flag != true)
                     {
                         msg += " 삭제할 수 없습니다.";
-                        MessageBox.Show(msg);
+                        MessageBox.Show(msg,"확인");
                         return;
                     }                       
                 }

@@ -750,7 +750,7 @@
                     </Grid>
 
 
-                    <Grid Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="3">
+                    <Grid Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="0.2*" />
@@ -779,16 +779,13 @@
                     </Grid>
 
 
-                    <Grid Grid.Row="16" Grid.Column="3" Grid.ColumnSpan="3">
+                    <Grid Grid.Row="13" Grid.Column="3" Grid.ColumnSpan="3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="0.5*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="0.2*" />
+                            <ColumnDefinition Width="1.35*" />
+
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
+
 
                         <Label Grid.Column="0" Grid.Row="16"  Style="{DynamicResource LabelInputArea}" Visibility="Visible">
                             <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
@@ -802,23 +799,22 @@
                     </Grid>
 
                     <!-- 15 Row -->
-                    <Label Grid.Column="0" Grid.Row="17"  Style="{DynamicResource LabelInputArea}">
+                    <Label Grid.Column="0" Grid.Row="16"  Style="{DynamicResource LabelInputArea}">
                         <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
                             <TextBlock Text="비   고" Style="{DynamicResource TextBlockInViewBoxInput}"/>
                         </Viewbox>
                     </Label>
-                    <TextBox x:Name="txtComments" Grid.Column="1" Grid.Row="17" Grid.ColumnSpan="4" Style="{DynamicResource TextBoxInputArea}"
+                    <TextBox x:Name="txtComments" Grid.Column="1" Grid.Row="16" Grid.ColumnSpan="4" Style="{DynamicResource TextBoxInputArea}"
+                             Grid.RowSpan="2"
                              Text="{Binding Comments}" KeyDown="txtComments_KeyDown"/>
                 </Grid>
 
 
                 <Grid Grid.Row="0" Grid.Column="1" >
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="1*" />
                         <RowDefinition Height="0.2*" />
                         <RowDefinition Height="10*" />
-                        <RowDefinition Height="10*" />
-
                     </Grid.RowDefinitions>
 
                     <!-- 자료 추가중, 수정중 메시지 -->
@@ -902,7 +898,7 @@
                     </GroupBox>
 
                     <DataGrid x:Name="dgdCustomArticle" IsReadOnly="True" Style="{DynamicResource DataGridSet1}"  Grid.Row="3" 
-                              Visibility="Visible">
+                              Visibility="Hidden">
 
                         <!--dgx:DataGridFilter.IsAutoFilterEnabled="True"-->
                         <DataGrid.Columns>

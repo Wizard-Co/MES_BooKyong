@@ -413,8 +413,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="1.2*" />
                                     <ColumnDefinition Width="5*" />
-                                    <ColumnDefinition Width="1.2*" />
-                                    <ColumnDefinition Width="5*" />
+
                                 </Grid.ColumnDefinitions>
                                 <Label Grid.Row="0" Grid.Column="0"  
                                        Style="{DynamicResource LabelInputArea}">
@@ -439,7 +438,7 @@
 
                                 </Grid>
 
-                                <Label Grid.Row="0" Grid.Column="2"  
+                                <Label Grid.Row="0" Grid.Column="2" Visibility="Hidden"  
                                        Style="{DynamicResource LabelInputArea}">
                                     <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
                                         <TextBlock Text="상위품번" Style="{DynamicResource TextBlockInViewBoxInput}"/>
@@ -453,9 +452,9 @@
 
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBox x:Name="txtParentBuyArticle" Grid.Column="0"  Style="{DynamicResource TextBoxInputNecessary}"
+                                    <TextBox x:Name="txtParentBuyArticle" Grid.Column="0"  Style="{DynamicResource TextBoxInputNecessary}" Visibility="Hidden"
                                              Keyboard.KeyDown="txtParentBuyArticle_KeyDown" Text="{Binding ParentBuyerArticleNO}" Tag="{Binding PARENTArticleID}"/>
-                                    <Button x:Name="btnPfParentBuyArticle" Grid.Column="1" Click="btnPfParentBuyArticle_Click">
+                                    <Button x:Name="btnPfParentBuyArticle" Grid.Column="1" Click="btnPfParentBuyArticle_Click" Visibility="Hidden">
                                         <Image Source="{DynamicResource btiPlusFind}" />
                                     </Button>
                                 </Grid>
@@ -483,7 +482,7 @@
 
                                 </Grid>
 
-                                <Label Grid.Row="1" Grid.Column="2" Style="{DynamicResource LabelInputArea}">
+                                <Label Grid.Row="1" Grid.Column="2" Style="{DynamicResource LabelInputArea}" Visibility="Hidden">
                                     <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
                                         <TextBlock Text="품     번" Style="{DynamicResource TextBlockInViewBoxInput}" />
                                     </Viewbox>
@@ -494,9 +493,9 @@
                                         <ColumnDefinition Width="0.5*" />
 
                                     </Grid.ColumnDefinitions>
-                                    <TextBox x:Name="txtBuyArticle" Grid.Column="0"  Style="{DynamicResource TextBoxInputNecessary}"
+                                    <TextBox x:Name="txtBuyArticle" Grid.Column="0"  Style="{DynamicResource TextBoxInputNecessary}" Visibility="Hidden"
                                              Keyboard.KeyDown="txtBuyArticle_KeyDown" Text="{Binding ChildBuyerArticleNO}" Tag="{Binding ArticleID}" />
-                                    <Button x:Name="btnPfBuyArticle" Grid.Column="3" Click="btnPfBuyArticle_Click">
+                                    <Button x:Name="btnPfBuyArticle" Grid.Column="3" Click="btnPfBuyArticle_Click" Visibility="Hidden">
                                         <Image Source="{DynamicResource btiPlusFind}" />
                                     </Button>
 
@@ -557,10 +556,10 @@
                                     </Viewbox>
                                 </Grid>
 
-                                <Label Grid.Row="3" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Style="{DynamicResource LabelInputArea}">
-                                    <TextBlock Text="스크랩량" Style="{DynamicResource TextBlockInViewBoxInput}"/>
+                                <Label Grid.Row="3" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Style="{DynamicResource LabelInputArea}" Visibility="Hidden">
+                                    <TextBlock Text="스크랩량" Style="{DynamicResource TextBlockInViewBoxInput}" />
                                 </Label>
-                                <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" >
+                                <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Visibility="Hidden">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1.5*" />
                                         <ColumnDefinition Width="0.5*" />
@@ -583,13 +582,13 @@
 
                                 </Grid>
 
-                                <Label Grid.Row="5" Grid.Column="0" Style="{DynamicResource LabelInputArea}">
+                                <Label Grid.Row="3" Grid.Column="0" Style="{DynamicResource LabelInputArea}">
                                     <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
                                         <TextBlock Text="적용시기" Style="{DynamicResource TextBlockInViewBoxInput}" />
                                     </Viewbox>
 
                                 </Label>
-                                <Grid Grid.Row="5" Grid.Column="1" >
+                                <Grid Grid.Row="3" Grid.Column="1" >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="2*" />
                                         <ColumnDefinition Width="0.2*" />

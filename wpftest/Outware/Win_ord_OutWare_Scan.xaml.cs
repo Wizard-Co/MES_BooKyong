@@ -7,10 +7,8 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Drawing.Printing;
 using WizMes_BooKyong.PopUP;
 using WizMes_BooKyong.PopUp;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -845,14 +843,14 @@ namespace WizMes_BooKyong
             {
                 if (lstOutwarePrint.Count == 0)
                 {
-                    MessageBox.Show("인쇄할 거래명세표를 선택하세요.");
+                    MessageBox.Show("인쇄할 거래명세표를 체크 선택하세요.");
                     lib2 = null;
                     return;
                 }
 
                 excelapp = new Microsoft.Office.Interop.Excel.Application();
 
-                string MyBookPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\거래명세표.xlsx";
+                string MyBookPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\Report\\거래명세표.xlsx";
                 workbook = excelapp.Workbooks.Add(MyBookPath);
                 worksheet = workbook.Sheets["Form"];
                 pastesheet = workbook.Sheets["Print"];
@@ -861,16 +859,20 @@ namespace WizMes_BooKyong
                 workrange = worksheet.get_Range("C4", "H4");
                 workrange.Value2 = lstOutwarePrint[0].OutDate.Replace("-", ".");
 
+                // 공급받는 사업자번호
+                workrange = worksheet.get_Range("G5", "R6");
+                workrange.Value2 = lstOutwarePrint[0].CustomNo;
+
                 // 공급받는 상호
-                workrange = worksheet.get_Range("G5", "P6");
+                workrange = worksheet.get_Range("G7", "L8");
                 workrange.Value2 = lstOutwarePrint[0].KCustom;
 
                 // 공급받는 사업장 주소
-                workrange = worksheet.get_Range("G7", "R8");
+                workrange = worksheet.get_Range("G9", "R10");
                 workrange.Value2 = lstOutwarePrint[0].Buyer_Address1 + lstOutwarePrint[0].Buyer_Address2 + lstOutwarePrint[0].Buyer_Address3;
 
                 // 공급받는 성명
-                workrange = worksheet.get_Range("G9", "R10");
+                workrange = worksheet.get_Range("O7", "R8");
                 workrange.Value2 = lstOutwarePrint[0].Buyer_Chief;
 
                 // 공급자 정보 구해오기.
@@ -887,7 +889,7 @@ namespace WizMes_BooKyong
                 workrange.Value2 = DR["KCompany"].ToString();
 
                 // 공급자 성명
-                workrange = worksheet.get_Range("AE7", "AH8");
+                workrange = worksheet.get_Range("AF7", "AH8");
                 workrange.Value2 = DR["Chief"].ToString();
 
                 // 공급자 사업장 주소
@@ -895,12 +897,12 @@ namespace WizMes_BooKyong
                 workrange.Value2 = DR["Address1"].ToString();
 
                 // 공급자 전화
-                workrange = worksheet.get_Range("W11", "AB12");
-                workrange.Value2 = DR["Phone1"].ToString();
+                //workrange = worksheet.get_Range("W11", "AB12");
+                //workrange.Value2 = DR["Phone1"].ToString();
 
                 // 공급자 팩스
-                workrange = worksheet.get_Range("AD11", "AH12");
-                workrange.Value2 = DR["FaxNo"].ToString();
+                //workrange = worksheet.get_Range("AD11", "AH12");
+                //workrange.Value2 = DR["FaxNo"].ToString();
 
                 int copyLine = 1;
                 int copyRow = 54;
@@ -915,7 +917,7 @@ namespace WizMes_BooKyong
                 int pageCnt = 1;
                 int totPageCnt = (lstOutwarePrint.Count / inputPossibleRowCnt) + 1;
 
-                double totalSumAmount = 0, totalSumVatAmount = 0;
+                double totalSumAmount = 0, totalSumVatAmount = 0, totalAmount = 0;
 
                 // key : 출고일, value : 출고 항목
                 Dictionary<string, List<Win_ord_OutWare_Scan_Sub_CodeView>> dic = new Dictionary<string, List<Win_ord_OutWare_Scan_Sub_CodeView>>();
@@ -926,6 +928,7 @@ namespace WizMes_BooKyong
                 foreach (Win_ord_OutWare_Scan_CodeView outware in lstOutwarePrint)
                 {
                     string outwareID = outware.OutwareID;
+                    string UnitClssName = outware.UnitClssName;
 
                     Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
                     sqlParameter.Add("OutwareID", outwareID);
@@ -950,12 +953,14 @@ namespace WizMes_BooKyong
 
                                 totalSumAmount += calcAmount;
                                 totalSumVatAmount += calcVatAmount;
+                                totalAmount += totalSumAmount + totalSumVatAmount;
                             }
 
                             Win_ord_OutWare_Scan_Sub_CodeView sub = new Win_ord_OutWare_Scan_Sub_CodeView();
                             sub.ArticleID = outware.ArticleID;
                             sub.Article = outware.Article;
                             sub.dOutQty = sumOutQty;
+                            sub.UnitClssName = "EA";
                             sub.dUnitPrice = sumUnitPrice;
 
                             string outDate = outware.OutDate.Replace("-", "");
@@ -997,20 +1002,27 @@ namespace WizMes_BooKyong
 
                         // 월
                         workrange = worksheet.get_Range("C" + rowNum.ToString());
-                        workrange.Value2 = month;
+                        workrange.Value2 = i + 1;
 
-                        // 일
-                        workrange = worksheet.get_Range("D" + rowNum.ToString());
-                        workrange.Value2 = day;
+                        workrange = worksheet.get_Range("M" + rowNum.ToString());
+                        workrange.Value2 = listSub[i].UnitClssName;
+
+                        //// 일
+                        //workrange = worksheet.get_Range("D" + rowNum.ToString());
+                        //workrange.Value2 = day;
 
                         // 품명
-                        workrange = worksheet.get_Range("E" + rowNum.ToString(), "O" + rowNum.ToString());
+                        workrange = worksheet.get_Range("E" + rowNum.ToString(), "L" + rowNum.ToString());
                         workrange.Value2 = listSub[i].Article;
 
-                        string strOutQty = listSub[i].dOutQty.ToString();
-                        string strUnitPrice = listSub[i].dUnitPrice.ToString();
+                        //workrange = worksheet.get_Range("E" + rowNum.ToString(), "L" + rowNum.ToString());
+                        //workrange.Value2 = listSub[i].UnitClss;
+
+                        string strOutQty = stringFormatN0(listSub[i].dOutQty);
+                        string strUnitPrice = stringFormatN0(listSub[i].dUnitPrice);
                         double calcAmount = ConvertDouble(strOutQty) * ConvertDouble(strUnitPrice);
                         double calcValAmount = calcAmount * .1;
+                        double calcSumAmount = calcAmount + calcValAmount;
 
                         // 수량
                         workrange = worksheet.get_Range("P" + rowNum.ToString(), "Q" + rowNum.ToString());
@@ -1021,12 +1033,16 @@ namespace WizMes_BooKyong
                         workrange.Value2 = strUnitPrice;
 
                         // 공급가액
-                        workrange = worksheet.get_Range("W" + rowNum.ToString(), "AA" + rowNum.ToString());
+                        workrange = worksheet.get_Range("W" + rowNum.ToString(), "Z" + rowNum.ToString());
                         workrange.Value2 = lib.returnNumStringTargetNum(calcAmount.ToString(), 3);
 
                         // 세액
-                        workrange = worksheet.get_Range("AB" + rowNum.ToString(), "AF" + rowNum.ToString());
+                        workrange = worksheet.get_Range("AA" + rowNum.ToString(), "AD" + rowNum.ToString());
                         workrange.Value2 = lib.returnNumStringTargetNum(calcValAmount.ToString(), 3);
+
+                        //합계
+                        workrange = worksheet.get_Range("AE" + rowNum.ToString(), "AH" + rowNum.ToString());
+                        workrange.Value2 = lib.returnNumStringTargetNum(calcSumAmount.ToString(), 3);
 
                         // 비고
                         /*workrange = worksheet.get_Range("AG" + rowNum.ToString(), "AH" + rowNum.ToString());
@@ -1039,17 +1055,22 @@ namespace WizMes_BooKyong
                         if (totCnt == endCnt || cnt == inputPossibleRowCnt)
                         {
                             // 페이지수
-                            workrange = worksheet.get_Range("AB3", "AH4");
+                            workrange = worksheet.get_Range("AC3", "AH4");
                             workrange.NumberFormat = "@";
                             workrange.Value2 = pageCnt.ToString() + "/" + totPageCnt.ToString();
 
                             // 합계 공급가액 
-                            workrange = worksheet.get_Range("E24", "I25");
+                            workrange = worksheet.get_Range("G24", "L24");
                             workrange.Value2 = totalSumAmount.ToString();
 
                             // 합계 세액 
-                            workrange = worksheet.get_Range("L24", "O25");
+                            workrange = worksheet.get_Range("Q24", "W24");
                             workrange.Value2 = totalSumVatAmount.ToString();
+
+                            // 합계 총액 
+                            workrange = worksheet.get_Range("AB24", "AH24");
+                            workrange.Value2 = totalAmount.ToString();
+
 
                             // 붙여넣기
                             worksheet.Select();
@@ -1083,10 +1104,19 @@ namespace WizMes_BooKyong
                 MessageBox.Show("오류지점 = PrintWork : " + ee.ToString());
             }
 
-            lib2.ReleaseExcelObject(workbook);
-            lib2.ReleaseExcelObject(worksheet);
+      
+            lib2.ReleaseExcelObject(workrange);
+     
             lib2.ReleaseExcelObject(pastesheet);
+            lib2.ReleaseExcelObject(worksheet);
+            lib2.ReleaseExcelObject(workbook);
             lib2.ReleaseExcelObject(excelapp);
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
             lib2 = null;
         }
 
@@ -1943,8 +1973,15 @@ namespace WizMes_BooKyong
                                 BuyerArticleNo = dr["BuyerArticleNo"].ToString(),
                                 FromLocID = dr["FromLocID"].ToString(),
                                 Remark = dr["Remark"].ToString(),
-                                
+
                                 BuyerModel = dr["BuyerModel"].ToString(),
+
+                                Buyer_Address1 = dr["Address1"].ToString(),
+                                Buyer_Address2 = dr["Address2"].ToString(),
+                                Buyer_Address3 = string.Empty,
+                                Chief = dr["Chief"].ToString(),
+                                CustomNo = dr["CustomNo"].ToString(),                                
+
                             };
 
                             outqtySum += (int)RemoveComma(dr["OutQty"].ToString(), true);
@@ -2029,6 +2066,7 @@ namespace WizMes_BooKyong
                                 FromLocID = item["FromLocID"].ToString(),
                                 TOLocID = item["TOLocID"].ToString(),
                                 UnitClss = item["UnitClss"].ToString(),
+                                UnitClssName = item["UnitClssName"].ToString(),
                                 ArticleID = item["ArticleID"].ToString(),
                                 Article = item["Article"].ToString(),
 
@@ -4107,6 +4145,7 @@ namespace WizMes_BooKyong
         public string FromLocID { get; set; }
         public string TOLocID { get; set; }
         public string UnitClss { get; set; }
+        public string UnitClssName { get; set; }
         public string ArticleID { get; set; }
         public string Article { get; set; }
         public string BuyerArticleNo { get; set; }
