@@ -842,6 +842,7 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("OutwareExceptYN", chkOutWareExceptYN.IsChecked == true ? "Y" : "N");
                 sqlParameter.Add("OrderInstQty", WinPlanView.OrderInstQty);
                 sqlParameter.Add("UpdateUserID", MainWindow.CurrentUser);
+                sqlParameter.Add("Remark", WinPlanView.Remark);
 
                 Procedure pro1 = new Procedure();
                 pro1.Name = "xp_PlanInput_uPlanInput";
