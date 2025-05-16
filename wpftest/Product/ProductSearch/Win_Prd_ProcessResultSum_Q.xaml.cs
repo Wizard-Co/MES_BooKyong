@@ -603,7 +603,7 @@ namespace WizMes_BooKyong
                                 WorkQty = Convert.ToDouble(dr["WorkQty"]),
                                 UnitPrice = stringFormatN0(dr["UnitPrice"]),
                                 Amount = stringFormatN0(dr["Amount"]),
-                                //WorkTime = stringFormatN1(dr["WorkTime"]),
+                                WorkTime = stringFormatN1(dr["WorkTime"]),
                                 Num = i
                             };
 

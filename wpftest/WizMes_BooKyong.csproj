@@ -508,6 +508,9 @@
       <DependentUpon>Win_dvl_MoldRepair_U.xaml</DependentUpon>
     </Compile>
     <Compile Include="Product\MoldData\Win_dvl_MoldRepair_U_CodeView.cs" />
+    <Compile Include="Product\MoldData\Win_Mold_sMoldHistory.xaml.cs">
+      <DependentUpon>Win_Mold_sMoldHistory.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Product\Pop\NoWorkInfo.xaml.cs">
       <DependentUpon>NoWorkInfo.xaml</DependentUpon>
     </Compile>
@@ -1061,6 +1064,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Product\MoldData\Win_dvl_MoldRepair_U.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Product\MoldData\Win_Mold_sMoldHistory.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -319,6 +319,12 @@ namespace WizMes_BooKyong
             tbkMsg.Text = "자료 입력 중";
             rowNum = dgdMain.SelectedIndex;
 
+            chkSetDate.IsChecked = true;
+            chkProdCompDate.IsChecked = true;
+            chkProdOrderDate.IsChecked = true;
+            chkProdDueDate.IsChecked = true;
+            chkProdCompDate.IsChecked = true;
+            chkSetInitHitCountDate.IsChecked = true;
 
             //유지추가 버튼 false
             if (chkMainTain.IsChecked == false)
@@ -326,12 +332,6 @@ namespace WizMes_BooKyong
                 if (dgdPartsCode.Items.Count > 0) dgdPartsCode.Items.Clear();
                 if (dgdMoldArticle.Items.Count > 0) dgdMoldArticle.Items.Clear();
                 this.DataContext = null;
-
-                chkSetDate.IsChecked = false;
-                chkProdCompDate.IsChecked = false;
-                chkProdDueDate.IsChecked = false;
-                chkProdCompDate.IsChecked = false;
-                chkSetInitHitCountDate.IsChecked = false;
                 cboDisCard.SelectedIndex = 0;
                 cboStorgeLocation.SelectedIndex = 0;
                 cboMainUseYN.SelectedIndex = 0;
