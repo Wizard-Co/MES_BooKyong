@@ -191,26 +191,26 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <GroupBox Header="[일일 생산량 증가]" Grid.Row="0">
+            <GroupBox Header="[시간당 생산량 증가]" Grid.Row="0">
                 <DataGrid x:Name="dgdGonsu" IsReadOnly="True"
                       Style="{DynamicResource DataGridSet1}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="일자" Width="auto"  Binding="{Binding WorkDate}"  ElementStyle="{StaticResource DataGridCellCenter}"  />
-                        <DataGridTextColumn Header="생산수량(EA)" Width="auto" Binding="{Binding WorkQty, StringFormat='#,##0'}" ElementStyle="{StaticResource DataGridCellRight}" />
+                        <DataGridTextColumn Header="생산량(EA)" Width="auto" Binding="{Binding WorkQty, StringFormat='#,##0'}" ElementStyle="{StaticResource DataGridCellRight}" />
                         <DataGridTextColumn Header="작업시간(Hr)" Width="auto" Binding="{Binding WorkTime, StringFormat='#,##0'}" ElementStyle="{StaticResource DataGridCellRight}" />
-                        <DataGridTextColumn Header="일 생산량(EA)" Width="auto" Binding="{Binding Daily_WorkQty, StringFormat='#,##0'}" ElementStyle="{StaticResource DataGridCellRight}" />
+                        <DataGridTextColumn Header="시간당 생산량(EA)" Width="auto" Binding="{Binding Daily_WorkQty, StringFormat='#,##0'}" ElementStyle="{StaticResource DataGridCellRight}" />
                         <DataGridTextColumn Header="향상률(%)" Width="auto" Binding="{Binding WorkUpRate, StringFormat='#,##0'}"  ElementStyle="{StaticResource DataGridCellRight}"  />
                         <DataGridTextColumn Header="목표달성률(%)" Width="auto" Binding="{Binding WorkGoalRate, StringFormat='#,##0'}" ElementStyle="{StaticResource DataGridCellRight}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>
-            <GroupBox Grid.Row="1" Header="[일일 생산량 그래프]">
+            <GroupBox Grid.Row="1" Header="[시간당 생산량 그래프]">
                 <lvc:CartesianChart x:Name="lvcChartP" Series="{Binding seriesCollection}" LegendLocation="Bottom">
                     <lvc:CartesianChart.AxisX>
                         <lvc:Axis Title="일자별" Labels="{Binding Labels}" Separator="{x:Static lvc:DefaultAxes.CleanSeparator}"/>
                     </lvc:CartesianChart.AxisX>
                     <lvc:CartesianChart.AxisY>
-                        <lvc:Axis Title="일생산량" LabelFormatter="{Binding Formatter}"/>
+                        <lvc:Axis Title="시간당 생산량" LabelFormatter="{Binding Formatter}"/>
                     </lvc:CartesianChart.AxisY>
                 </lvc:CartesianChart>
             </GroupBox>
@@ -220,11 +220,11 @@
                       Style="{DynamicResource DataGridSet1}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="일자" Width="auto" Binding="{Binding WorkDate}" ElementStyle="{StaticResource DataGridCellCenter}"  />
-                        <DataGridTextColumn Header="생산량" Width="auto" Binding="{Binding DefectWorkQty, StringFormat='#,##0'}" ElementStyle="{StaticResource DataGridCellRight}"  />
-                        <DataGridTextColumn Header="불량량" Width="auto" Binding="{Binding DefectQty, StringFormat='#,##0'}" ElementStyle="{StaticResource DataGridCellRight}"  />
+                        <DataGridTextColumn Header="검사수량" Width="auto" Binding="{Binding DefectWorkQty, StringFormat='#,##0'}" ElementStyle="{StaticResource DataGridCellRight}"  />
+                        <DataGridTextColumn Header="불량수량" Width="auto" Binding="{Binding DefectQty, StringFormat='#,##0'}" ElementStyle="{StaticResource DataGridCellRight}"  />
                         <DataGridTextColumn Header="불량률(%)" Width="auto"  Binding="{Binding DefectRate, StringFormat='#,##0'}" ElementStyle="{StaticResource DataGridCellRight}" />
-                        <DataGridTextColumn Header="향상률(%)" Width="auto" Binding="{Binding DefectUpRate, StringFormat='#,##0'}" ElementStyle="{StaticResource DataGridCellRight}"  />
                         <DataGridTextColumn Header="목표달성률(%)" Width="auto" Binding="{Binding DefectGoalRate, StringFormat='#,##0'}" ElementStyle="{StaticResource DataGridCellRight}" />
+                        <DataGridTextColumn Header="개선률(%)" Width="auto" Binding="{Binding DefectUpRate, StringFormat='#,##0'}" ElementStyle="{StaticResource DataGridCellRight}"  />
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>

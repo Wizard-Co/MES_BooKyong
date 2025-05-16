@@ -289,7 +289,7 @@ namespace WizMes_BooKyong
                 {
                     Values = chart.lineQty,
                     DataLabels = true,
-                    Title = "일 생산량",
+                    Title = "시간당 생산량",
                     LabelPoint = chart.Formatter
                 });
 
@@ -362,7 +362,7 @@ namespace WizMes_BooKyong
                 {
                     Values = chart2.lineQty,
                     DataLabels = true,
-                    Title = "일 불량량",
+                    Title = "불량",
                     LabelPoint = chart2.PercentFormatter
                 });
 
