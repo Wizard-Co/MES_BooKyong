@@ -304,6 +304,7 @@
             <!-- 백 그라운드에 넣을 이미지 키값으로 지정 -->
             <ImageBrush x:Key="WizMes_BooKyong" ImageSource="Images/wizmes.jpg" />
             <ImageBrush x:Key="WizMes_BooKyongNoIcon" ImageSource="Images/wizMES_Largesize_noIcon.jpg" />
+            <ImageBrush x:Key="WizMes_BooKyongNoIcon_Stretched" ImageSource="Images/wizMes_blueAreaStretched.jpg" />
 
 
             <!--2019.05.08 NEW 4M용 스타일-->
@@ -926,10 +927,70 @@
             </Style>
 
             <Style TargetType="{x:Type DatePicker}" x:Key="DatePickerInputNecessary_Q">
-                <Setter Property="Background" Value="#fff2d2"/>
+                <Setter Property="Background" Value="#fff2d2"/>    
                 <Setter Property="Margin" Value="1, 1, 1, 0" />
                 <Setter Property="Padding" Value="0"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Style.Resources>
+                    <Style TargetType="{x:Type DatePickerTextBox}">
+                        <Setter Property="Background" Value="#fff2d2"/>
+                        <Setter Property="BorderBrush" Value="#fff2d2"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type DatePickerTextBox}">
+                                    <Grid Background="#fff2d2">
+                                        <Grid.Resources>
+                                            <SolidColorBrush x:Key="WatermarkBrush" Color="#FFAAAAAA"/>
+                                        </Grid.Resources>
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualStateGroup.Transitions>
+                                                    <VisualTransition GeneratedDuration="0"/>
+                                                    <VisualTransition GeneratedDuration="0:0:0.1" To="MouseOver"/>
+                                                </VisualStateGroup.Transitions>
+                                                <VisualState x:Name="Normal"/>
+                                                <VisualState x:Name="MouseOver">
+                                                    <Storyboard>
+                                                        <ColorAnimation Duration="0:0:0.1" 
+                                                          To="#BBD1DC" 
+                                                          Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" 
+                                                          Storyboard.TargetName="BorderElement"/>
+                                                    </Storyboard>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                            <VisualStateGroup x:Name="WatermarkStates">
+                                                <VisualState x:Name="Unwatermarked"/>
+                                                <VisualState x:Name="Watermarked">
+                                                    <Storyboard>
+                                                        <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PART_ContentHost"/>
+                                                        <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PART_Watermark"/>
+                                                    </Storyboard>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+                                        <Border x:Name="BorderElement" 
+                                  BorderThickness="1" 
+                                  BorderBrush="Transparent" 
+                                  Background="Transparent"/>
+                                        <ContentControl x:Name="PART_Watermark" 
+                                          Focusable="False" 
+                                          IsHitTestVisible="False" 
+                                          Opacity="0" 
+                                          Padding="2"/>
+                                        <ScrollViewer x:Name="PART_ContentHost" 
+                                        Background="Transparent"
+                                        Focusable="False"
+                                        HorizontalScrollBarVisibility="Hidden"
+                                        VerticalScrollBarVisibility="Hidden"
+                                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Style.Resources>
             </Style>
 
             <Style TargetType="{x:Type TextBox}" x:Key="TextBoxSearch_Q" >

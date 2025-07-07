@@ -1,23 +1,29 @@
-﻿using System;
+﻿using ExcelDataReader;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Drawing.Printing;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Drawing.Printing;
-using WizMes_BooKyong.PopUP;
+using System.Windows.Markup;
+using System.Windows.Media;
 using WizMes_BooKyong.PopUp;
-using Microsoft.Win32;
-using ExcelDataReader;
+using WizMes_BooKyong.PopUP;
+using WizMes_BooKyong.Quality.PopUp;
 using WPF.MDI;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-using System.Windows.Markup;
-using System.Data.SqlClient;
 
 /**************************************************************************************************
 '** 프로그램명 : Win_Qul_DefectRepair_Q
@@ -94,8 +100,10 @@ namespace WizMes_BooKyong
         Win_Qul_InspectAuto_U_CodeView WinInsAuto = new Win_Qul_InspectAuto_U_CodeView();
         Win_Qul_InspectAuto_U_Sub_CodeView WinInsAutoSub = new Win_Qul_InspectAuto_U_Sub_CodeView();
         ObservableCollection<EcoNoAndBasisID> ovcEvoBasis = new ObservableCollection<EcoNoAndBasisID>();
+        //InspectAuto_PopUp InsCellSettings_PopUp = new InspectAuto_PopUp();
 
         List<Win_Qul_InspectAuto_U_CodeView> listLotLabelPrint = new List<Win_Qul_InspectAuto_U_CodeView>();
+
 
         private Microsoft.Office.Interop.Excel.Application excelapp;
         private Microsoft.Office.Interop.Excel.Workbook workbook;
@@ -111,6 +119,7 @@ namespace WizMes_BooKyong
         // FTP 활용모음.
         string FullPath1 = string.Empty;
         string FullPath2 = string.Empty;
+        string FullPath3 = string.Empty;
 
         private FTP_EX _ftp = null;
         List<string[]> listFtpFile = new List<string[]>();
@@ -163,12 +172,12 @@ namespace WizMes_BooKyong
             dtpInOutDate.SelectedDate = DateTime.Today;
             dtpInspectDate.SelectedDate = DateTime.Today;
 
-            strPoint = "3"; // 출하검사로 시작
+            strPoint = "5"; // 출하검사로 시작
 
-            tbnInspect.IsChecked = false;
-            tbnIncomeInspect.IsChecked = false;
-            tbnProcessCycle.IsChecked = true;
-            tbnOutcomeInspect.IsChecked = false;
+            //tbnInspect.IsChecked = false;
+            //tbnIncomeInspect.IsChecked = false;
+            //tbnProcessCycle.IsChecked = true;
+            //tbnOutcomeInspect.IsChecked = false;
 
             SetControlsToggleChangedHidden();
             lblMilsheet.Visibility = Visibility.Hidden;
@@ -177,7 +186,8 @@ namespace WizMes_BooKyong
             cboFML.SelectedIndex = 1;
 
             //tbnOutcomeInspect_Click(null, null);
-            tbnProcessCycle_Click(tbnProcessCycle, null);
+            //tbnProcessCycle_Click(tbnProcessCycle, null);
+            tbnOutcomeInspect_Click(tbnOutcomeInspect, null);
             //btnTensileReportUpload.Visibility = Visibility.Hidden;
         }
 
@@ -241,6 +251,13 @@ namespace WizMes_BooKyong
             this.cboFML.DisplayMemberPath = "code_name";
             this.cboFML.SelectedValuePath = "code_id";
             this.cboFML.SelectedIndex = 0;
+
+            //검색 조건(점검주기구분)
+            ObservableCollection<CodeView> ovcInsCycleID = ComboBoxUtil.Instance.Gf_DB_CM_GetComCodeDataset(null, "INSCYCLE", "Y", "", "");
+            cboInsCycleSrh.ItemsSource = ovcInsCycleID;
+            cboInsCycleSrh.DisplayMemberPath = "code_name";
+            cboInsCycleSrh.SelectedValuePath = "code_id";
+            cboInsCycleSrh.SelectedIndex = 0;
         }
 
         #region 상단 이벤트
@@ -289,7 +306,7 @@ namespace WizMes_BooKyong
                 cboMachine.Visibility = Visibility.Hidden;
 
                 btnPrint.Visibility = Visibility.Hidden;
-                btnTensileReportUpload.Visibility = Visibility.Hidden;
+                btnInsMachineValueUpload.Visibility = Visibility.Hidden;
 
             }
             else
@@ -321,7 +338,7 @@ namespace WizMes_BooKyong
                 cboMachine.Visibility = Visibility.Visible;
 
                 btnPrint.Visibility = Visibility.Hidden;
-                btnTensileReportUpload.Visibility = Visibility.Visible;
+                btnInsMachineValueUpload.Visibility = Visibility.Hidden;
 
             }
             else
@@ -354,7 +371,7 @@ namespace WizMes_BooKyong
                 cboMachine.Visibility = Visibility.Visible;
 
                 btnPrint.Visibility = Visibility.Hidden;
-                btnTensileReportUpload.Visibility = Visibility.Hidden;
+                btnInsMachineValueUpload.Visibility = Visibility.Hidden;
             }
             else
             {
@@ -388,8 +405,8 @@ namespace WizMes_BooKyong
                 lblMachine.Visibility = Visibility.Hidden;
                 cboMachine.Visibility = Visibility.Hidden;
 
-                btnPrint.Visibility = Visibility.Hidden;
-                btnTensileReportUpload.Visibility = Visibility.Hidden;
+                btnPrint.Visibility = Visibility.Visible;
+                btnInsMachineValueUpload.Visibility = Visibility.Visible;
             }
             else
             {
@@ -433,20 +450,20 @@ namespace WizMes_BooKyong
         }
 
         //품명
-        private void txtArticleSrh_KeyDown(object sender, KeyEventArgs e)
+        private void txtArticleIDSrh_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
                 e.Handled = true;
 
-                MainWindow.pf.ReturnCode(txtArticleSrh, 77, txtArticleSrh.Text);
+                MainWindow.pf.ReturnCode(txtArticleIDSrh, 77, txtArticleIDSrh.Text);
             }
         }
 
         //품명
-        private void btnPFArticleSrh_Click(object sender, RoutedEventArgs e)
+        private void btnArticleIDSrh_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.pf.ReturnCode(txtArticleSrh, 77, txtArticleSrh.Text);
+            MainWindow.pf.ReturnCode(txtArticleIDSrh, 77, txtArticleIDSrh.Text);
         }
 
         //판정결과
@@ -487,7 +504,7 @@ namespace WizMes_BooKyong
             lib.UiButtonEnableChange_IUControl(this);
             //grdInput.IsEnabled = false;
             grdInput.IsHitTestVisible = false;
-            btnTensileReportUpload.IsEnabled = true;
+            //btnTensileReportUpload.IsEnabled = true;
         }
 
         /// <summary>
@@ -498,7 +515,7 @@ namespace WizMes_BooKyong
             lib.UiButtonEnableChange_SCControl(this);
             //grdInput.IsEnabled = true;
             grdInput.IsHitTestVisible = true;
-            btnTensileReportUpload.IsEnabled = false;
+            //btnTensileReportUpload.IsEnabled = false;
         }
 
         private void SetControlsWhenAdd()
@@ -667,7 +684,7 @@ namespace WizMes_BooKyong
         }
 
         //인쇄 미리보기
-        private void menuSeeAhead_Click(object sender, RoutedEventArgs e)
+        private async void menuSeeAhead_Click(object sender, RoutedEventArgs e)
         {
             if (dgdMain.Items.Count < 1)
             {
@@ -683,25 +700,161 @@ namespace WizMes_BooKyong
                 }
                 else
                 {
-                    WinInsAuto = dgdMain.SelectedItem as Win_Qul_InspectAuto_U_CodeView;
-
-                    if (WinInsAuto == null)
+                    if (strFlag == "I")
                     {
-                        MessageBox.Show("정상적인 검사성적서가 아닙니다.");
+                        MessageBox.Show("추가 중에는 사용할 수 없습니다.","확인");
                         return;
                     }
+                    //WinInsAuto = dgdMain.SelectedItem as Win_Qul_InspectAuto_U_CodeView;
+
+                    //if (WinInsAuto == null)
+                    //{
+                    //    MessageBox.Show("정상적인 검사성적서가 아닙니다.");
+                    //    return;
+                    //}
                 }
             }
 
-            msg.Show();
-            msg.Topmost = true;
-            msg.Refresh();
 
-            //PrintWork(true);
+            List<CellData> cellData = await GetCellData(WinInsAuto.InspectBasisID, WinInsAuto.InspectID);
+            if(cellData == null || cellData.Count == 0)
+            {
+                MessageBox.Show("검사기준에 등록된 엑셀좌표값이 없습니다.\n검사기준등록 메뉴에서 해당 부분을 확인 후 시도하세요", "확인");
+                lblMsg.Visibility = Visibility.Hidden;
+                tbkMsg.Text = "자료 입력 중";
+                return;
+            }
+
+            //msg.Show();
+            //msg.Topmost = true;
+            //msg.Refresh();
+
+            await PrintWork(cellData,true, WinInsAuto);
+        }
+
+
+        private void AddCellSettingsToWorksheet(Microsoft.Office.Interop.Excel.Worksheet worksheet, CellSettings cellSettings)
+        {
+            var settingActions = new[]
+            {
+                  new { Setting = cellSettings.LotNo, Value = txtLotNO.Text },
+                  new { Setting = cellSettings.ModelID, Value = txtBuyerModel.Text },
+                  new { Setting = cellSettings.BuyerArticleNo, Value = txtArticleName.Text },
+                  new { Setting = cellSettings.ArticleID, Value = txtBuyerArticle.Text },
+                  new { Setting = cellSettings.InspectDate, Value = dtpInspectDate.SelectedDate?.ToString("yyyy-MM-dd") ?? string.Empty },
+                  new { Setting = cellSettings.Name, Value = txtInspectUserID.Text },
+                  new { Setting = cellSettings.ProcessID, Value = cboProcess.Text ?? string.Empty },
+                  new { Setting = cellSettings.MachineID, Value = cboMachine.Text ?? string.Empty },
+                  new { Setting = cellSettings.InspectLevel, Value = cboInspectClss.Text ?? string.Empty },
+                  new { Setting = cellSettings.IRELevel, Value = cboIRELevel.Text ?? string.Empty },
+                  new { Setting = cellSettings.CustomID, Value = txtInOutCustom.Text },
+                  new { Setting = cellSettings.InOutDate, Value = dtpInOutDate.SelectedDate?.ToString("yyyy-MM-dd") ?? string.Empty},
+                  new { Setting = cellSettings.FMLGubun, Value = cboFML.Text ?? string.Empty },
+                  new { Setting = cellSettings.SumInspectQty, Value = txtSumInspectQty.Text },
+                  new { Setting = cellSettings.DefectYN, Value = cboDefectYN.Text ?? string.Empty },
+                  new { Setting = cellSettings.SumDefectQty, Value = txtSumDefectQty.Text },
+
+             };
+
+            foreach (var item in settingActions)
+            {
+                if (item.Setting.Checked && !string.IsNullOrEmpty(item.Setting.Value))
+                {
+                    worksheet.Range[item.Setting.Value].Value = item.Value;
+                }
+            }
+        }
+
+
+        private async Task<List<CellData>> GetCellData(string basisID, string inspectID)
+        {
+
+            List<CellData> lstCellData = null; //catch에서 오류가 나면 null로 내보냅시다
+            //bool readComplete = false;
+
+            try
+            {
+                Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
+                sqlParameter.Clear();
+                sqlParameter.Add("InspectBasisID", basisID);
+                sqlParameter.Add("InspectID", inspectID);
+
+                //DataSet ds = DataStore.Instance.ProcedureToDataSet_LogWrite("xp_Inspect_sGetCellPositionData", sqlParameter, true, "R");
+                DataSet ds = await Task.Run(() =>
+                             DataStore.Instance.ProcedureToDataSet_LogWrite("xp_Inspect_sGetCellPositionData", sqlParameter, true, "R"));
+
+                // 진행률 애니메이션용 Timer
+                //var timer = new System.Windows.Threading.DispatcherTimer();
+                //int progressValue = 0;
+                //tbkMsg.Text = "";
+                //lblMsg.Visibility = Visibility.Visible;
+                //timer.Interval = TimeSpan.FromMilliseconds(50); // 0.15초마다 업데이트
+                //timer.Tick += (s, e) =>
+                //{
+                //    if (readComplete)
+                //    {
+                //        timer.Stop();
+                //        tbkMsg.Text = "검사기준 엑셀좌표값을 읽고 있습니다... 100%";
+                //        return;
+                //    }                 
+                //    progressValue += 5;
+                //    if (progressValue > 95) progressValue = 95; // 95%까지만
+                //    tbkMsg.Text = $"검사기준 엑셀좌표값을 읽고 있습니다... {progressValue}%";
+                //};
+
+                //// Timer 시작
+                //timer.Start();
+
+                await Task.Run(() =>
+                {
+
+                    if (ds != null && ds.Tables.Count > 0)
+                    {
+                        DataTable dt = ds.Tables[0];
+                        if (dt.Rows.Count == 0)
+                        {
+                            //검사실적에 등록된 값이 없을때 count가 0으로 되게 해서 내보냅시다                       
+                            lstCellData = new List<CellData>();
+                        }
+                        else if (dt.Rows.Count > 0)
+                        {
+                            lstCellData = new List<CellData>();
+                            DataRowCollection drc = dt.Rows;
+
+                            foreach (DataRow dr in drc)
+                            {
+                                var cell = new CellData
+                                {
+                                    InsType = dr["InsType"].ToString().Trim(),
+                                    InspectBasisID = dr["InspectBasisID"].ToString(),
+                                    SampleNo = lib.RemoveComma(dr["SampleNo"].ToString(), 0),
+                                    ExcelCoordinates = dr["ExcelCoordinates"].ToString(),
+                                    InsItemName = dr["InsItemName"].ToString(),
+                                    InspectText = dr["InspectText"].ToString(),
+                                    InspectValue = dr["InspectValue"].ToString(),
+                                };
+
+                                if (!string.IsNullOrEmpty(cell.ExcelCoordinates))
+                                    lstCellData.Add(cell);
+                            }
+
+                            //readComplete = true;
+                        }
+                    }  
+                    
+                });
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("검사기준의 셀 위치 정보와 검사실적등록의 검사값을\n불러오는 도중 오류가 발생했습니다.\n MethodName : GetCellData\n" + ex.ToString(), "Catch Exception");
+            }
+
+            return lstCellData;
         }
 
         //인쇄 바로
-        private void menuRightPrint_Click(object sender, RoutedEventArgs e)
+        private async void  menuRightPrint_Click(object sender, RoutedEventArgs e)
         {
             if (dgdMain.Items.Count < 1)
             {
@@ -719,19 +872,215 @@ namespace WizMes_BooKyong
                 {
                     WinInsAuto = dgdMain.SelectedItem as Win_Qul_InspectAuto_U_CodeView;
 
-                    if (WinInsAuto == null)
+                    if (strFlag == "I")
                     {
-                        MessageBox.Show("정상적인 검사성적서가 아닙니다.");
+                        MessageBox.Show("추가 중에는 사용할 수 없습니다.","확인");
                         return;
+                    }
+                    //if (WinInsAuto == null)
+                    //{
+                    //    MessageBox.Show("정상적인 검사성적서가 아닙니다.");
+                    //    return;
+                    //}
+                }
+            }
+
+            DataStore.Instance.InsertLogByForm(this.GetType().Name, "P");
+            List<CellData> cellData = await GetCellData(WinInsAuto.InspectBasisID, WinInsAuto.InspectID);
+            if(cellData == null || cellData.Count == 0)
+            {
+                MessageBox.Show("검사기준에 등록된 엑셀좌표값이 없습니다.\n검사기준등록 메뉴에서 해당 부분을 확인 후 시도하세요", "확인");
+                lblMsg.Visibility = Visibility.Hidden;
+                tbkMsg.Text = "자료 입력 중";
+                return;
+            }
+            //msg.Show();
+            //msg.Topmost = true;
+            //msg.Refresh();
+
+            await PrintWork(cellData,false, WinInsAuto);
+        }
+
+        private async Task PrintWork(List<CellData> cellDataList, bool seeAhead = true, Win_Qul_InspectAuto_U_CodeView InsModelClass = null)
+        {
+            var timer = new System.Windows.Threading.DispatcherTimer();
+            int progressValue = 0;
+            bool isCompleted = false;
+
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.DefaultExt = ".xls";
+                openFileDialog.Filter = "Excel Files (*.xlsx, *.xls)|*.xlsx;*.xls";
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    string filePath = openFileDialog.FileName;
+                    string[] split_path = filePath.Split('\\');
+                    string fileName = split_path[split_path.Length - 1];
+
+                    tbkMsg.Text = "검사성적서 파일 처리 중... 0%";
+                    lblMsg.Visibility = Visibility.Visible;
+
+                    timer.Interval = TimeSpan.FromMilliseconds(100);
+                    timer.Tick += (s, e) =>
+                    {
+                        if (isCompleted)
+                        {
+                            timer.Stop();
+                            tbkMsg.Text = "검사성적서 파일 처리 중... 100%";
+                            return;
+                        }
+                        progressValue += 10;
+                        if (progressValue > 90) progressValue = 90;
+                        tbkMsg.Text = $"검사성적서 파일 처리 중... {progressValue}%";
+                    };
+                    timer.Start();
+
+
+                    try
+                    {
+                        await Task.Run(() =>
+                        {
+                            try
+                            {
+                                excelapp = new Microsoft.Office.Interop.Excel.Application();
+                            }
+                            catch (COMException ex)
+                            {
+                                throw new Exception("Excel이 설치되어 있지 않거나 COM 등록이 되어 있지 않습니다.\n정품 Microsoft Excel이 필요합니다.", ex);
+                            }
+
+                            workbook = excelapp.Workbooks.Open(filePath);
+                            worksheet = workbook.Sheets[1];
+                            excelapp.Visible = false;
+
+                            foreach (var cell in cellDataList)
+                            {
+                                if (cell.InsType == "1")
+                                    worksheet.Range[cell.ExcelCoordinates].Value = cell.InspectText;
+                                else if (cell.InsType == "2")
+                                    worksheet.Range[cell.ExcelCoordinates].Value = cell.InspectValue;
+                            }
+
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                CellSettings cellSetings = LoadCellSettings();
+                                AddCellSettingsToWorksheet(worksheet, cellSetings);
+                            });
+
+                            if (seeAhead == true)
+                            {
+                                // 원본 파일 확장자 확인
+                                string originalExtension = Path.GetExtension(filePath);
+                                string tempFilePath = Path.GetTempPath() + Guid.NewGuid().ToString() + originalExtension;
+
+                                // 파일 형식에 맞게 저장
+                                if (originalExtension.ToLower() == ".xls")
+                                {
+                                    workbook.SaveAs(tempFilePath, Microsoft.Office.Interop.Excel.XlFileFormat.xlWorkbookNormal);
+                                }
+                                else
+                                {
+                                    workbook.SaveAs(tempFilePath, Microsoft.Office.Interop.Excel.XlFileFormat.xlOpenXMLWorkbook);
+                                }
+
+                                //Excel Interop은 정리가 필요하다고 함
+                                // Excel 객체 해제
+                                workbook.Close(false);
+                                excelapp.Quit();
+
+                                // COM 객체 해제
+                                System.Runtime.InteropServices.Marshal.ReleaseComObject(worksheet);
+                                System.Runtime.InteropServices.Marshal.ReleaseComObject(workbook);
+                                System.Runtime.InteropServices.Marshal.ReleaseComObject(excelapp);
+
+                                // 잠시 대기 후 파일 열기
+                                System.Threading.Thread.Sleep(500);
+                                System.Diagnostics.Process.Start(tempFilePath);
+                            }
+                            else
+                            {
+                                // 직접 인쇄
+                                worksheet.PrintOut(
+                                Type.Missing, Type.Missing, 1, false,
+                                Type.Missing, false, true);
+                            }
+
+                            isCompleted = true;
+                        });
+
+                        // 완료 처리
+                        timer.Stop();
+                        tbkMsg.Text = "검사성적서 파일 처리 중... 100%";
+                        await Task.Delay(500);
+                        if (lblMsg != null && strFlag.Equals(string.Empty))
+                            lblMsg.Visibility = Visibility.Hidden;
+                        else
+                            tbkMsg.Text = "자료 입력 중";
+                    }
+                    catch (Exception ex)
+                    {
+                        timer?.Stop();
+                        if (lblMsg != null && strFlag.Equals(string.Empty))
+                            lblMsg.Visibility = Visibility.Hidden;
+                        else
+                            tbkMsg.Text = "자료 입력 중";
+
+                        if (ex.InnerException is COMException)
+                        {
+                            MessageBox.Show("Excel이 설치되어 있지 않아 파일 처리를 할 수 없습니다.\n정품 Microsoft Excel을 설치해 주세요.", "Excel 필요");
+                        }
+                        else
+                        {
+                            MessageBox.Show("검사실적에 등록된 값을 열고자 하는\n파일에 대입하는 중에 오류가 발생했습니다.\n MethodName: PrintWorkAsync\n" + ex.ToString(), "Catch Exception");
+
+                        }
+                    }
+                    finally
+                    {
+                        CleanupExcel();
                     }
                 }
             }
-            DataStore.Instance.InsertLogByForm(this.GetType().Name, "P");
-            msg.Show();
-            msg.Topmost = true;
-            msg.Refresh();
+            catch (Exception ex)
+            {
+                timer?.Stop();
+                if (lblMsg != null && strFlag.Equals(string.Empty))
+                    lblMsg.Visibility = Visibility.Hidden;
+                else
+                    tbkMsg.Text = "자료 입력 중";
+            }
+        }
 
-            //PrintWork(false);
+        private void CleanupExcel()
+        {
+            // 리소스 해제
+            if (workrange != null) Marshal.ReleaseComObject(workrange);
+            if (copysheet != null) Marshal.ReleaseComObject(copysheet);
+            if (pastesheet != null) Marshal.ReleaseComObject(pastesheet);
+            if (worksheet != null) Marshal.ReleaseComObject(worksheet);
+            if (workbook != null)
+            {
+                workbook.Close(false);
+                Marshal.ReleaseComObject(workbook);
+            }
+            if (excelapp != null)
+            {
+                excelapp.Quit();
+                Marshal.ReleaseComObject(excelapp);
+            }
+
+            workrange = null;
+            copysheet = null;
+            pastesheet = null;
+            worksheet = null;
+            workbook = null;
+            excelapp = null;
+
+            // 가비지 컬렉션 강제 실행
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         //인쇄 닫기
@@ -740,6 +1089,13 @@ namespace WizMes_BooKyong
             ContextMenu menu = btnPrint.ContextMenu;
             menu.StaysOpen = false;
             menu.IsOpen = false;
+        }
+
+        //설정메뉴
+        private void menuCellSettings_Click(object sender, RoutedEventArgs e)
+        {
+            InspectAuto_PopUp InsCellSettings_PopUp = new InspectAuto_PopUp();
+            InsCellSettings_PopUp.ShowDialog();
         }
 
         //인쇄 실질 동작
@@ -1341,14 +1697,19 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("InspectPoint", strPoint);
                 sqlParameter.Add("FromDate", chkDate.IsChecked == true ? dtpSDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
                 sqlParameter.Add("ToDate", chkDate.IsChecked == true ? dtpEDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
+
                 sqlParameter.Add("nchkDefectYN", chkResultSrh.IsChecked == true ? 1 : 0);
                 sqlParameter.Add("sDefectYN", chkResultSrh.IsChecked == true ? cboResultSrh.SelectedValue.ToString() : "");
-                //sqlParameter.Add("BuyerArticleNo", chkArticleNo.IsChecked == true ? txtArticleNo.Text : "");
 
-                sqlParameter.Add("ChkArticle", chkArticleSrh.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("ArticleID", chkArticleSrh.IsChecked == true ? (txtArticleSrh.Tag != null ? txtArticleSrh.Tag : ""): "");
-                sqlParameter.Add("ChkBuyerArticleNo", chkBuyerArticleNo.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("BuyerArticleNo", chkBuyerArticleNo.IsChecked == true ? (txtBuyerArticleNo.Tag != null ? txtBuyerArticleNo.Tag : ""):"");
+                sqlParameter.Add("ChkBuyerArticleNo", chkBuyerArticleNoSrh.IsChecked == true ? 1 : 0);
+                sqlParameter.Add("BuyerArticleNo", chkBuyerArticleNoSrh.IsChecked == true ? txtBuyerArticle.Tag?.ToString() ?? string.Empty : string.Empty);
+
+                //sqlParameter.Add("ChkArticleID", chkArticleIDSrh.IsChecked == true ? 1 : 0);
+                //sqlParameter.Add("ArticleID", chkArticleIDSrh.IsChecked == true ? (txtArticleIDSrh.Tag != null ? txtArticleIDSrh.Tag : "") : "");
+
+                sqlParameter.Add("ChkInsCycleID", chkInsCycleSrh.IsChecked == true ? 1 : 0);
+                sqlParameter.Add("InsCycleID", cboInsCycleSrh.SelectedValue != null ? cboInsCycleSrh.SelectedValue.ToString() : "");
+
                 ds = DataStore.Instance.ProcedureToDataSet_LogWrite("xp_Inspect_sAutoInspect", sqlParameter, true, "R");
 
                 if (ds != null && ds.Tables.Count > 0)
@@ -1409,6 +1770,8 @@ namespace WizMes_BooKyong
                                 ProcessID = dr["ProcessID"].ToString(),
                                 SketchFile = dr["SketchFile"].ToString(),
                                 SketchPath = dr["SketchPath"].ToString(),
+                                InsCyclePath = dr["InsCyclePath"].ToString(),
+                                InsCycleFile = dr["InsCycleFile"].ToString(),
                                 TotalDefectQty = dr["TotalDefectQty"].ToString(),
                                 SumInspectQty = dr["SumInspectQty"].ToString(),
                                 SumDefectQty = dr["SumDefectQty"].ToString(),
@@ -1979,13 +2342,15 @@ namespace WizMes_BooKyong
                         }
 
                         // 첨부파일 등록
-                        if (txtSKetch.Text != string.Empty || txtFile.Text != string.Empty)
+                        if (txtSKetch.Text != string.Empty || txtFile.Text != string.Empty || txtInsCycleFile.Text != string.Empty)
                         {
                             bool AttachYesNo = false;
                             if (FTP_Save_File(listFtpFile, strID))
                             {
                                 if (!txtSKetch.Text.Equals(string.Empty)) { txtSKetch.Tag = "/ImageData/AutoInspect/" + strID; }
                                 if (!txtFile.Text.Equals(string.Empty)) { txtFile.Tag = "/ImageData/AutoInspect/" + strID; }
+                                if (!txtInsCycleFile.Text.Equals(string.Empty)) { txtInsCycleFile.Tag = "/ImageData/AutoInspect/" + strID; }
+
 
                                 AttachYesNo = true;
                             }
@@ -2017,7 +2382,9 @@ namespace WizMes_BooKyong
             }
             finally
             {
-                DataStore.Instance.CloseConnection();
+                if (flag == true)
+                    MessageBox.Show("저장 되었습니다.", "확인");
+                DataStore.Instance.CloseConnection();                
             }
 
             return flag;
@@ -2134,6 +2501,8 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("SketchFile", txtSKetch.Text);
                 sqlParameter.Add("AttachedPath", AttachedPath);
                 sqlParameter.Add("AttachedFile", txtFile.Text);
+                sqlParameter.Add("InsCyclePath", string.IsNullOrEmpty(txtInsCycleFile.Text) ? "" : txtInsCycleFile.Tag.ToString());
+                sqlParameter.Add("InsCycleFile", txtInsCycleFile.Text);
 
                 sqlParameter.Add("UpdateUserID", MainWindow.CurrentUser);
 
@@ -2309,7 +2678,7 @@ namespace WizMes_BooKyong
 
                     if (dt.Rows.Count == 0)
                     {
-                        //MessageBox.Show("조회된 데이터가 없습니다.");
+                        MessageBox.Show("검사기준이 등록되지 않은 데이터입니다.","확인");
                     }
                     else
                     {
@@ -3471,26 +3840,36 @@ namespace WizMes_BooKyong
             Microsoft.Win32.OpenFileDialog OFdlg = new Microsoft.Win32.OpenFileDialog();
 
             OFdlg.DefaultExt = ".jpg";
-            OFdlg.Filter = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png | All Files|*.*";
+            OFdlg.Filter = !ClickPoint.Equals("InsCycle") ? "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png | All Files|*.*" : "모든 파일 (*.*)|*.*"; 
 
             Nullable<bool> result = OFdlg.ShowDialog();
             if (result == true)
             {
+                // 선택된 파일의 확장자 체크
+                if (MainWindow.OFdlg_Filter_NotAllowed.Contains(Path.GetExtension(OFdlg.FileName).ToLower()))
+                {
+                    MessageBox.Show("보안상의 이유로 해당 파일은 업로드할 수 없습니다.");
+                    return;
+                }
+
                 if (ClickPoint == "SKetch") { FullPath1 = OFdlg.FileName; }  //긴 경로(FULL 사이즈)
                 if (ClickPoint == "File") { FullPath2 = OFdlg.FileName; }
+                if (ClickPoint == "InsCycle") { FullPath3 = OFdlg.FileName; }
 
                 string AttachFileName = OFdlg.SafeFileName;  //명.
                 string AttachFilePath = string.Empty;       // 경로
 
                 if (ClickPoint == "SKetch") { AttachFilePath = FullPath1.Replace(AttachFileName, ""); }
                 if (ClickPoint == "File") { AttachFilePath = FullPath2.Replace(AttachFileName, ""); }
+                if (ClickPoint == "InsCycle") { AttachFilePath = FullPath3.Replace(AttachFileName, ""); }
+
 
                 StreamReader sr     = new StreamReader(OFdlg.FileName);
                 long File_size = sr.BaseStream.Length;
-                if (sr.BaseStream.Length > (2048 * 1000))
+                if (sr.BaseStream.Length > 500 * 1024 * 1024)
                 {
                     // 업로드 파일 사이즈범위 초과
-                    MessageBox.Show("이미지의 파일사이즈가 2M byte를 초과하였습니다.");
+                    MessageBox.Show("이미지의 파일사이즈가 50Mb를 초과하였습니다.");
                     sr.Close();
                     return;
                 }
@@ -3503,6 +3882,11 @@ namespace WizMes_BooKyong
                 {
                     txtFile.Text = AttachFileName;
                     txtFile.Tag = AttachFilePath.ToString();
+                }
+                else if (ClickPoint == "InsCycle")
+                {
+                    txtInsCycleFile.Text = AttachFileName;
+                    txtInsCycleFile.Tag = AttachFilePath.ToString();
                 }
                 strTemp = new string[] { AttachFileName, AttachFilePath.ToString() };
                 listFtpFile.Add(strTemp);
@@ -3590,6 +3974,11 @@ namespace WizMes_BooKyong
                     MessageBox.Show("파일이 없습니다.");
                     return;
                 }
+                if ((ClickPoint == "InsCycle") && (txtInsCycleFile.Tag.ToString() == string.Empty))
+                {
+                    MessageBox.Show("파일이 없습니다.");
+                    return;
+                }
 
                 var ViewReceiver = dgdMain.SelectedItem as Win_Qul_InspectAuto_U_CodeView;
                 if (ViewReceiver != null)
@@ -3604,6 +3993,11 @@ namespace WizMes_BooKyong
                     {
                         imgName = ViewReceiver.AttachedFile;
                         FTP_DownLoadFile(ViewReceiver.AttachedPath, ViewReceiver.InspectID, ref imgName);
+                    }
+                    else if (ClickPoint == "InsCycle")
+                    {
+                        imgName = ViewReceiver.InsCycleFile;
+                        FTP_DownLoadFile(ViewReceiver.InsCyclePath, ViewReceiver.InspectID, ref imgName);
                     }
                 }
             }
@@ -3717,12 +4111,157 @@ namespace WizMes_BooKyong
                     txtFile.Text = string.Empty;
                     txtFile.Tag = string.Empty;
                 }
+                if ((ClickPoint == "InsCycle") && (txtInsCycleFile.Tag.ToString() != string.Empty))
+                {
+                    //if (DetectFtpFile(txtDrawID.Text))
+                    //{
+                    //    FTP_UploadFile_File_Delete(txtDrawID.Text, txtAttFile2.Text);
+                    //}
+
+                    txtInsCycleFile.Text = string.Empty;
+                    txtInsCycleFile.Tag = string.Empty;
+                    btnInsCycleFileDownload.IsEnabled = false;
+                }
+            }
+        }
+
+        //정기검사기준서 받기
+        private void btnInsCycleFormDownload_Click(object sender, RoutedEventArgs e)
+        {
+            string InspectBasisID = cboEcoNO.SelectedValue != null ? cboEcoNO.SelectedValue.ToString() : "";
+            if (!string.IsNullOrEmpty(InspectBasisID))
+            {
+
+                string BasisID = string.Empty;
+                string FileName = string.Empty;
+
+                (BasisID, FileName) = GetInsCyCleFileInfo(InspectBasisID);
+                if (string.IsNullOrEmpty(FileName.Trim()))
+                {
+                    MessageBox.Show("검사기준에 등록된 정기점검 기준서가 없습니다.", "확인");
+                    return;
+                }
+                else
+                {
+                    MessageBoxResult msgresult = MessageBox.Show($"검사기준번호 : {BasisID}에 등록된 정기점검기준서 파일을 찾았습니다.\n파일명 : {FileName}\n다운로드 하시겠습니까?", "확인", MessageBoxButton.YesNo);
+                    if (msgresult == MessageBoxResult.Yes)
+                    {
+                        InsCycleForm_FTPDownload(BasisID, FileName);
+
+                    }
+                }
+
+
+            }
+            else
+            {
+                MessageBox.Show("LOTNO 또는 품명 입력검색을 통해 검사기준값을 조회하세요", "확인");
             }
         }
 
 
+        private bool InsCycleForm_FTPDownload(string BasisID, string FileName)
+        {
+            bool flag = true;
+
+            string FTP_ADDRESS = "ftp://" + LoadINI.FileSvr + ":" + LoadINI.FTPPort + LoadINI.FtpImagePath + "/InspectAutoBasis";
+
+            try
+            {
+
+                string str_path = string.Empty;
+                str_path = FTP_ADDRESS + '/' + BasisID;
+                _ftp = new FTP_EX(str_path, FTP_ID, FTP_PASS);
 
 
+                string str_remotepath = string.Empty;
+                string str_localpath = string.Empty;
+
+                str_remotepath = FileName;
+                str_localpath = LOCAL_DOWN_PATH + "\\" + BasisID + "\\" + FileName;
+
+                DirectoryInfo DI = new DirectoryInfo(LOCAL_DOWN_PATH + "\\" + BasisID);
+                if (DI.Exists == false)
+                {
+                    DI.Create();
+                }
+
+                FileInfo file = new FileInfo(str_localpath);
+                if (file.Exists)
+                {
+                    file.Delete();
+                }
+
+                try
+                {
+                    if (_ftp.download(str_remotepath, str_localpath, false))
+                    {
+                        MessageBoxResult msgresult = MessageBox.Show($"파일 다운로드를 완료했습니다.\n지금 폴더를 여시겠습니까?\n파일은 {LOCAL_DOWN_PATH}에 다운로드 되었습니다. ", "확인", MessageBoxButton.YesNo);
+                        if (msgresult == MessageBoxResult.Yes)
+                        {
+                            string folderPath = LOCAL_DOWN_PATH + "\\" + BasisID;
+                            if (Directory.Exists(folderPath))
+                            {
+                                Process.Start("explorer.exe", folderPath);
+                            }
+                        }
+
+                    }
+                }
+                catch
+                {
+
+                }
+
+
+            }
+            catch
+            {
+                return false;
+            }
+
+
+            return flag;
+        }
+
+
+        private (string BasisID, string FileName) GetInsCyCleFileInfo(string inspectbasisID)
+        {
+            string BasisID = string.Empty;
+            string FileName = string.Empty;
+
+            string[] sqlList = { "select sketch1FilePath, sketch1FileName from mt_InspectAutoBasis where InspectBasisID = ",
+
+
+            };
+
+
+            //반복문을 돌다가 걸리면 종료, 경고문 띄우고 false반환
+            for (int i = 0; i < sqlList.Length; i++)
+            {
+                DataSet ds = DataStore.Instance.QueryToDataSet(sqlList[i] + inspectbasisID);
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    DataTable dt = ds.Tables[0];
+                    if (dt.Rows.Count > 0)
+                    {
+                        DataRow dr = dt.Rows[0];
+
+                        BasisID = dr["sketch1FilePath"].ToString();
+                        FileName = dr["sketch1FileName"].ToString();
+                        BasisID = BasisID.Substring(BasisID.LastIndexOf('/') + 1).Trim();
+                        break;
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+
+            return (BasisID, FileName);
+        }
 
 
         /// <summary>
@@ -4045,23 +4584,8 @@ namespace WizMes_BooKyong
 
         #endregion
 
-        private void dgdMain_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        // 품명
-        private void chkArticle_Checked(object sender, RoutedEventArgs e)
-        {
-            txtArticleSrh.IsEnabled = true;
-            btnPFArticleSrh.IsEnabled = true;
-        }
-
-        private void chkArticle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            txtArticleSrh.IsEnabled = false;
-            btnPFArticleSrh.IsEnabled = false;
-        }
+    
+    
 
         private void ValueText_KeyDown(object sender, KeyEventArgs e)
         {
@@ -4086,39 +4610,9 @@ namespace WizMes_BooKyong
             }
         }
 
-        //품명
-        private void chkArticle_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkArticleSrh.IsChecked == true)
-            {
-                chkArticleSrh.IsChecked = false;
-                txtArticleSrh.IsEnabled = false;
-                btnPFArticleSrh.IsEnabled = false;
-            }
-            else
-            {
-                chkArticleSrh.IsChecked = true;
-                txtArticleSrh.IsEnabled = true;
-                btnPFArticleSrh.IsEnabled = true;
-                txtArticleSrh.Focus();
-            }
-        }
+    
 
-        //품번
-        private void chkArticleNo_Click(object sender, RoutedEventArgs e)
-        {
-            //if (chkArticleNo.IsChecked == true)
-            //{
-            //    txtArticleNo.IsEnabled = true;
-            //    txtArticleNo.Focus();
-            //    btnArticleNo.IsEnabled = true;
-            //}
-            //else
-            //{
-            //    txtArticleNo.IsEnabled = false;
-            //    btnArticleNo.IsEnabled = false;
-            //}
-        }
+  
 
         // 플러스파인더 _ 품번 찾기
         private void btnArticleNo_Click(object sender, RoutedEventArgs e)
@@ -4380,14 +4874,26 @@ namespace WizMes_BooKyong
             return flag;
         }
 
-        private void btnTensileReportUpload_Click(object sender, RoutedEventArgs e)
+        private void btnInsMachineValueUpload_Click(object sender, RoutedEventArgs e)
         {
-            using (Loading ld = new Loading("excel", beUploadExcel))
+            //using (Loading ld = new Loading("excel", beUploadExcel))
+            //{
+            //    ld.ShowDialog();
+            //}
+
+            //re_Search(0);
+
+            if (strFlag.Equals("I") || strFlag.Equals("U"))
             {
-                ld.ShowDialog();
+                if (dgdSub2.Items.Count > 0)
+                    beUploadExcel();
+                else
+                    MessageBox.Show("먼저 품번 또는 LotNo를 검색하여 검사기준을 불러와야 합니다.", "확인");
+                
+
             }
-         
-            re_Search(0);
+            else
+                MessageBox.Show("추가 또는 수정 중에 할 수 있습니다.", "확인");
         }
 
         private void GetArticleInfoByArticleID(string ArticleID)
@@ -4444,7 +4950,7 @@ namespace WizMes_BooKyong
                 Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
                 //sqlParameter.Add("BuyerArticleNo", BuyerArticleNo);
                 sqlParameter.Add("LabelID", LabelID);
-                
+
 
                 DataSet ds = DataStore.Instance.ProcedureToDataSet("xp_Inspect_sArticleInfoByLabelID", sqlParameter, false);
 
@@ -4476,6 +4982,26 @@ namespace WizMes_BooKyong
             }
         }
 
+
+        private CellSettings LoadCellSettings()
+        {
+            try
+            {
+                string settingsFilePath = "CellSettings.json";
+                if (File.Exists(settingsFilePath))
+                {
+                    string json = File.ReadAllText(settingsFilePath);
+                    return JsonConvert.DeserializeObject<CellSettings>(json);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"설정 로드 오류: {ex.Message}");
+            }
+
+            return new CellSettings(); // 기본값 반환
+        }
+
         private DataTable AutoGeneratedBasisTable() //기준값 없을때 빈테이블 만들고 sub에다가 넣을거
         {
             DataTable dt = new DataTable();
@@ -4494,157 +5020,315 @@ namespace WizMes_BooKyong
             return dt;
         }
 
-        private void beUploadExcel()
+        private async void beUploadExcel()
         {
-
             List<Procedure> Prolist = new List<Procedure>();
             List<Dictionary<string, object>> ListParameter = new List<Dictionary<string, object>>();
 
-            Stopwatch watch = new Stopwatch();
+            int matchedValueCount = 0;
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.DefaultExt = ".xls";
-            openFileDialog.Filter = "Excel Files (*.xlsx)|*.xlsx";
-
-
+            openFileDialog.Filter = "Excel Files (*.xlsx, *.xls)|*.xlsx;*.xls";
 
             if (openFileDialog.ShowDialog() == true)
             {
-                
-                string filePath = openFileDialog.FileName;
-                string[] split_path = filePath.Split('\\'); // 1줄 경로를 \\로 나누어 문자배열에 넣기
-                string fileName = split_path[split_path.Length - 1]; //나눈 갯수 배열의 제일 마지막은 파일 이름
-                //string fileNameNoExtension = System.IO.Path.GetFileNameWithoutExtension(filePath);
+                string tempFilePath = null; // 임시 파일 경로
 
-                string ExtractedLabeID = "";
-
-                int index = fileName.IndexOf("C"); //파일명에 C를 찾아서 인덱스 지정
-                if (index >= 0 && index + 11 <= fileName.Length) //인덱스로부터 파일명 검증..
+                try
                 {
-                    ExtractedLabeID = fileName.Substring(index, 11); //괜찮으면 C지점부터 11자리
-                    LabelID_Global = ExtractedLabeID;
-                }
-                else
-                {
-                    MessageBox.Show("업로드하려는 파일명에 공정라벨이 포함되어 있어야 합니다.");
-                    return;
-                }
-
-                if (ExtractedLabeID != null && ExtractedLabeID != string.Empty)
-                {
-                    //GetArticleInfoByArticleID(ArticleID_Global); 
-                  
-                    if (CheckIsLabelIDExist(ExtractedLabeID)) //공정라벨로 검사기준등록에 있는지 확인
+                    // 진행률 애니메이션용 Timer
+                    var timer = new System.Windows.Threading.DispatcherTimer();
+                    int progressValue = 0;
+                    timer.Interval = TimeSpan.FromMilliseconds(150); // 0.15초마다 업데이트
+                    timer.Tick += (s, e) =>
                     {
-                        GetArticleInfoByLabelID(ExtractedLabeID); //미리 설정해놓은 전역변수에 정보를 저장
+                        progressValue += 5;
+                        if (progressValue > 95) progressValue = 95; // 95%까지만
+                        tbkMsg.Text = $"양식을 읽는 중입니다... {progressValue}%";
+                    };
+
+                    // Timer 시작
+                    timer.Start();
+
+                    DataTable dataTable = null;
+
+                    // 백그라운드에서 엑셀 읽기
+                    await Task.Run(() =>
+                    {
+                        string fileToRead = openFileDialog.FileName;
 
                         try
                         {
-                            // 엑셀 파일 읽기
-                            using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+                            // 원본 파일 열기 시도
+                            using (var stream = File.Open(fileToRead, FileMode.Open, FileAccess.Read))
                             {
                                 using (var reader = ExcelReaderFactory.CreateReader(stream))
                                 {
-                                    // 엑셀 데이터를 DataSet으로 읽어들이기
-                                    var dataSet = reader.AsDataSet();
-
-                                    // 첫 번째 워크시트의 데이터 가져오기
-
-                                    bool startSave = false;
-                                    DataTable resultTable = new DataTable();
-
-                                    foreach (DataTable dataTable in dataSet.Tables) //엑셀에 있는 모든 시트를  하나의 datatable에 저장하기
+                                    var result = reader.AsDataSet(new ExcelDataSetConfiguration()
                                     {
-                                        if (dataTable.Rows.Count > 0) //데이터 테이블에 행이 있으면.. 없을리는 없겠지만
+                                        ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
                                         {
-                                            foreach (DataRow row in dataTable.Rows)
+                                            UseHeaderRow = false
+                                        }
+                                    });
+
+                                    dataTable = result.Tables[0];
+                                }
+                            }
+                        }
+                        catch (IOException)
+                        {
+                            // 파일이 열려있어서 접근할 수 없는 경우 임시 파일로 복사
+                            try
+                            {
+                                // 임시 파일 경로 생성
+                                tempFilePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + Path.GetExtension(openFileDialog.FileName));
+
+                                // 파일 복사 (읽기 전용으로)
+                                File.Copy(openFileDialog.FileName, tempFilePath, true);
+
+                                // 임시 파일에서 읽기
+                                using (var stream = File.Open(tempFilePath, FileMode.Open, FileAccess.Read))
+                                {
+                                    using (var reader = ExcelReaderFactory.CreateReader(stream))
+                                    {
+                                        var result = reader.AsDataSet(new ExcelDataSetConfiguration()
+                                        {
+                                            ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
                                             {
-                                                if (row[0].ToString().Contains("Sample")) //만약에 엑셀의 A열에서 "Name"을 만난다면
-                                                {
-                                                    startSave = true; //저장시작으로 돌림
-
-
-                                                    for (int i = 0; i < row.ItemArray.Length; i++) //행의 열 갯수만큼 반복해서 데이터테이블에 넣기 시작함
-                                                    {
-                                                        string columnName = row[i].ToString();
-                                                        if (!resultTable.Columns.Contains(columnName)) //데이터테이블에 열이름이 없을때 넣음
-                                                        {
-                                                            if (columnName.Contains("\n"))
-                                                                columnName = columnName.Replace("\n", "");
-
-                                                            resultTable.Columns.Add(columnName);
-                                                        }
-                                                    }
-                                                }
-                                                else if (startSave) //그 외에는 계속 데이터를 넣음 어차피 열 이름은 각 검사성적서 마다 똑같음..
-                                                {
-
-                                                    DataRow newRow = resultTable.NewRow();
-                                                    for (int i = 0; i < row.ItemArray.Length; i++)
-                                                    {
-                                                        string columnName = resultTable.Columns[i].ColumnName;
-                                                        newRow[columnName] = row[i];
-                                                    }
-                                                    resultTable.Rows.Add(newRow);
-                                                }
+                                                UseHeaderRow = false
                                             }
-                                        }
+                                        });
 
-                                        startSave = false; //한 시트가 끝나면 일단 저장하는 것을 멈춤 다음 시트에서 Name을 만나면
-                                                            //열 이름은 이미 저장되어 있으니 넘어가고 startSave가 true로 바뀌고 계속 이어서 
-                                                            //데이터 테이블에 값을 저장함
+                                        dataTable = result.Tables[0];
                                     }
-                                    if(ExtractedLabeID == LabelID_dgdMainSelectionChanged_Occur) //데이터그리드에서 선택한 라벨아이디와 업로드 라벨아이디가 똑같으면 그냥 진행
-                                    {
-                                        chkUserReport = 1;
-                                        ReadUploadExcel(resultTable); //여기까지 오면 각 시트의 데이터를 하나의 테이블로 만듬
-                                        
-                                    }
-                                    else
-                                    {
-                                        MessageBoxResult msgresult = MessageBox.Show("선택하신 항목의 공정라벨번호( "+ LabelID_dgdMainSelectionChanged_Occur+" )와 업로드하려는 엑셀파일의 라벨번호("+ ExtractedLabeID +")가 서로 다릅니다.\r\n새로운 업로드를 진행하시겠습니까?", "확인", MessageBoxButton.YesNo);
-                                        if (msgresult == MessageBoxResult.Yes)
-                                        {
-                                            chkUserReport = 0;
-                                            ReadUploadExcel(resultTable); //여기까지 오면 각 시트의 데이터를 하나의 테이블로 만듬
+                                }
+                            }
+                            catch (Exception copyEx)
+                            {
+                                throw new Exception($"파일이 사용 중이며 임시 복사에 실패했습니다: {copyEx.Message}");
+                            }
+                        }
+                    });
 
-                                        }
-                                        else
-                                        {
-                                            return;
-                                        }
-                                    }
+                    // Timer 정지 및 완료 표시
+                    timer.Stop();
+                    tbkMsg.Text = "양식을 읽는 중입니다... 100%";
+                    await Task.Delay(300); // 잠깐 100% 보여주기
 
+                    // 이후 처리 계속
+                    string firstCellValue = dataTable.Rows[0][0].ToString();
+                    if (firstCellValue.Contains("인장") || firstCellValue.Contains("압축") || firstCellValue.Contains("굽힘"))
+                    {
+                        for (int i = 0; i < 8; i++)
+                        {
+                            if (dataTable.Rows.Count > 0)
+                                dataTable.Rows.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("올바르지 않은 검사 양식 입니다. 확인 후 다시 시도하여 주세요", "확인");
+                        tbkMsg.Text = "자료 입력 중";
+                        //CleanupExcel(); //ExcelReaderFactory는 using을 쓰면 정리할 필요가 없다고함
+                        return;
+                    }
+
+                    try
+                    {
+                        if (dataTable.Rows.Count > 0)
+                        {
+                            for (int i = 0; i < dataTable.Columns.Count;)
+                            {
+                                string cellValue = dataTable.Rows[0][i].ToString();
+                                if (string.IsNullOrEmpty(cellValue))
+                                {
+                                    dataTable.Columns.RemoveAt(i);
+                                }
+                                else
+                                {
+                                    dataTable.Columns[i].ColumnName = cellValue;
+                                    i++;
                                 }
                             }
 
-                            //MessageBox.Show("파일이 성공적으로 업로드되었습니다.");
-                        }
-                        catch (Exception ex)
-                        {
-                            if (ex.ToString().Contains("다른 프로세스에서 사용"))
+                            dataTable.Rows.RemoveAt(0);
+                            dataTable.Rows.RemoveAt(0);
+                            dataTable.Columns.RemoveAt(0);
+                            dataTable.Columns.Remove("시료크기");
+
+                            int emptyRowIndex = -1;
+                            for (int i = 0; i < dataTable.Rows.Count; i++)
                             {
-
-                                MessageBox.Show("[오류 발생]\r\n 업로드 하려는 엑셀 파일이 열려있습니다.\r\n 해당 엑셀 프로그램을 먼저 종료해주세요.");
-
+                                if (string.IsNullOrEmpty(dataTable.Rows[i][0].ToString()))
+                                {
+                                    emptyRowIndex = i;
+                                    break;
+                                }
                             }
-                            else
-                            {
-                                MessageBox.Show("파일 업로드 중 오류가 발생했습니다: " + ex.Message);
 
+                            if (emptyRowIndex >= 0)
+                            {
+                                for (int i = dataTable.Rows.Count - 1; i >= emptyRowIndex; i--)
+                                {
+                                    dataTable.Rows.RemoveAt(i);
+                                }
                             }
                         }
-                        finally
+
+                        DataTable transposedTable = new DataTable();
+                        bool firstCoulnmMade = false;
+
+                        for (int i = 0; i < dataTable.Rows.Count; i++)
                         {
-                            DataStore.Instance.CloseConnection();
+                            if (!firstCoulnmMade)
+                            {
+                                transposedTable.Columns.Add("InsTestName");
+                                firstCoulnmMade = true;
+                            }
+
+                            transposedTable.Columns.Add($"Column{i}");
+                        }
+
+                        for (int col = 0; col < dataTable.Columns.Count; col++)
+                        {
+                            DataRow newRow = transposedTable.NewRow();
+
+                            newRow[0] = dataTable.Columns[col].ColumnName;
+                            for (int row = 0; row < dataTable.Rows.Count; row++)
+                            {
+                                newRow[row + 1] = dataTable.Rows[row][col]; 
+                            }
+                            transposedTable.Rows.Add(newRow);
+                        }
+
+                        //for (int rowIndex = 0; rowIndex < dgdSub2.Items.Count; rowIndex++)
+                        //{
+                        //    var item = dgdSub2.Items[rowIndex] as Win_Qul_InspectAuto_U_Sub_CodeView;
+                        //    item.ValueCount = 0;
+                        //    int sampleQty = int.Parse(item.InsSampleQty);
+                        //    int idx = 0;
+
+                        //    if (rowIndex < transposedTable.Rows.Count)
+                        //    {
+                        //        DataRow dataRow = transposedTable.Rows[rowIndex];
+                        //        string columnName = dataRow[0].ToString();
+
+                        //        for (int col = 0; col < Math.Min(sampleQty, dataRow.ItemArray.Length); col++)
+                        //        {
+                        //            idx = col + 1;
+                        //            string value = dataRow[col + 1].ToString();
+                        //            switch (col + 3)
+                        //            {
+                        //                case 3: item.InspectValue1 = value; item.ValueCount++; break;
+                        //                case 4: item.InspectValue2 = value; item.ValueCount++; break;
+                        //                case 5: item.InspectValue3 = value; item.ValueCount++; break;
+                        //                case 6: item.InspectValue4 = value; item.ValueCount++; break;
+                        //                case 7: item.InspectValue5 = value; item.ValueCount++; break;
+                        //                case 8: item.InspectValue6 = value; item.ValueCount++; break;
+                        //                case 9: item.InspectValue7 = value; item.ValueCount++; break;
+                        //                case 10: item.InspectValue8 = value; item.ValueCount++; break;
+                        //                case 11: item.InspectValue9 = value; item.ValueCount++; break;
+                        //                case 12: item.InspectValue10 = value; item.ValueCount++; break;
+                        //            }
+
+                        //            item.arrInspectValue[idx - 1] = value;
+
+                        //        }
+                        //    }
+                        //}
+
+                        // 각 DataTable 컬럼에 대해 처리
+                        for (int col = 0; col < transposedTable.Rows.Count; col++) 
+                        {
+                            DataRow dataRow = transposedTable.Rows[col];
+                            string columnName = dataRow[0].ToString(); // 첫 번째 셀이 컬럼명
+                            matchedValueCount = 0;  //정량적 검사 필드에 일치했는지 여부
+
+                            // dgdSub2에서 해당 컬럼명과 일치하는 행 찾기
+                            for (int rowIndex = 0; rowIndex < dgdSub2.Items.Count; rowIndex++)
+                            {
+                                var item = dgdSub2.Items[rowIndex] as Win_Qul_InspectAuto_U_Sub_CodeView;
+
+                                // 컬럼명과 일치하는 행을 찾는 조건 (예: insItemName과 비교)
+                                if (item.insItemName == columnName) 
+                                {
+                                    item.ValueCount = 0;
+                                    int sampleQty = int.Parse(item.InsSampleQty);
+
+                                    // 해당 행에 데이터 설정
+                                    for (int valueIndex = 1; valueIndex < Math.Min(sampleQty + 1, dataRow.ItemArray.Length); valueIndex++)
+                                    {
+                                        string value = dataRow[valueIndex].ToString();
+                                        int idx = valueIndex;
+
+                                        switch (valueIndex)
+                                        {
+                                            case 1: item.InspectValue1 = value; item.ValueCount++; break;
+                                            case 2: item.InspectValue2 = value; item.ValueCount++; break;
+                                            case 3: item.InspectValue3 = value; item.ValueCount++; break;
+                                            case 4: item.InspectValue4 = value; item.ValueCount++; break;
+                                            case 5: item.InspectValue5 = value; item.ValueCount++; break;
+                                            case 6: item.InspectValue6 = value; item.ValueCount++; break;
+                                            case 7: item.InspectValue7 = value; item.ValueCount++; break;
+                                            case 8: item.InspectValue8 = value; item.ValueCount++; break;
+                                            case 9: item.InspectValue9 = value; item.ValueCount++; break;
+                                            case 10: item.InspectValue10 = value; item.ValueCount++; break;
+                                        }
+
+                                        item.arrInspectValue[idx - 1] = value;
+                                    }
+                                    matchedValueCount++;
+                                    break; // 일치하는 행을 찾았으므로 다음 컬럼으로
+                                }
+                            }
+                        }
+
+                        if (matchedValueCount == 0)
+                        {
+                            MessageBox.Show("검사항목명과 일치하는 만능시험기 값을 찾지 못했습니다.", "확인");
+                        }
+                        else
+                        {
+                            MessageBox.Show("검사항목명과 일치하는 만능시험기 검사값을 불러왔습니다.\n", "완료", MessageBoxButton.OK);
+                            lib.ShowTooltipMessage(txtDimsHeader, "값이 변경 되었습니다.", MessageBoxImage.Information, System.Windows.Controls.Primitives.PlacementMode.Right, 1.3);
+                        }
+
+                      
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                    finally
+                    {
+                        tbkMsg.Text = "자료 입력 중";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"파일 처리 중 오류가 발생했습니다: {ex.Message}", "오류");
+                    tbkMsg.Text = "자료 입력 중";
+                }
+                finally
+                {
+
+                    // 임시 파일 정리
+                    if (!string.IsNullOrEmpty(tempFilePath) && File.Exists(tempFilePath))
+                    {
+                        try
+                        {
+                            File.Delete(tempFilePath);
+                        }
+                        catch
+                        {
+                            // 임시 파일 삭제 실패는 무시 (시스템이 나중에 정리)
                         }
                     }
-
-                                       
                 }
             }
         }
-
         private bool ReadUploadExcel(DataTable dt)
         {
             int cnt = 0;
@@ -4897,51 +5581,32 @@ namespace WizMes_BooKyong
             return flag;
         }
 
-        private void lblBuyerArticleNo_Click(object sender, MouseButtonEventArgs e)
-        {
-            if(chkBuyerArticleNo.IsChecked == true)
-            {
-                chkBuyerArticleNo.IsChecked = false;
-                txtBuyerArticleNo.IsEnabled = false;
-                btnBuyerArticleNo.IsEnabled = false;
-            }
-            else
-            {
-                chkBuyerArticleNo.IsChecked = true;
-                txtBuyerArticleNo.IsEnabled = true;
-                btnBuyerArticleNo.IsEnabled = true;
-                txtBuyerArticleNo.Focus();
-            }
-        }
+  
 
-        private void txtBuyerArticleNo_KeyDown(object sender, KeyEventArgs e)
+        private void txtBuyerArticleNoSrh_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.Key == Key.Enter)
             {
-               MainWindow.pf.ReturnCode(txtBuyerArticleNo, 76, txtBuyerArticleNo.Text);
+               MainWindow.pf.ReturnCode(txtBuyerArticleNoSrh, 76, txtBuyerArticleNoSrh.Text);
             }
         }
 
-        private void btnBuyerArticleNo_Click(object sender, RoutedEventArgs e)
+        private void btnBuyerArticleNoSrh_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.pf.ReturnCode(txtBuyerArticleNo, 76, txtBuyerArticleNo.Text);
+            MainWindow.pf.ReturnCode(txtBuyerArticleNoSrh, 76, txtBuyerArticleNoSrh.Text);
         }
 
-        private void chkBuyerArticleNo_Click(object sender, RoutedEventArgs e)
+      
+        private void CommonControl_Click(object sender, RoutedEventArgs e)
         {
-            if(chkBuyerArticleNo.IsChecked == true)
-            {
-                txtBuyerArticleNo.IsEnabled = true;
-                btnBuyerArticleNo.IsEnabled = true;
-                txtBuyerArticleNo.Focus();
-            }
-            else
-            {
-                txtBuyerArticleNo.IsEnabled = false;
-                btnBuyerArticleNo.IsEnabled = false;
-                chkBuyerArticleNo.IsChecked = false;
-            }
+            lib.CommonControl_Click(sender, e);
         }
+
+        private void CommonControl_Click(object sender, MouseButtonEventArgs e)
+        {
+            lib.CommonControl_Click(sender, e);
+        }
+
      
     }
 
@@ -4965,6 +5630,9 @@ namespace WizMes_BooKyong
         public string SketchFile { get; set; }
         public string AttachedPath { get; set; }
         public string AttachedFile { get; set; }
+
+        public string InsCyclePath { get; set; }
+        public string InsCycleFile { get; set; }
 
         public string InspectUserID { get; set; }
         public string InspectBasisID { get; set; }
@@ -5179,5 +5847,46 @@ namespace WizMes_BooKyong
         public string ProcessID { get; set; }
         public string LOTID { get; set; }
         public string InoutDate_CV { get; set; }
+    }
+
+    class CellData : BaseView
+    {
+        public string InspectBasisID { get; set; }
+        public string InsType { get; set; }
+        public string InsItemName { get; set; }
+        public int SampleNo { get; set; }
+        public string ExcelCoordinates { get; set; }
+        public string SubSeq { get; set; }
+        public string InspectBasisSubSeq { get; set; }
+        public string InspectValue { get; set; }
+        public string InspectText { get; set; }
+    }
+
+
+    public class CellSettingItem
+    {
+        public bool Checked { get; set; } = false;
+        public string Value { get; set; } = "";
+    }
+
+
+    public class CellSettings
+    {
+        public CellSettingItem LotNo { get; set; } = new CellSettingItem();
+        public CellSettingItem ModelID { get; set; } = new CellSettingItem();
+        public CellSettingItem BuyerArticleNo { get; set; } = new CellSettingItem();
+        public CellSettingItem ArticleID { get; set; } = new CellSettingItem();
+        public CellSettingItem InspectDate { get; set; } = new CellSettingItem();
+        public CellSettingItem Name { get; set; } = new CellSettingItem();
+        public CellSettingItem ProcessID { get; set; } = new CellSettingItem();
+        public CellSettingItem MachineID { get; set; } = new CellSettingItem();
+        public CellSettingItem InspectLevel { get; set; } = new CellSettingItem();
+        public CellSettingItem IRELevel { get; set; } = new CellSettingItem();
+        public CellSettingItem CustomID { get; set; } = new CellSettingItem();
+        public CellSettingItem InOutDate { get; set; } = new CellSettingItem();
+        public CellSettingItem FMLGubun { get; set; } = new CellSettingItem();
+        public CellSettingItem SumInspectQty { get; set; } = new CellSettingItem();
+        public CellSettingItem DefectYN { get; set; } = new CellSettingItem();
+        public CellSettingItem SumDefectQty { get; set; } = new CellSettingItem();
     }
 }

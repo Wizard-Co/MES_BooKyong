@@ -27,6 +27,12 @@ namespace WizMes_BooKyong
 
         public string ProcessID { get; set; }
         public string Process { get; set; }
+        public string InsCycleID { get; set; }
+        public string InsCycle { get; set; }
+
+        public string sketch1FilePath { get; set; }
+        public string sketch1FileName { get; set; }
+        public string sketch1FileAlias { get; set; }
     }
 
     class Win_Qul_InspectAutoBasis_U_Sub_CodeView : BaseView
@@ -77,11 +83,9 @@ namespace WizMes_BooKyong
         public BitmapImage ImageView { get; set; }
         public bool imageFlag { get; set; }
 
-
-
-
         public ObservableCollection<CodeView> ovcType { get; set; }
         public ObservableCollection<CodeView> ovcManage { get; set; }
         public ObservableCollection<CodeView> ovcCycle { get; set; }
+        public string ExcelCoordinates { get; set; }
     }
 }

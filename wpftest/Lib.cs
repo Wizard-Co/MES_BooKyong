@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +16,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using WPF.MDI;
 
@@ -23,6 +25,8 @@ namespace WizMes_BooKyong
     public class Lib
     {
         private static Lib mLib = null;
+        private static ToolTip currentToolTip;
+        private static System.Windows.Threading.DispatcherTimer currentTimer;
 
         public static Lib Instance
         {
@@ -3274,6 +3278,582 @@ namespace WizMes_BooKyong
 
             return strReturn;
         }
+
+        #region 라벨 클릭, 체크 박스 클릭 
+
+        //사용하려면 같은 그리드로 묶어주세요
+        //<Grid><Label/><CheckBox/></Grid>
+        public void CommonControl_Click(object sender, EventArgs e)
+        {
+            CheckBox checkBox = null;
+            DependencyObject parentGrid = null;
+
+            if (sender is Label label)
+            {
+                // 라벨의 부모 그리드 찾기
+                parentGrid = FindVisualParent<Grid>(label);
+                if (parentGrid != null)
+                {
+                    // 같은 그리드 내에서 체크박스 찾기
+                    checkBox = FindChild<CheckBox>(parentGrid);
+                    if (checkBox != null)
+                    {
+                        // 체크박스 상태 토글
+                        checkBox.IsChecked = !checkBox.IsChecked;
+                    }
+                }
+            }
+            else if (sender is CheckBox clickedCheckBox)
+            {
+                // 클릭된 것이 체크박스인 경우
+                checkBox = clickedCheckBox;
+                parentGrid = FindVisualParent<Grid>(checkBox);
+            }
+
+            // 체크박스와 부모 그리드가 있으면 컨트롤 활성화/비활성화 처리
+            if (checkBox != null && parentGrid != null)
+            {
+                List<Control> controlsToToggle = new List<Control>();
+
+                // 그리드 내 모든 Control 찾기 (체크박스 제외)
+                FindUiObject(parentGrid, obj => {
+                    if (obj is Control control && obj != checkBox && !(obj is Label) && !(obj is CheckBox))
+                    {
+                        controlsToToggle.Add(control);
+                    }
+                });
+
+                // 컨트롤 활성화/비활성화
+                foreach (var control in controlsToToggle)
+                {
+                    control.IsEnabled = checkBox.IsChecked == true;
+                }
+            }
+        }
+
+        //컨트롤 안 특정 타입의 자식 컨트롤을 찾는 함수 (그리드내에서)
+        //var parentContainer = VisualTreeHelper.GetParent(checkbox);
+        //var datePicker = FindChild<DatePicker>(parentContainer);
+        public T FindChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            int childCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T typedChild)
+                {
+                    return typedChild;
+                }
+
+                // 재귀적으로 자식의 자식들도 검색
+                var result = FindChild<T>(child);
+                if (result != null)
+                    return result;
+            }
+            return null;
+        }
+
+        // 자식요소 안에서 부모요서 찾기
+        //DataGridRow row = FindVisualParent<DataGridRow>(checkBox); 데이터그리드안의 행속 체크박스의 부모행 찾기
+        //DataGrid parentGrid = FindVisualParent<DataGrid>(row); 데이터그리드 행의 부모 데이터그리드 찾기
+        public T FindVisualParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
+
+            if (parentObject == null)
+                return null;
+
+            T parent = parentObject as T;
+            if (parent != null)
+                return parent;
+            else
+                return FindVisualParent<T>(parentObject);
+        }
+
+        //UI컨트롤 요소찾기 
+        //StackPanel같이 다중 트리로 되어있는 UI들도 깊게 탐색
+        public void FindUiObject(DependencyObject parent, Action<DependencyObject> action)
+        {
+            if (parent == null) return;
+
+            var visited = new HashSet<DependencyObject>();
+            var queue = new Queue<DependencyObject>();
+
+            queue.Enqueue(parent);
+
+            while (queue.Count > 0 && visited.Count < 2000)
+            {
+                var current = queue.Dequeue();
+                if (current == null || visited.Contains(current)) continue;
+
+                visited.Add(current);
+                action?.Invoke(current);
+
+                // 1. 비쥬얼트리 자식들 추가
+                if (current is Visual || current is Visual3D)
+                {
+                    try
+                    {
+                        int childCount = VisualTreeHelper.GetChildrenCount(current);
+                        for (int i = 0; i < childCount; i++)
+                        {
+                            var child = VisualTreeHelper.GetChild(current, i);
+                            if (child != null && !visited.Contains(child))
+                            {
+                                queue.Enqueue(child);
+                            }
+                        }
+                    }
+                    catch { }
+                }
+
+                // 2. LogicalTree 자식들도 추가
+                try
+                {
+                    foreach (object logicalChild in LogicalTreeHelper.GetChildren(current))
+                    {
+                        if (logicalChild is DependencyObject child && !visited.Contains(child))
+                        {
+                            queue.Enqueue(child);
+                        }
+                    }
+                }
+                catch { }
+
+                // 3. 그외
+                switch (current)
+                {
+                    case ContentPresenter cp when cp.Content is DependencyObject content:
+                        if (!visited.Contains(content))
+                            queue.Enqueue(content);
+                        break;
+
+                    case ContentControl cc when cc.Content is DependencyObject controlContent:
+                        if (!visited.Contains(controlContent))
+                            queue.Enqueue(controlContent);
+                        break;
+
+                    case Decorator decorator when decorator.Child != null:
+                        if (!visited.Contains(decorator.Child))
+                            queue.Enqueue(decorator.Child);
+                        break;
+                }
+            }
+        }
+
+        //같은 그리드안에 이웃한 요소 한개를 반환(현재 선택값과 비교가능) 
+        public T FindSiblingControl<T>(UIElement currentElement) where T : UIElement
+        {
+            var parentGrid = FindVisualParent<Grid>(currentElement);
+            if (parentGrid == null) return null;
+
+            int currentColumn = Grid.GetColumn(currentElement);
+            int currentRow = Grid.GetRow(currentElement);
+
+            foreach (UIElement child in parentGrid.Children)
+            {
+                if (child is T targetControl && child != currentElement)
+                {
+                    int childColumn = Grid.GetColumn(child);
+                    int childRow = Grid.GetRow(child);
+
+                    // 같은 Row이면서 다른 Column인 컨트롤
+                    if (childRow == currentRow && childColumn != currentColumn)
+                    {
+                        return targetControl;
+                    }
+                }
+            }
+            return null;
+        }
+
+        //같은 그리드안에 이웃한 요소 여러개를  리스트로 반환(현재 선택값과 비교가능) 단, 반복문으로
+        public List<T> FindAllSiblingControls<T>(UIElement currentElement) where T : UIElement
+        {
+            var siblings = new List<T>();
+            var parentGrid = FindVisualParent<Grid>(currentElement);
+            if (parentGrid == null) return siblings;
+
+            int currentColumn = Grid.GetColumn(currentElement);
+            int currentRow = Grid.GetRow(currentElement);
+
+            foreach (UIElement child in parentGrid.Children)
+            {
+                if (child is T targetControl && child != currentElement)
+                {
+                    int childColumn = Grid.GetColumn(child);
+                    int childRow = Grid.GetRow(child);
+
+                    // 같은 Row이면서 다른 Column인 컨트롤
+                    if (childRow == currentRow && childColumn != currentColumn)
+                    {
+                        siblings.Add(targetControl);
+                    }
+                }
+            }
+            return siblings;
+        }
+
+        #endregion
+
+        #region 콤마 제거 오버로딩 함수들
+
+
+        // 문자열 반환 (콤마 제거만)
+        public string RemoveComma(object obj)
+        {
+            if (obj == null) return "0";
+
+            string result = obj.ToString().Trim().Replace(",", "");
+            return string.IsNullOrEmpty(result) ? "0" : result;
+        }
+
+        // int 반환
+        public int RemoveComma(object obj, int defaultValue, bool showErrorMessage = true)
+        {
+            if (obj == null) return defaultValue;
+
+            string digits = obj.ToString().Trim().Replace(",", "");
+            if (string.IsNullOrEmpty(digits)) return defaultValue;
+
+            if (!decimal.TryParse(digits, out decimal parsedValue))
+            {
+                if (showErrorMessage)
+                    MessageBox.Show($"'{obj}'는 올바른 숫자 형식이 아닙니다.", "입력 오류");
+                return defaultValue;
+            }
+
+            if (parsedValue > int.MaxValue || parsedValue < int.MinValue)
+            {
+                if (showErrorMessage)
+                    ShowRangeError("정수", int.MinValue, int.MaxValue);
+                return defaultValue;
+            }
+
+            return (int)parsedValue;
+        }
+
+        // long 반환
+        public long RemoveComma(object obj, long defaultValue, bool showErrorMessage = true)
+        {
+            if (obj == null) return defaultValue;
+
+            string digits = obj.ToString().Trim().Replace(",", "");
+            if (string.IsNullOrEmpty(digits)) return defaultValue;
+
+            if (!decimal.TryParse(digits, out decimal parsedValue))
+            {
+                if (showErrorMessage)
+                    MessageBox.Show($"'{obj}'는 올바른 숫자 형식이 아닙니다.", "입력 오류");
+                return defaultValue;
+            }
+
+            if (parsedValue > long.MaxValue || parsedValue < long.MinValue)
+            {
+                if (showErrorMessage)
+                    ShowRangeError("정수", long.MinValue, long.MaxValue);
+                return defaultValue;
+            }
+
+            return (long)parsedValue;
+        }
+
+        // decimal 반환
+        public decimal RemoveComma(object obj, decimal defaultValue, bool showErrorMessage = true)
+        {
+            if (obj == null) return defaultValue;
+
+            string digits = obj.ToString().Trim().Replace(",", "");
+            if (string.IsNullOrEmpty(digits)) return defaultValue;
+
+            if (!decimal.TryParse(digits, out decimal parsedValue))
+            {
+                if (showErrorMessage)
+                    MessageBox.Show($"'{obj}'는 올바른 숫자 형식이 아닙니다.", "입력 오류");
+                return defaultValue;
+            }
+
+            return parsedValue;
+        }
+
+        // double 반환
+        public double RemoveComma(object obj, double defaultValue, bool showErrorMessage = true)
+        {
+            if (obj == null) return defaultValue;
+
+            string digits = obj.ToString().Trim().Replace(",", "");
+            if (string.IsNullOrEmpty(digits)) return defaultValue;
+
+            if (!decimal.TryParse(digits, out decimal parsedValue))
+            {
+                if (showErrorMessage)
+                    MessageBox.Show($"'{obj}'는 올바른 숫자 형식이 아닙니다.", "입력 오류");
+                return defaultValue;
+            }
+
+            double doubleVal = (double)parsedValue;
+            if (double.IsInfinity(doubleVal))
+            {
+                if (showErrorMessage)
+                    MessageBox.Show("입력한 값이 너무 큽니다.", "범위 초과");
+                return defaultValue;
+            }
+
+            return doubleVal;
+        }
+
+        // float 반환
+        public float RemoveComma(object obj, float defaultValue, bool showErrorMessage = true)
+        {
+            if (obj == null) return defaultValue;
+
+            string digits = obj.ToString().Trim().Replace(",", "");
+            if (string.IsNullOrEmpty(digits)) return defaultValue;
+
+            if (!decimal.TryParse(digits, out decimal parsedValue))
+            {
+                if (showErrorMessage)
+                    MessageBox.Show($"'{obj}'는 올바른 숫자 형식이 아닙니다.", "입력 오류");
+                return defaultValue;
+            }
+
+            float floatVal = (float)parsedValue;
+            if (float.IsInfinity(floatVal))
+            {
+                if (showErrorMessage)
+                    MessageBox.Show("입력한 값이 너무 큽니다.", "범위 초과");
+                return defaultValue;
+            }
+
+            return floatVal;
+        }
+
+        public void ShowRangeError(string type, object min, object max)
+        {
+            MessageBox.Show($"입력한 값이 {type} 처리 가능한 범위를 벗어났습니다.\n(범위: {min:N0} ~ {max:N0})",
+                            "범위 초과");
+        }
+
+
+        #endregion
+
+        #region 날짜변환
+        //8자리 char형태 날짜 년도-월-일 하이픈 삽입
+        //16자리 일경우 8자리 사이에 ~ 삽입
+        public string DateTypeHyphen(string DigitsDate)
+        {
+            string pattern1 = @"(\d{4})(\d{2})(\d{2})";
+            string pattern2 = @"(\d{4})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})";
+
+            if (DigitsDate.Length == 8)
+            {
+                DigitsDate = Regex.Replace(DigitsDate, pattern1, "$1-$2-$3");
+            }
+            else if (DigitsDate.Length == 16)
+            {
+                DigitsDate = Regex.Replace(DigitsDate, pattern2, "$1-$2-$3 ~ $4-$5-$6");
+            }
+            else if (DigitsDate.Length == 0)
+            {
+                DigitsDate = string.Empty;
+            }
+
+            return DigitsDate;
+        }
+
+        public object RemoveHyphen(object obj)
+        {
+            if (obj == null)
+                return string.Empty;
+
+            if (obj.ToString() == string.Empty)
+                return string.Empty;
+
+            if (obj.ToString().Contains("-"))
+            {
+                return obj.ToString().Replace("-", "");
+            }
+
+
+            return obj;
+        }
+
+        public string SetToDate(object obj)
+        {
+            if (DateTime.TryParse(obj.ToString(), out DateTime date))
+            {
+                return date.ToString("yyyyMMdd");
+            }
+            return obj.ToString();
+        }
+
+
+        public string ConvertDate(DatePicker datePicker)
+        {
+            if (datePicker.SelectedDate != null)
+                return datePicker.SelectedDate.Value.ToString("yyyyMMdd");
+            else
+                return string.Empty;
+        }
+
+        public bool IsDatePickerNull(DatePicker datePicker)
+        {
+            if (datePicker.SelectedDate == null)
+                return true;
+            else
+                return false;
+        }
+
+
+        public string TimeTypeColon(string DigitsTime)
+        {
+            string pattern1 = @"(\d{2})(\d{2})";
+
+            if (DigitsTime.Length == 4)
+            {
+                DigitsTime = Regex.Replace(DigitsTime, pattern1, "$1:$2");
+            }
+
+            return DigitsTime;
+        }
+        #endregion
+
+        #region UI컨트롤에 툴팁띄우기
+        public void CloseToolTip()
+        {
+            if (currentToolTip != null && currentToolTip.IsOpen)
+            {
+                currentToolTip.IsOpen = false;
+                if (currentTimer != null)
+                {
+                    currentTimer.Stop();
+                    currentTimer = null;
+                }
+            }
+        }
+
+        public void ShowTooltipMessage(FrameworkElement element, string message, MessageBoxImage iconType = MessageBoxImage.None, PlacementMode placement = PlacementMode.Bottom, double scale = 1.0)
+        {
+            // 이미 열려있는 툴팁이 있다면 닫기
+            if (currentToolTip != null && currentToolTip.IsOpen)
+            {
+                currentToolTip.IsOpen = false;
+                if (currentTimer != null)
+                {
+                    currentTimer.Stop();
+                    currentTimer = null;
+                }
+            }
+
+            object tooltipContent;
+
+            // 아이콘이 필요 없는 경우
+            if (iconType == MessageBoxImage.None)
+            {
+                tooltipContent = message;
+            }
+            else
+            {
+                // StackPanel 생성
+                var stackPanel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal
+                };
+
+                // 시스템 아이콘 설정
+                System.Drawing.Icon systemIcon;
+                switch (iconType)
+                {
+                    case MessageBoxImage.Information:
+                        systemIcon = System.Drawing.SystemIcons.Information;
+                        break;
+                    case MessageBoxImage.Warning:
+                        systemIcon = System.Drawing.SystemIcons.Warning;
+                        break;
+                    case MessageBoxImage.Error:
+                        systemIcon = System.Drawing.SystemIcons.Error;
+                        break;
+                    case MessageBoxImage.Question:
+                        systemIcon = System.Drawing.SystemIcons.Question;
+                        break;
+                    default:
+                        systemIcon = null;
+                        break;
+                }
+
+                if (systemIcon != null)
+                {
+                    // System.Drawing에서 아이콘 가져오기
+                    System.Windows.Media.Imaging.BitmapSource iconSource =
+                        System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
+                            systemIcon.Handle,
+                            System.Windows.Int32Rect.Empty,
+                            System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+
+                    // 이미지 생성
+                    var image = new Image
+                    {
+                        Source = iconSource,
+                        Width = 16,
+                        Height = 16,
+                        Margin = new Thickness(0, 0, 5, 0)
+                    };
+
+                    // StackPanel에 추가
+                    stackPanel.Children.Add(image);
+                }
+
+                // 텍스트블록 생성
+                var textBlock = new TextBlock
+                {
+                    Text = message,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+
+                stackPanel.Children.Add(textBlock);
+                tooltipContent = stackPanel;
+            }
+
+            // 새 툴팁 생성
+            var tooltip = new ToolTip
+            {
+                Content = tooltipContent,
+                PlacementTarget = element,
+                Placement = placement,
+                IsOpen = true,
+                LayoutTransform = new ScaleTransform(scale, scale)
+            };
+
+            // 위치에 따른 설정
+            if (placement == PlacementMode.Bottom)
+            {
+                tooltip.VerticalOffset = 5;
+            }
+            else if (placement == PlacementMode.Right)
+            {
+
+                element.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    tooltip.HorizontalOffset = 5;
+                }));
+            }
+
+            currentToolTip = tooltip;
+
+            // 3초 후 툴팁 자동 닫기
+            var timer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(3)
+            };
+            timer.Tick += (s, eventArgs) =>
+            {
+                tooltip.IsOpen = false;
+                timer.Stop();
+            };
+            timer.Start();
+            currentTimer = timer;
+        }
+        #endregion
     }
 
     public class TextBoxColumnControl : TextBox
