@@ -824,18 +824,24 @@ namespace WizMes_BooKyong
                     sqlParameter.Add("SetHitCountDate", chkSetInitHitCountDate.IsChecked == true && dtpSetInitHitCountDate.SelectedDate.Value != null ? dtpSetInitHitCountDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
                     sqlParameter.Add("EvalGrade", txtEvalGrade.Text ?? "");
                     sqlParameter.Add("EvalScore", double.TryParse(txtEvalScore.Text, out double score) ? score : 0);
+                    sqlParameter.Add("CreateUserID", MainWindow.CurrentUser);
 
                     #region 추가
 
-                    if (strFlag.Equals("I"))
-                    {
-                        sqlParameter.Add("CreateUserID", MainWindow.CurrentUser);
+                    Procedure pro1 = new Procedure();
 
-                        Procedure pro1 = new Procedure();
+                    if (strFlag.Equals("I")){
+                                
                         pro1.Name = "xp_dvlMold_iMold";
                         pro1.OutputUseYN = "Y";
                         pro1.OutputName = "MoldID";
                         pro1.OutputLength = "5";
+                    } else {
+                        pro1.Name = "xp_dvlMold_uMold";
+                        pro1.OutputUseYN = "N";
+                        pro1.OutputName = "MoldID";
+                        pro1.OutputLength = "5";
+                    }
 
                         Prolist.Add(pro1);
                         ListParameter.Add(sqlParameter);
@@ -843,6 +849,13 @@ namespace WizMes_BooKyong
                         for (int i = 0; i < dgdPartsCode.Items.Count; i++)
                         {
                             WinMoldParts = dgdPartsCode.Items[i] as Win_dvl_Molding_U_Parts_CodeView;
+
+                        if(string.IsNullOrWhiteSpace(WinMoldParts.McPartID))
+                        {
+                            MessageBox.Show("부품이 입력되지 않았습니다");
+                            return false;
+                        }
+
                             sqlParameter = new Dictionary<string, object>();
                             sqlParameter.Clear();
                             sqlParameter.Add("MoldID", strMoldID);
@@ -866,7 +879,14 @@ namespace WizMes_BooKyong
                         for (int i = 0; i < dgdMoldArticle.Items.Count; i++)
                         {
                             MoldArticleList = dgdMoldArticle.Items[i] as MoldArticle_CodeView;
-                            sqlParameter = new Dictionary<string, object>();
+
+                        if (string.IsNullOrWhiteSpace(MoldArticleList.ArticleID))
+                        {
+                            MessageBox.Show("품번이 입력되지 않았습니다");
+                            return false;
+                        }
+
+                        sqlParameter = new Dictionary<string, object>();
                             sqlParameter.Clear();
                             sqlParameter.Add("MoldID", strMoldID);
                             sqlParameter.Add("ArticleID", MoldArticleList.ArticleID);
@@ -925,103 +945,10 @@ namespace WizMes_BooKyong
                             MessageBox.Show("[저장실패]\r\n" + list_Result[0].value.ToString());
                             flag = false;
                         }
-                    }
+                    
 
                     #endregion
 
-                    #region 수정
-
-                    else if (strFlag.Equals("U"))
-                    {
-                        sqlParameter.Add("LastUpdateUserID", MainWindow.CurrentUser);
-
-                        Procedure pro1 = new Procedure();
-                        pro1.Name = "xp_dvlMold_uMold";
-                        pro1.OutputUseYN = "N";
-                        pro1.OutputName = "MoldID";
-                        pro1.OutputLength = "5";
-
-                        Prolist.Add(pro1);
-                        ListParameter.Add(sqlParameter);
-
-                        for (int i = 0; i < dgdPartsCode.Items.Count; i++)
-                        {
-                            WinMoldParts = dgdPartsCode.Items[i] as Win_dvl_Molding_U_Parts_CodeView;
-                            sqlParameter = new Dictionary<string, object>();
-                            sqlParameter.Clear();
-                            sqlParameter.Add("MoldID", strMoldID);
-                            sqlParameter.Add("McPartID", WinMoldParts.McPartID);
-                            sqlParameter.Add("ChangeCheckGbn", 1);
-                            sqlParameter.Add("CycleProdQty", 0);
-                            sqlParameter.Add("StartSetProdQty", 0);
-                            sqlParameter.Add("StartSetDate", DateTime.Today.ToString("yyyyMMdd"));
-                            sqlParameter.Add("CreateUserID", MainWindow.CurrentUser);
-
-                            Procedure pro2 = new Procedure();
-                            pro2.Name = "xp_dvlMold_iMoldChangeProd";
-                            pro2.OutputUseYN = "N";
-                            pro2.OutputName = "MoldID";
-                            pro2.OutputLength = "5";
-
-                            Prolist.Add(pro2);
-                            ListParameter.Add(sqlParameter);
-                        }
-
-                        for (int i = 0; i < dgdMoldArticle.Items.Count; i++)
-                        {
-                            MoldArticleList = dgdMoldArticle.Items[i] as MoldArticle_CodeView;
-                            sqlParameter = new Dictionary<string, object>();
-                            sqlParameter.Clear();
-                            sqlParameter.Add("MoldID", strMoldID);
-                            sqlParameter.Add("ArticleID", MoldArticleList.ArticleID);
-                            sqlParameter.Add("CreateUserID", MainWindow.CurrentUser);
-
-                            Procedure pro3 = new Procedure();
-                            pro3.Name = "xp_Mold_iMoldArticleData";
-                            pro3.OutputUseYN = "N";
-                            pro3.OutputName = "MoldID";
-                            pro3.OutputLength = "5";
-
-                            Prolist.Add(pro3);
-                            ListParameter.Add(sqlParameter);
-                        }
-
-                        string[] Confirm = new string[2];
-                        Confirm = DataStore.Instance.ExecuteAllProcedureOutputNew(Prolist, ListParameter);
-                        if (Confirm[0] != "success")
-                        {
-                            MessageBox.Show("[저장실패]\r\n" + Confirm[1].ToString());
-                            flag = false;
-                            //return false;
-                        }
-                        else
-                        {
-                            flag = true;
-                        }
-
-                        if (flag)
-                        {
-                            bool AttachYesNo = false;
-                            if (txtAttFile1.Text != string.Empty)       //첨부파일 1
-                            {
-                                AttachYesNo = true;
-                                FTP_Save_File(strMoldID, txtAttFile1.Text, FullPath1);
-                            }
-                            if (txtAttFile2.Text != string.Empty)       //첨부파일 2
-                            {
-                                AttachYesNo = true;
-                                FTP_Save_File(strMoldID, txtAttFile2.Text, FullPath2);
-                            }
-                            if (txtAttFile3.Text != string.Empty)       //첨부파일 3
-                            {
-                                AttachYesNo = true;
-                                FTP_Save_File(strMoldID, txtAttFile3.Text, FullPath3);
-                            }
-                            if (AttachYesNo == true) { AttachFileUpdate(strMoldID); }
-                        }
-                    }
-
-                    #endregion
                 }
             }
             catch (Exception ex)
@@ -1034,6 +961,11 @@ namespace WizMes_BooKyong
             }
 
             return flag;
+        }
+
+        private void SaveData_Sub()
+        {
+
         }
 
         /// <summary>
