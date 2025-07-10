@@ -268,14 +268,14 @@ namespace WizMes_BooKyong
         {
             if (e.Key == Key.Enter)
             {
-                MainWindow.pf.ReturnCode(txtArticleSrh, 78, "");
+                MainWindow.pf.ReturnCode(txtArticleSrh, 76, "");
             }
         }
 
         //품명
         private void btnPfArticleSrh_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.pf.ReturnCode(txtArticleSrh, 78, "");
+            MainWindow.pf.ReturnCode(txtArticleSrh, 76, "");
         }
 
 
@@ -320,11 +320,22 @@ namespace WizMes_BooKyong
             rowNum = dgdMain.SelectedIndex;
 
             chkSetDate.IsChecked = true;
+            dtpSetDate.SelectedDate = DateTime.Today;
+
             chkProdCompDate.IsChecked = true;
+            dtpProdCompDate.SelectedDate = DateTime.Today;
+
             chkProdOrderDate.IsChecked = true;
+            dtpProdOrderDate.SelectedDate = DateTime.Today;
+
             chkProdDueDate.IsChecked = true;
+            dtpProdDueDate.SelectedDate = DateTime.Today;
+
             chkProdCompDate.IsChecked = true;
+            dtpProdCompDate.SelectedDate = DateTime.Today;
+
             chkSetInitHitCountDate.IsChecked = true;
+            dtpSetInitHitCountDate.SelectedDate = DateTime.Today;
 
             //유지추가 버튼 false
             if (chkMainTain.IsChecked == false)
@@ -523,7 +534,7 @@ namespace WizMes_BooKyong
 
                 sqlParameter.Add("nchkBuyerArticle", chkArticleSrh.IsChecked == true ? 1 : 0);   //품번
                 sqlParameter.Add("BuyerArticle", chkArticleSrh.IsChecked == true ? (txtArticleSrh.Tag != null ? txtArticleSrh.Tag.ToString() : "") : "");
-                sqlParameter.Add("chkArticle",  0);   //품번
+                sqlParameter.Add("chkArticle",  0);   
                 sqlParameter.Add("ArticleID", "");
 
                 sqlParameter.Add("nNeedInspect", chkNeedInspectSrh.IsChecked == true ? 1 : 0); // 금형점검필요
@@ -796,11 +807,11 @@ namespace WizMes_BooKyong
                     sqlParameter.Add("ProdCustomName", txtProdCustomName.Text ?? "");
                     sqlParameter.Add("OwnerCustomName", TextBoxOwnerCustomName.Text ?? "");
                     sqlParameter.Add("OwnerOneTimePayYn", cboBoxOwnerOneTimePayYn.SelectedValue?.ToString() ?? "");
-                    sqlParameter.Add("SetDate", chkSetDate.IsChecked == true ? dtpSetDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
+                    sqlParameter.Add("SetDate", chkSetDate.IsChecked == true && dtpSetDate.SelectedDate != null? dtpSetDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
                     
-                    sqlParameter.Add("ProdOrderDate", chkProdOrderDate.IsChecked == true ? dtpProdOrderDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
-                    sqlParameter.Add("ProdDueDate", chkProdDueDate.IsChecked == true ? dtpProdDueDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
-                    sqlParameter.Add("ProdCompDate", chkProdCompDate.IsChecked == true ? dtpProdCompDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
+                    sqlParameter.Add("ProdOrderDate", chkProdOrderDate.IsChecked == true && dtpProdOrderDate.SelectedDate.Value != null ? dtpProdOrderDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
+                    sqlParameter.Add("ProdDueDate", chkProdDueDate.IsChecked == true && dtpProdDueDate.SelectedDate.Value != null ? dtpProdDueDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
+                    sqlParameter.Add("ProdCompDate", chkProdCompDate.IsChecked == true && dtpProdCompDate.SelectedDate.Value != null ? dtpProdCompDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
                     sqlParameter.Add("MainUseYN", cboMainUseYN.SelectedValue?.ToString() ?? "");
                     sqlParameter.Add("Comments", txtComments.Text);
 
@@ -810,7 +821,7 @@ namespace WizMes_BooKyong
                     sqlParameter.Add("SetProdQty", double.TryParse(txtSetProdQty.Text, out double setProdQty) ? setProdQty : 0);
                     sqlParameter.Add("SetHitCount", double.TryParse(txtSetinitHitCount.Text, out double setHitCount) ? setHitCount : 0);
                    
-                    sqlParameter.Add("SetHitCountDate", chkSetInitHitCountDate.IsChecked == true ? dtpSetInitHitCountDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
+                    sqlParameter.Add("SetHitCountDate", chkSetInitHitCountDate.IsChecked == true && dtpSetInitHitCountDate.SelectedDate.Value != null ? dtpSetInitHitCountDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
                     sqlParameter.Add("EvalGrade", txtEvalGrade.Text ?? "");
                     sqlParameter.Add("EvalScore", double.TryParse(txtEvalScore.Text, out double score) ? score : 0);
 

@@ -546,7 +546,7 @@
                                 </Style>
                             </DataGrid.Resources>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding InspectSubSeq}" Header="순번" />
+                                <DataGridTextColumn Binding="{Binding MoldInspectSeq}" Header="순번" />
                                 <DataGridTextColumn Binding="{Binding MoldInspectBasisID}" Header="점검기준번호" />
                                 <DataGridTextColumn Binding="{Binding MoldInspectItemName}" Header="점검항목" />
                                 <DataGridTextColumn Binding="{Binding MoldInspectContent}" Header="점검내용" />

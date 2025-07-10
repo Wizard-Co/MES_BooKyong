@@ -651,7 +651,7 @@
 
                         <Grid
                             Grid.Row="3"
-                            Grid.RowSpan="3"
+                            Grid.RowSpan="5"
                             Grid.ColumnSpan="3">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="2.5*" />
@@ -804,7 +804,7 @@
 
                         <!--  고객사명  -->
                         <Label
-                            Grid.Row="6"
+                            Grid.Row="8"
                             Grid.Column="0"
                             Style="{DynamicResource LabelInputArea}">
                             <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
@@ -813,7 +813,7 @@
                         </Label>
                         <TextBox
                             x:Name="txtKCustom"
-                            Grid.Row="6"
+                            Grid.Row="8"
                             Grid.Column="1"
                             Margin="1"
                             Keyboard.KeyDown="txtKCustom_KeyDown"
@@ -822,7 +822,7 @@
                             Text="{Binding KCustom}" />
                         <Button
                             x:Name="btnPfKCustom"
-                            Grid.Row="6"
+                            Grid.Row="8"
                             Grid.Column="2"
                             Margin="1"
                             Click="btnPfKCustom_Click"
@@ -832,13 +832,13 @@
 
                         <!--  가로세로 높이 만들기  -->
                         <Label
-                            Grid.Row="7"
+                            Grid.Row="9"
                             Grid.Column="0"
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
                             Content="규격(mm)가로*세로*높이" />
                         <Grid
-                            Grid.Row="7"
+                            Grid.Row="9"
                             Grid.Column="1"
                             Grid.ColumnSpan="2">
                             <Grid.ColumnDefinitions>
@@ -870,7 +870,7 @@
                         </Grid>
 
                         <Label
-                            Grid.Row="8"
+                            Grid.Row="10"
                             Grid.Column="0"
                             Style="{DynamicResource LabelInputArea}">
                             <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
@@ -879,13 +879,13 @@
                         </Label>
                         <TextBox
                             x:Name="txtWeight"
-                            Grid.Row="8"
+                            Grid.Row="10"
                             Grid.Column="1"
                             Margin="1"
                             Text="{Binding Weight}" />
 
                         <Label
-                            Grid.Row="9"
+                            Grid.Row="11"
                             Grid.Column="0"
                             Style="{DynamicResource LabelInputArea}">
                             <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
@@ -894,7 +894,7 @@
                         </Label>
                         <TextBox
                             x:Name="txtMoldQuality"
-                            Grid.Row="9"
+                            Grid.Row="11"
                             Grid.Column="1"
                             Margin="1"
                             Background="White"
@@ -903,7 +903,7 @@
 
                         <!--  사용여부  -->
                         <Label
-                            Grid.Row="10"
+                            Grid.Row="12"
                             Grid.Column="0"
                             Style="{DynamicResource LabelInputArea}">
                             <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
@@ -912,7 +912,7 @@
                         </Label>
                         <ComboBox
                             x:Name="cboDisCard"
-                            Grid.Row="10"
+                            Grid.Row="12"
                             Grid.Column="1"
                             Margin="1"
                             SelectedValue="{Binding DisCardYN}"
@@ -921,7 +921,7 @@
 
                         <!--  캐비티  -->
                         <Label
-                            Grid.Row="11"
+                            Grid.Row="13"
                             Grid.Column="0"
                             Style="{DynamicResource LabelInputArea}">
                             <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
@@ -930,7 +930,7 @@
                         </Label>
                         <TextBox
                             x:Name="txtCavity"
-                            Grid.Row="11"
+                            Grid.Row="13"
                             Grid.Column="1"
                             Grid.ColumnSpan="1"
                             Margin="1"
@@ -938,7 +938,7 @@
                             Text="{Binding Cavity}" />
 
                         <Label
-                            Grid.Row="12"
+                            Grid.Row="14"
                             Grid.Column="0"
                             Style="{DynamicResource LabelInputArea}">
                             <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
@@ -947,7 +947,7 @@
                         </Label>
                         <TextBox
                             x:Name="txtRealCavity"
-                            Grid.Row="12"
+                            Grid.Row="14"
                             Grid.Column="1"
                             Grid.ColumnSpan="1"
                             Margin="1"
@@ -956,7 +956,7 @@
 
                         <!--  보관위치  -->
                         <Label
-                            Grid.Row="13"
+                            Grid.Row="15"
                             Grid.Column="0"
                             Style="{DynamicResource LabelInputArea}">
                             <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
@@ -965,14 +965,14 @@
                         </Label>
                         <ComboBox
                             x:Name="cboStorgeLocation"
-                            Grid.Row="13"
+                            Grid.Row="15"
                             Grid.Column="1"
                             Margin="1"
                             SelectedValue="{Binding Storage}"
                             Style="{DynamicResource essentialComboBox}" />
 
                         <Label
-                            Grid.Row="14"
+                            Grid.Row="16"
                             Grid.Column="0"
                             Style="{DynamicResource LabelInputArea}">
                             <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
@@ -981,7 +981,7 @@
                         </Label>
                         <ComboBox
                             x:Name="cboMainUseYN"
-                            Grid.Row="14"
+                            Grid.Row="16"
                             Grid.Column="1"
                             Margin="1"
                             SelectedValue="{Binding MainUseYN}"
@@ -989,7 +989,7 @@
 
                         <Label
                             Grid.Row="15"
-                            Grid.Column="0"
+                            Grid.Column="3"
                             Style="{DynamicResource LabelInputArea}">
                             <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
                                 <TextBlock Style="{DynamicResource TextBlockInViewBoxInput}" Text="비고" />
@@ -999,7 +999,7 @@
                             x:Name="txtComments"
                             Grid.Row="15"
                             Grid.RowSpan="2"
-                            Grid.Column="1"
+                            Grid.Column="4"
                             AcceptsReturn="True"
                             Text="{Binding Comments}"
                             TextWrapping="Wrap"
@@ -1112,7 +1112,7 @@
                             Grid.Row="4"
                             Grid.Column="4"
                             Margin="1"
-                            IsEnabled="False"
+ 
                             SelectedDate="{Binding SetDate}" />
 
                         <!--  금형발주일  -->
@@ -1141,7 +1141,7 @@
                             Grid.Row="5"
                             Grid.Column="4"
                             Margin="1"
-                            IsEnabled="False"
+                      
                             SelectedDate="{Binding ProdOrderDate}" />
 
                         <!--  금형 완료예정일  -->
@@ -1170,7 +1170,7 @@
                             Grid.Row="6"
                             Grid.Column="4"
                             Margin="1"
-                            IsEnabled="False"
+                      
                             SelectedDate="{Binding ProdDueDate}" />
                         <!--  금형완료일 만들기  -->
                         <Label
@@ -1198,7 +1198,7 @@
                             Grid.Row="7"
                             Grid.Column="4"
                             Margin="1"
-                            IsEnabled="False"
+                       
                             SelectedDate="{Binding ProdCompDate}" />
 
                         <!--  관리담당  -->
@@ -1345,7 +1345,7 @@
                             Grid.Row="13"
                             Grid.Column="4"
                             Margin="1"
-                            IsEnabled="False"
+                   
                             SelectedDate="{Binding SetHitCountDate}" />
 
                         <!--  등급  -->
