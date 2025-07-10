@@ -1577,10 +1577,15 @@ namespace WizMes_BooKyong
         {
             bool flag = true;
 
+            if(cboInspectCycle.SelectedValue == null)
+            {
+                MessageBox.Show("점검주기구분을 선택해주세요");
+            }
+
             if (txtMoldID.Tag == null 
                 || txtMoldID.Text.Trim().Equals(""))
             {
-                MessageBox.Show("철형번호를 입력해주세요.");
+                MessageBox.Show("금형 Lot 번호를 선택해주세요.");
                 flag = false;
                 return flag;
             }

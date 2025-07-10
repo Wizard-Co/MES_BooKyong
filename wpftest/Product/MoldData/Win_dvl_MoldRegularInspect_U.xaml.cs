@@ -921,15 +921,16 @@ namespace WizMes_BooKyong
                             txtResultFile.Text = dr["FileName"].ToString();
                             txtResultFile.Tag = dr["FilePath"].ToString();
                             txtComments.Text = dr["Comments"].ToString();
+                            txtArticle.Text = dr["Article"].ToString();
 
                             date = dr["MoldInspectDate"].ToString();
                             dtpMoldInspectDate.SelectedDate = !string.IsNullOrWhiteSpace(date) ? (DateTime?) DateTime.Parse(DatePickerFormat(date)) : DateTime.Now;
 
                             personID = dr["MoldInspectPersonID"].ToString();
-                            txtPerson.Tag = !string.IsNullOrWhiteSpace(personID) ? "" : MainWindow.CurrentUser;
+                            txtPerson.Tag = !string.IsNullOrWhiteSpace(personID) ? personID : MainWindow.CurrentUser;
 
-                            personID = dr["MoldInspectPerson"].ToString();
-                            txtPerson.Text = !string.IsNullOrWhiteSpace(person) ? "" : MainWindow.CurrentName;
+                            person = dr["MoldInspectPerson"].ToString();
+                            txtPerson.Text = !string.IsNullOrWhiteSpace(person) ? person : MainWindow.CurrentUser;
                         }
                     }
                 }

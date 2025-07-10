@@ -33,7 +33,7 @@ namespace WizMes_BooKyong
         }
 
         public string MoldInspectID { get; set; }
-
+        public int Num { get; set; }
         public string MoldInspectBasisID { get; set; }
         public string MoldID { get; set; }
         public string MoldInspectBasisDate { get; set; }  

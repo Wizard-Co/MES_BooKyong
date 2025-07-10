@@ -317,6 +317,19 @@ namespace WizMes_BooKyong
             strFlag = "I";
 
             tbkMsg.Text = "자료 입력 중";
+
+            //유지추가 버튼 false
+            if (chkMainTain.IsChecked == false)
+            {
+                if (dgdPartsCode.Items.Count > 0) dgdPartsCode.Items.Clear();
+                if (dgdMoldArticle.Items.Count > 0) dgdMoldArticle.Items.Clear();
+                this.DataContext = null;
+                cboDisCard.SelectedIndex = 0;
+                cboStorgeLocation.SelectedIndex = 0;
+                cboMainUseYN.SelectedIndex = 0;
+                cboBoxOwnerOneTimePayYn.SelectedIndex = 0;
+            }
+
             rowNum = dgdMain.SelectedIndex;
 
             chkSetDate.IsChecked = true;
@@ -337,17 +350,6 @@ namespace WizMes_BooKyong
             chkSetInitHitCountDate.IsChecked = true;
             dtpSetInitHitCountDate.SelectedDate = DateTime.Today;
 
-            //유지추가 버튼 false
-            if (chkMainTain.IsChecked == false)
-            {
-                if (dgdPartsCode.Items.Count > 0) dgdPartsCode.Items.Clear();
-                if (dgdMoldArticle.Items.Count > 0) dgdMoldArticle.Items.Clear();
-                this.DataContext = null;
-                cboDisCard.SelectedIndex = 0;
-                cboStorgeLocation.SelectedIndex = 0;
-                cboMainUseYN.SelectedIndex = 0;
-                cboBoxOwnerOneTimePayYn.SelectedIndex = 0;
-            }
 
             txtMoldID.Text = string.Empty;
         }
@@ -824,7 +826,7 @@ namespace WizMes_BooKyong
                     sqlParameter.Add("SetHitCountDate", chkSetInitHitCountDate.IsChecked == true && dtpSetInitHitCountDate.SelectedDate.Value != null ? dtpSetInitHitCountDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
                     sqlParameter.Add("EvalGrade", txtEvalGrade.Text ?? "");
                     sqlParameter.Add("EvalScore", double.TryParse(txtEvalScore.Text, out double score) ? score : 0);
-                    sqlParameter.Add("CreateUserID", MainWindow.CurrentUser);
+                    sqlParameter.Add("UserID", MainWindow.CurrentUser);
 
                     #region 추가
 
@@ -915,9 +917,10 @@ namespace WizMes_BooKyong
                                 if (kv.key == "MoldID")
                                 {
                                     sGetID = kv.value;
-                                    flag = true;
                                 }
                             }
+
+                        flag = true;
 
                             if (flag)
                             {
@@ -963,10 +966,7 @@ namespace WizMes_BooKyong
             return flag;
         }
 
-        private void SaveData_Sub()
-        {
-
-        }
+  
 
         /// <summary>
         /// 실삭제
