@@ -640,7 +640,10 @@
                                     </DataGridTemplateColumn.CellTemplate>
                                     <DataGridTemplateColumn.CellEditingTemplate>
                                         <DataTemplate>
-                                            <TextBox PreviewTextInput="TextBoxOnlyNumber_PreviewTextInput" Text="{Binding MldValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                                            <TextBox
+                                                InputMethod.IsInputMethodEnabled="False"
+                                                PreviewTextInput="TextBoxOnlyNumber_PreviewTextInput"
+                                                Text="{Binding MldValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellEditingTemplate>
                                 </DataGridTemplateColumn>

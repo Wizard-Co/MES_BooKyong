@@ -695,7 +695,8 @@
                                     <DataGridTemplateColumn.CellEditingTemplate>
                                         <DataTemplate>
                                             <TextBox Loaded="txtBox_Loaded" Text="{Binding MoldInspectCycleDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                                     PreviewTextInput="txt_PreviewTextInput"/>
+                                                     PreviewTextInput="txt_PreviewTextInput"
+                                                     InputMethod.IsInputMethodEnabled="False" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellEditingTemplate>
                                 </DataGridTemplateColumn>
