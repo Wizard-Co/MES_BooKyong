@@ -1111,60 +1111,12 @@ namespace WizMes_BooKyong
                 MainWindow.pf.ReturnCode(txtArticle, 76, "");
             }
         }
+
+        //주 모니터 대신 어플리케이션 활성화 영역을 캡쳐
         private void BtnCapture_Click(object sender, RoutedEventArgs e)
         {
-            ScreenCapture();
-
-            if (!ImgImage.Source.Equals(null))
-            {
-                //전역변수 ImageData 소스에 원본 ImgImage 소스를 대입
-                ImageData.Source = ImgImage.Source;
-
-                //MainWindow에 imgage리스트에 담아서 ScreenChot페이지로 넘겨준다.
-                MainWindow.ScreenCapture.Clear();
-                MainWindow.ScreenCapture.Add(ImageData);
-
-            }
-
-            PopUp.ScreenShot SCshot = new PopUp.ScreenShot();
-
-            //보여줘
-            SCshot.ShowDialog();
-        }
-
-        public void ScreenCapture()
-        {
-            //화면의 크기 정보 
-            int width = (int)SystemParameters.PrimaryScreenWidth + 70;
-            int height = (int)SystemParameters.PrimaryScreenHeight;
-
-            //화면의 크기만큼 bitmap생성
-            using (Bitmap bmp = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
-            {
-                //bitmap 이미지 변경을 위해 Grapics 객체 생성
-                using (Graphics gr = Graphics.FromImage(bmp))
-                {
-                    // 화면을 그대로 카피해서 Bitmap 메모리에 저장 
-                    gr.CopyFromScreen(280, 130, 0, 0, bmp.Size);
-                }
-
-                //Bitmap 데이터를 파일로(저장 경로를 지정해서??)
-                bmp.Save(@"c:\temp\" + DateTime.Now.ToString("yyyy-MM-dd,HHmmss") + ".png", ImageFormat.Png);
-
-                using (MemoryStream memory = new MemoryStream())
-                {
-                    bmp.Save(memory, ImageFormat.Bmp);
-                    memory.Position = 0;
-                    BitmapImage bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.StreamSource = memory;
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.EndInit();
-
-                    ImgImage.Source = bitmapImage;
-
-                }
-            }
+            FrameworkElement targetElement = this;
+            lib.ScreenCapture(targetElement);
         }
 
         private void btnDetail_Click(object sender, RoutedEventArgs e)

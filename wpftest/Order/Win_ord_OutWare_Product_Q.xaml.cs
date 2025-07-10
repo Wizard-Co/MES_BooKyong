@@ -7,8 +7,8 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WizMes_BooKyong.PopUP;
 using WizMes_BooKyong.PopUp;
+using WizMes_BooKyong.PopUP;
 using WPF.MDI;
 
 namespace WizMes_BooKyong
@@ -53,29 +53,19 @@ namespace WizMes_BooKyong
             // 시작 지정 및 사용불가 설정.
             chkOutwareDay.IsChecked = true;
 
-            cboArticleGroup.IsEnabled = false;
-            txtArticle.IsEnabled = false;
-            txtCustomer.IsEnabled = false;
-            txtOrderID.IsEnabled = false;
-            //cboOutClss.IsEnabled = false;  //체크된 채로 로드되기 때문.
-            btnArticle.IsEnabled = false;
-            btnCustomer.IsEnabled = false;
-            btnBuyerArticleNo.IsEnabled = false;
-            rbnManageNumber.IsChecked = true;
-
             // 폼 하단 안쓰는 버튼들 가리기.
             chkBuyCustom.Visibility = Visibility.Hidden;
             tbkInsertSheetNO.Visibility = Visibility.Hidden;
             txtBuyCustom.Visibility = Visibility.Hidden;
             txtInsertSheetNO.Visibility = Visibility.Hidden;
             btnBuyCustom.Visibility = Visibility.Hidden;
-           
+
         }
 
         //전일
         private void btnYesterDay_Click(object sender, RoutedEventArgs e)
         {
-            DateTime[] SearchDate = lib.BringLastDayDateTimeContinue(dtpToDate.SelectedDate.Value);
+            DateTime[] SearchDate = lib.BringLastDayDateTimeContinue(dtpToDate);
 
             dtpFromDate.SelectedDate = SearchDate[0];
             dtpToDate.SelectedDate = SearchDate[1];
@@ -91,7 +81,7 @@ namespace WizMes_BooKyong
         // 전월 버튼 클릭 이벤트
         private void btnLastMonth_Click(object sender, RoutedEventArgs e)
         {
-            DateTime[] SearchDate = lib.BringLastMonthContinue(dtpFromDate.SelectedDate.Value);
+            DateTime[] SearchDate = lib.BringLastMonthContinue(dtpFromDate);
 
             dtpFromDate.SelectedDate = SearchDate[0];
             dtpToDate.SelectedDate = SearchDate[1];
@@ -109,35 +99,35 @@ namespace WizMes_BooKyong
         // 콤보박스 두개 목록 불러오기.  (제품그룹, 출고구분)
         private void ComboBoxSetting()
         {
-            cboArticleGroup.Items.Clear();
-            cboOutClss.Items.Clear();
+            //cboArticleGroup.Items.Clear();
+            //cboOutClss.Items.Clear();
 
-            ObservableCollection<CodeView> cbArticleGroup = ComboBoxUtil.Instance.Gf_DB_MT_sArticleGrp();
-            //ObservableCollection<CodeView> cbOutClss = ComboBoxUtil.Instance.Gf_DB_CM_GetComCodeDataset(null, "OCD", "Y", "", "");
+            //ObservableCollection<CodeView> cbArticleGroup = ComboBoxUtil.Instance.Gf_DB_MT_sArticleGrp();
+            ////ObservableCollection<CodeView> cbOutClss = ComboBoxUtil.Instance.Gf_DB_CM_GetComCodeDataset(null, "OCD", "Y", "", "");
 
-            this.cboArticleGroup.ItemsSource = cbArticleGroup;
-            this.cboArticleGroup.DisplayMemberPath = "code_name";
-            this.cboArticleGroup.SelectedValuePath = "code_id";
-            this.cboArticleGroup.SelectedIndex = 3;  //제품이보이게
+            //this.cboArticleGroup.ItemsSource = cbArticleGroup;
+            //this.cboArticleGroup.DisplayMemberPath = "code_name";
+            //this.cboArticleGroup.SelectedValuePath = "code_id";
+            //this.cboArticleGroup.SelectedIndex = 3;  //제품이보이게
 
 
 
-            //this.cboOutClss.ItemsSource = cbOutClss;
-            //this.cboOutClss.DisplayMemberPath = "code_id_plus_code_name";
+            ////this.cboOutClss.ItemsSource = cbOutClss;
+            ////this.cboOutClss.DisplayMemberPath = "code_id_plus_code_name";
+            ////this.cboOutClss.SelectedValuePath = "code_id";
+            ////this.cboOutClss.SelectedIndex = 0;
+
+            //List<string> cbOutClss = new List<string>();
+            //cbOutClss.Add("01.제품정상출고");
+            //cbOutClss.Add("11.제품출고반품");
+            //cbOutClss.Add("08.예외출고");
+            //cbOutClss.Add("18.예외출고반품");
+
+            //ObservableCollection<CodeView> cboOutClass = ComboBoxUtil.Instance.Direct_SetComboBox(cbOutClss);
+            //this.cboOutClss.ItemsSource = cboOutClass;
+            //this.cboOutClss.DisplayMemberPath = "code_name";
             //this.cboOutClss.SelectedValuePath = "code_id";
             //this.cboOutClss.SelectedIndex = 0;
-
-            List<string> cbOutClss = new List<string>();
-            cbOutClss.Add("01.제품정상출고");
-            cbOutClss.Add("11.제품출고반품");
-            cbOutClss.Add("08.예외출고");
-            cbOutClss.Add("18.예외출고반품");
-
-            ObservableCollection<CodeView> cboOutClass = ComboBoxUtil.Instance.Direct_SetComboBox(cbOutClss);
-            this.cboOutClss.ItemsSource = cboOutClass;
-            this.cboOutClss.DisplayMemberPath = "code_name";
-            this.cboOutClss.SelectedValuePath = "code_id";
-            this.cboOutClss.SelectedIndex = 0;
 
         }
 
@@ -171,232 +161,19 @@ namespace WizMes_BooKyong
                 dtpToDate.IsEnabled = true;
             }
         }
-        //제품그룹
-        private void chkArticleGroup_Click(object sender, RoutedEventArgs e)
+
+        private void rbnOrderNOSrh_Click(object sender, RoutedEventArgs e)
         {
-            if (chkArticleGroup.IsChecked == true)
-            {
-                cboArticleGroup.IsEnabled = true;
-                cboArticleGroup.Focus();
-            }
-            else { cboArticleGroup.IsEnabled = false; }
-        }
-        //제품그룹
-        private void chkArticleGroup_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkArticleGroup.IsChecked == true)
-            {
-                chkArticleGroup.IsChecked = false;
-                cboArticleGroup.IsEnabled = false;
-            }
-            else
-            {
-                chkArticleGroup.IsChecked = true;
-                cboArticleGroup.IsEnabled = true;
-                cboArticleGroup.Focus();
-            }
-        }
-        // 품번
-        private void chkBuyerArticleNo_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkBuyerArticleNo.IsChecked == true)
-            {
-                txtBuyerArticleNo.IsEnabled = true;
-                txtBuyerArticleNo.Focus();
-                btnBuyerArticleNo.IsEnabled = true;
-            }
-            else
-            {
-                txtBuyerArticleNo.IsEnabled = false;
-                btnBuyerArticleNo.IsEnabled = false;
-            }
-        }
-        // 품번
-        private void chkBuyerArticleNo_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkBuyerArticleNo.IsChecked == true)
-            {
-                chkBuyerArticleNo.IsChecked = false;
-                txtBuyerArticleNo.IsEnabled = false;
-                btnBuyerArticleNo.IsEnabled = false;
-            }
-            else
-            {
-                chkBuyerArticleNo.IsChecked = true;
-                txtBuyerArticleNo.IsEnabled = true;
-                txtBuyerArticleNo.Focus();
-                btnBuyerArticleNo.IsEnabled = true;
-            }
-        }
-        //품명
-        private void chkArticle_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkArticle.IsChecked == true)
-            {
-                txtArticle.IsEnabled = true;
-                txtArticle.Focus();
-                btnArticle.IsEnabled = true;
-            }
-            else
-            {
-                txtArticle.IsEnabled = false;
-                btnArticle.IsEnabled = false;
-            }
-        }
-        //품명
-        private void chkArticle_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkArticle.IsChecked == true)
-            {
-                chkArticle.IsChecked = false;
-                txtArticle.IsEnabled = false;
-                btnArticle.IsEnabled = false;
-            }
-            else
-            {
-                chkArticle.IsChecked = true;
-                txtArticle.IsEnabled = true;
-                txtArticle.Focus();
-                btnArticle.IsEnabled = true;
-            }
-        }
-        //거래처
-        private void chkCustomer_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkCustomer.IsChecked == true)
-            {
-                txtCustomer.IsEnabled = true;
-                txtCustomer.Focus();
-                btnCustomer.IsEnabled = true;
-            }
-            else
-            {
-                txtCustomer.IsEnabled = false;
-                btnCustomer.IsEnabled = false;
-            }
-        }
-        //거래처
-        private void chkCustomer_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkCustomer.IsChecked == true)
-            {
-                chkCustomer.IsChecked = false;
-                txtCustomer.IsEnabled = false;
-                btnCustomer.IsEnabled = false;
-            }
-            else
-            {
-                chkCustomer.IsChecked = true;
-                txtCustomer.IsEnabled = true;
-                txtCustomer.Focus();
-                btnCustomer.IsEnabled = true;
-            }
-        }
-        // 최종고객사
-        private void chkInCustomer_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkInCustomer.IsChecked == true)
-            {
-                txtInCustomer.IsEnabled = true;
-                txtInCustomer.Focus();
-                btnInCustomer.IsEnabled = true;
-            }
-            else
-            {
-                txtInCustomer.IsEnabled = false;
-                btnInCustomer.IsEnabled = false;
-            }
-        }
-        // 최종고객사
-        private void chkInCustomer_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkInCustomer.IsChecked == true)
-            {
-                chkInCustomer.IsChecked = false;
-                txtInCustomer.IsEnabled = false;
-                btnInCustomer.IsEnabled = false;
-            }
-            else
-            {
-                chkInCustomer.IsChecked = true;
-                txtInCustomer.IsEnabled = true;
-                txtInCustomer.Focus();
-                btnInCustomer.IsEnabled = true;
-            }
-        }
-        //관리번호
-        private void chkOrderID_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkOrderID.IsChecked == true)
-            {
-                txtOrderID.IsEnabled = true;
-                txtOrderID.Focus();
-            }
-            else { txtOrderID.IsEnabled = false; }
-        }
-        //관리번호
-        private void chkOrderID_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkOrderID.IsChecked == true)
-            {
-                chkOrderID.IsChecked = false;
-                txtOrderID.IsEnabled = false;
-            }
-            else
-            {
-                chkOrderID.IsChecked = true;
-                txtOrderID.IsEnabled = true;
-                txtOrderID.Focus();
-            }
-        }
-        //출고구분
-        private void chkOutClss_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkOutClss.IsChecked == true)
-            {
-                cboOutClss.IsEnabled = true;
-                cboOutClss.Focus();
-            }
-            else { cboOutClss.IsEnabled = false; }
-        }
-        //출고구분
-        private void chkOutClss_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkOutClss.IsChecked == true)
-            {
-                chkOutClss.IsChecked = false;
-                cboOutClss.IsEnabled = false;
-            }
-            else
-            {
-                chkOutClss.IsChecked = true;
-                cboOutClss.IsEnabled = true;
-                cboOutClss.Focus();
-            }
+            tblOrderIDSrh.Text = "발주번호";
+            dtcOrderID.Visibility = Visibility.Hidden;
+            dtcOrderNO.Visibility = Visibility.Visible;
         }
 
-        // 주요관심품목
-        private void chkMainInterestItems_Click(object sender, MouseButtonEventArgs e)
+        private void rbnOrderIDSrh_Click(object sender, RoutedEventArgs e)
         {
-            if (chkMainInterestItems.IsChecked == true)
-            {
-                chkMainInterestItems.IsChecked = false;
-            }
-            else
-            {
-                chkMainInterestItems.IsChecked = true;
-            }
-        }
-
-
-        private void rbnOrderNO_Click(object sender, RoutedEventArgs e)
-        {
-            txbOrderID.Text = "발주번호";
-        }
-
-        private void rbnManageNumber_Click(object sender, RoutedEventArgs e)
-        {
-            txbOrderID.Text = "관리번호";
+            tblOrderIDSrh.Text = "관리번호";
+            dtcOrderID.Visibility = Visibility.Visible;
+            dtcOrderNO.Visibility = Visibility.Hidden;
         }
 
         #endregion
@@ -405,31 +182,9 @@ namespace WizMes_BooKyong
         #region 플러스 파인더
         //플러스 파인더
 
-        //거래처
-        private void btnCustomer_Click(object sender, RoutedEventArgs e)
-        {
-            pf.ReturnCode(txtCustomer, 0, "");  // 매출거래처만 표기되도록 변경(0 -> 68).
-        }
 
-        // 최종고객사
-        private void btnInCustomer_Click(object sender, RoutedEventArgs e)
-        {
-            pf.ReturnCode(txtInCustomer, 0, "");  // 매출거래처만 표기되도록 변경(0 -> 68).
-        }
 
-        // 품번
-        
-        private void btnBuyerArticleNo_Click(object sender, RoutedEventArgs e)
-        {
-            pf.ReturnCode(txtBuyerArticleNo, 76, txtBuyerArticleNo.Text);            
 
-        }
-
-        // 품명
-        private void btnArticle_Click(object sender, RoutedEventArgs e)
-        {
-            pf.ReturnCode(txtArticle, 77, txtArticle.Text);
-        }
 
         #endregion
 
@@ -439,9 +194,12 @@ namespace WizMes_BooKyong
         // 검색버튼 클릭. (조회)
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            using(Loading ld = new Loading(beSearch))
+            if (lib.DatePickerCheck(dtpFromDate, dtpToDate, chkOutwareDay))
             {
-                ld.ShowDialog();
+                using (Loading ld = new Loading(beSearch))
+                {
+                    ld.ShowDialog();
+                }
             }
         }
 
@@ -461,97 +219,45 @@ namespace WizMes_BooKyong
 
         private void FillGrid()
         {
-            // 출고일자
-            int ChkDate = chkOutwareDay.IsChecked == true ? 1 : 0;
-            string SearchFromDate = dtpFromDate.ToString().Substring(0, 10).Replace("-", "");
-            string SearchToDate = dtpToDate.ToString().Substring(0, 10).Replace("-", "");
 
-            // 거래처
-            int ChkCustomID = chkCustomer.IsChecked == true ? 1 : 0;
-            if (chkCustomer.IsChecked == false)
-            {
-                txtCustomer.Tag = "";
-                txtCustomer.Text = "";
-            }
-
-            // 최종고객사
-            int ChkInCustomID = chkInCustomer.IsChecked == true ? 1 : 0;
-            if (chkInCustomer.IsChecked == false)
-            {
-                txtInCustomer.Tag = "";
-                txtInCustomer.Text = "";
-            }
-
-            // 품번
-            int ChkBuyerArticleNo = chkBuyerArticleNo.IsChecked == true ? 1 : 0;
-            if (chkBuyerArticleNo.IsChecked == false)
-            {
-                txtBuyerArticleNo.Tag = "";
-                txtBuyerArticleNo.Text = "";
-            }
-
-            // 품명
-            int ChkArticle = chkArticle.IsChecked == true ? 1 : 0;
-            if (chkArticle.IsChecked == false)
-            {
-                txtArticle.Tag = "";
-                txtArticle.Text = "";
-            }
-
-            //관리번호, 발주번호
-            int ChkOrder = 0;
-            if (chkOrderID.IsChecked == true)
-            {
-                if (rbnManageNumber.IsChecked == true) { ChkOrder = 1; }
-                else if (rbnOrderNO.IsChecked == true) { ChkOrder = 2; }
-            }
-
-            //제품그룹
-            int chkArticleGrpID = chkArticleGroup.IsChecked == true ? 1 : 0;
 
             //출고구분
-            int int_chkOutClss = chkOutClss.IsChecked == true ? 1 : 0;
+            //string outclssGBN = string.Empty;
+            //dgdTotal.Items.Clear();
 
-            string outclssGBN = string.Empty;
-            dgdTotal.Items.Clear();
+            //if (cboOutClss.SelectedIndex == 0) { outclssGBN = "01"; }     //제품정상출고
+            //else if (cboOutClss.SelectedIndex == 1) { outclssGBN = "11"; } //제품출고반품
+            //else if (cboOutClss.SelectedIndex == 2) { outclssGBN = "08"; } //예외출고
+            //else if (cboOutClss.SelectedIndex == 3) { outclssGBN = "18"; } //예외출고반품
 
-            if (cboOutClss.SelectedIndex == 0) { outclssGBN = "01"; }     //제품정상출고
-            else if (cboOutClss.SelectedIndex == 1) { outclssGBN = "11"; } //제품출고반품
-            else if (cboOutClss.SelectedIndex == 2) { outclssGBN = "08"; } //예외출고
-            else if (cboOutClss.SelectedIndex == 3) { outclssGBN = "18"; } //예외출고반품
-
-            //주요관심품       
-            int interestitems = chkMainInterestItems.IsChecked == true ? 1 : 0;
 
             try
             {
 
                 Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
-                sqlParameter.Add("ChkDate", ChkDate);
-                sqlParameter.Add("SDate", SearchFromDate);
-                sqlParameter.Add("EDate", SearchToDate);
+                sqlParameter.Add("ChkDate", chkOutwareDay.IsChecked == true ? 1 : 0);
+                sqlParameter.Add("SDate", chkOutwareDay.IsChecked == true ? !lib.IsDatePickerNull(dtpFromDate) ? lib.ConvertDate(dtpFromDate) : string.Empty : string.Empty);
+                sqlParameter.Add("EDate", chkOutwareDay.IsChecked == true ? !lib.IsDatePickerNull(dtpToDate) ? lib.ConvertDate(dtpToDate) : string.Empty : string.Empty);
 
-                sqlParameter.Add("ChkCustomID", ChkCustomID);
-                sqlParameter.Add("CustomID", txtCustomer.Tag.ToString());
-                sqlParameter.Add("ChkInCustomID", ChkInCustomID);
-                sqlParameter.Add("InCustomID", txtInCustomer.Tag.ToString());
+                sqlParameter.Add("ChkCustomID", chkCustomIDSrh.IsChecked == true ? 1 : 0);
+                sqlParameter.Add("CustomID", chkCustomIDSrh.IsChecked == true ? txtCustomIDSrh.Tag != null ? txtCustomIDSrh.Tag.ToString() : string.Empty : string.Empty);
 
-                sqlParameter.Add("ChkArticleID", ChkBuyerArticleNo);
-                sqlParameter.Add("ArticleID", txtBuyerArticleNo.Tag.ToString() != null? txtBuyerArticleNo.Tag : "");
-                sqlParameter.Add("ChkArticle", ChkArticle);
-                sqlParameter.Add("Article", txtArticle.Text);
+                sqlParameter.Add("ChkBuyerArticleNo", chkBuyerArticleNoSrh.IsChecked == true ? 1 : 0);
+                sqlParameter.Add("BuyerArticleNo", chkBuyerArticleNoSrh.IsChecked == true ? txtBuyerArticleNoSrh.Tag != null ? txtBuyerArticleNoSrh.Tag.ToString() : string.Empty : string.Empty);
 
-                sqlParameter.Add("ChkOrder", ChkOrder);
-                sqlParameter.Add("Order", txtOrderID.Text);
-                sqlParameter.Add("OrderFlag", 0);       //무쓸모..
-                
-                sqlParameter.Add("chkArticleGrpID", chkArticleGrpID);
-                sqlParameter.Add("sArticleGrpID", cboArticleGroup.SelectedValue.ToString());
-                sqlParameter.Add("sProductYN", "Y"); // 제품여부 Y인데 빈값넣으니까 됐어 왜지???
+                sqlParameter.Add("ChkArticleID", chkArticleIDSrh.IsChecked == true ? 1 : 0);
+                sqlParameter.Add("ArticleID", chkArticleIDSrh.IsChecked == true ? txtArticleIDSrh.Tag != null ? txtArticleIDSrh.Tag.ToString() : string.Empty : string.Empty);
 
-                sqlParameter.Add("chkOutClss", int_chkOutClss);
-                sqlParameter.Add("OutClss", outclssGBN); //cboOutClss.SelectedValue.ToString()
-                sqlParameter.Add("nMainItem", interestitems);
+                sqlParameter.Add("ChkOrderID", chkOrderIDSrh.IsChecked == true ? rbnOrderIDSrh.IsChecked == true ? 1 : 2 : 0);
+                sqlParameter.Add("OrderID", txtOrderIDSrh.Text);
+
+                //sqlParameter.Add("chkArticleGrpID", chkArticleGrpID);
+                //sqlParameter.Add("sArticleGrpID", cboArticleGroup.SelectedValue.ToString());
+                //sqlParameter.Add("sProductYN", "Y"); // 제품여부 Y인데 빈값넣으니까 됐어 왜지???
+
+                //sqlParameter.Add("chkOutClss", int_chkOutClss);
+                //sqlParameter.Add("OutClss", outclssGBN); //cboOutClss.SelectedValue.ToString()
+                //sqlParameter.Add("nMainItem", interestitems);
 
                 DataSet ds = DataStore.Instance.ProcedureToDataSet_LogWrite("xp_Outware_sOutwareProduct", sqlParameter, true, "R");
 
@@ -559,7 +265,7 @@ namespace WizMes_BooKyong
                 {
                     DataTable dt = null;
                     dt = ds.Tables[0];
-                    int i = 1;
+
                     if (dt.Rows.Count == 0)
                     {
                         MessageBox.Show("조회결과가 없습니다.");
@@ -568,274 +274,73 @@ namespace WizMes_BooKyong
                     else
                     {
                         dgdOutware.Items.Clear();
+                        dgdTotal.Items.Clear();
+
                         DataRowCollection drc = dt.Rows;
-                        foreach (DataRow item in drc)
+
+                        int i = 0;
+                        string totalOutQty = string.Empty;
+                        string totalOutPrice = string.Empty;
+                        foreach (DataRow dr in drc)
                         {
-                            if (item["Depth"].ToString() == "0")
+
+                            i++;
+                            var OutWareInfo = new Win_ord_OutWare_Product_QView
                             {
-                                var window_OutwareProductViewInsert = new Win_ord_OutWare_Product_QView()
-                                {
-                                    NUM = i,
-                                    Depth = item["Depth"].ToString(),
-                                    OutwareID = item["OutwareID"].ToString(),
-                                    OutDate = item["OutDate"].ToString().Substring(4, 2) + "/" + item["OutDate"].ToString().Substring(6, 2),
-                                    CustomID = item["CustomID"].ToString(),
-                                    KCustom = item["KCustom"].ToString(),
+                                NUM = i,
+                                Depth = dr["Depth"].ToString(),
+                                OutDate = lib.DateTypeHyphen(dr["OutDate"].ToString()),
+                                KCustom = dr["KCustom"].ToString(),
+                                OrderID = dr["OrderID"].ToString(),
+                                OrderNo = dr["OrderNo"].ToString(),
+                                OutClssName = dr["OutClssName"].ToString(),
+                                Model = dr["Model"].ToString(),
+                                BuyerArticleNo = dr["BuyerArticleNo"].ToString(),
+                                Article = dr["Article"].ToString(),
+                                LabelID = dr["LabelID"].ToString(),
+                                OutQty = stringFormatN0(dr["OutQty"]),
+                                UnitClssName = dr["UnitClssName"].ToString(),
+                                OutPrice = stringFormatN0(dr["OutPrice"]),
+                                OutwareID = dr["OutWareID"].ToString(),
+                                Remark = dr["remark"].ToString()
 
-                                    OrderNo = item["OrderNo"].ToString(),
-                                    OrderID = item["OrderID"].ToString(),
-                                    OutCustom = item["OutCustom"].ToString(),
+                            };
 
-                                    BuyerArticleNo = item["BuyerArticleNo"].ToString(),
-                                    Article = item["Article"].ToString(),
-                                    WorkName = item["WorkName"].ToString(),
 
-                                    OrderQty = item["OrderQty"].ToString(),
-                                    UnitClss = item["UnitClss"].ToString(),
-                                    UnitClssName = item["UnitClssName"].ToString(),
-                                    LabelID = item["LabelID"].ToString(),
-                                    LabelGubun = item["LabelGubun"].ToString(),
-
-                                    FromLocName = item["FromLocName"].ToString(),
-                                    TOLocname = item["TOLocname"].ToString(),
-                                    OutClssname = item["OutClssname"].ToString(),
-                                    OutRoll = item["OutRoll"].ToString(),
-                                    OutQty = stringFormatN0(item["OutQty"]),
-
-                                    UnitPrice = item["UnitPrice"].ToString(),
-                                    Amount = item["Amount"].ToString(),
-                                    VatAmount = item["VatAmount"].ToString(),
-                                    TotAmount = item["TotAmount"].ToString(),
-                                    Remark = item["Remark"].ToString(),
-                                    LotID = item["LotID"].ToString(),
-                                    ColorGreen = "false",
-                                    ColorRed = "false"
-                                };
-
-                                dgdOutware.Items.Add(window_OutwareProductViewInsert);
-                                i++;
-                            }
-                            else if (item["Depth"].ToString() == "2")
+                            if (OutWareInfo.Depth == "0")
                             {
-                                var window_OutwareProductViewInsert = new Win_ord_OutWare_Product_QView()
-                                {
-                                    NUM = i,
-                                    Depth = item["Depth"].ToString(),
-                                    OutwareID = "",
-                                    OutDate = item["OutDate"].ToString().Substring(4, 2) + "/" + item["OutDate"].ToString().Substring(6, 2),
-                                    CustomID = item["CustomID"].ToString(),
-                                    KCustom = item["KCustom"].ToString(),
-
-                                    OrderNo = "오더계",
-                                    OrderID = item["OrderID"].ToString(),
-                                    OutCustom = item["OutCustom"].ToString(),
-
-                                    BuyerArticleNo = item["BuyerArticleNo"].ToString(),
-                                    Article = item["Article"].ToString(),
-                                    WorkName = item["WorkName"].ToString(),
-
-                                    OrderQty = stringFormatN0(item["OrderQty"]),
-                                    UnitClss = item["UnitClss"].ToString(),
-                                    UnitClssName = item["UnitClssName"].ToString(),
-                                    LabelID = item["LabelID"].ToString(),
-                                    LabelGubun = item["LabelGubun"].ToString(),
-
-                                    FromLocName = item["FromLocName"].ToString(),
-                                    TOLocname = item["TOLocname"].ToString(),
-                                    OutClssname = "",
-                                    OutRoll = item["OutRoll"].ToString(),
-                                    OutQty = stringFormatN0(item["OutQty"]),
-
-                                    UnitPrice = item["UnitPrice"].ToString(),
-                                    Amount = item["Amount"].ToString(),
-                                    VatAmount = item["VatAmount"].ToString(),
-                                    TotAmount = item["TotAmount"].ToString(),
-                                    Remark = item["Remark"].ToString(),
-                                    ColorGreen = "false",
-                                    ColorRed = "false"
-                                };
-
-                                dgdOutware.Items.Add(window_OutwareProductViewInsert);
-                                i++;
+                                dgdOutware.Items.Add(OutWareInfo);
                             }
-                            else if (item["Depth"].ToString() == "3")
+                            else if (OutWareInfo.Depth == "1")
                             {
-                                var window_OutwareProductViewInsert = new Win_ord_OutWare_Product_QView()
-                                {
-                                    NUM = i,
-                                    Depth = item["Depth"].ToString(),
-                                    OutwareID = "",
-                                    OutDate = item["OutDate"].ToString().Substring(4, 2) + "/" + item["OutDate"].ToString().Substring(6, 2),
-                                    CustomID = item["CustomID"].ToString(),
-                                    KCustom = "거래처 계",
-
-                                    OrderNo = "",
-                                    OrderID = item["OrderID"].ToString(),
-                                    OutCustom = item["OutCustom"].ToString(),
-
-                                    Article = "",
-                                    WorkName = item["WorkName"].ToString(),
-
-                                    OrderQty = stringFormatN0(item["OrderQty"]),
-                                    UnitClss = item["UnitClss"].ToString(),
-                                    UnitClssName = item["UnitClssName"].ToString(),
-                                    LabelID = item["LabelID"].ToString(),
-                                    LabelGubun = item["LabelGubun"].ToString(),
-
-                                    FromLocName = item["FromLocName"].ToString(),
-                                    TOLocname = item["TOLocname"].ToString(),
-                                    OutClssname = "",
-                                    OutRoll = item["OutRoll"].ToString(),
-                                    OutQty = stringFormatN0(item["OutQty"]),
-
-                                    UnitPrice = item["UnitPrice"].ToString(),
-                                    Amount = item["Amount"].ToString(),
-                                    VatAmount = item["VatAmount"].ToString(),
-                                    TotAmount = item["TotAmount"].ToString(),
-                                    Remark = item["Remark"].ToString(),
-                                    ColorGreen = "true",
-                                    ColorRed = "false"
-                                };
-
-                                dgdOutware.Items.Add(window_OutwareProductViewInsert);
-                                i++;
+                                OutWareInfo.Color1 = true;
+                                OutWareInfo.OutDate = string.Empty;
+                                dgdOutware.Items.Add(OutWareInfo);
                             }
-                            else if (item["Depth"].ToString() == "4")
+                            else if (OutWareInfo.Depth == "2")
                             {
-                                var window_OutwareProductViewInsert = new Win_ord_OutWare_Product_QView()
-                                {
-                                    NUM = i,
-                                    Depth = item["Depth"].ToString(),
-                                    OutwareID = "",
-                                    OutDate = "일계",
-                                    CustomID = item["CustomID"].ToString(),
-                                    KCustom = "",
-
-                                    OrderNo = "",
-                                    OrderID = item["OrderID"].ToString(),
-                                    OutCustom = item["OutCustom"].ToString(),
-
-                                    Article = "",
-                                    WorkName = item["WorkName"].ToString(),
-
-                                    OrderQty = stringFormatN0(item["OrderQty"]),
-                                    UnitClss = item["UnitClss"].ToString(),
-                                    UnitClssName = item["UnitClssName"].ToString(),
-                                    LabelID = item["LabelID"].ToString(),
-                                    LabelGubun = item["LabelGubun"].ToString(),
-
-                                    FromLocName = item["FromLocName"].ToString(),
-                                    TOLocname = item["TOLocname"].ToString(),
-                                    OutClssname = "",
-                                    OutRoll = item["OutRoll"].ToString(),
-                                    OutQty = stringFormatN0(item["OutQty"]),
-
-                                    UnitPrice = item["UnitPrice"].ToString(),
-                                    Amount = item["Amount"].ToString(),
-                                    VatAmount = item["VatAmount"].ToString(),
-                                    TotAmount = item["TotAmount"].ToString(),
-                                    Remark = item["Remark"].ToString(),
-                                    ColorGreen = "true",
-                                    ColorRed = "false"
-                                };
-
-                                dgdOutware.Items.Add(window_OutwareProductViewInsert);
-                                i++;
+                                OutWareInfo.Color2 = true;
+                                OutWareInfo.OutDate = string.Empty;
+                                totalOutQty = OutWareInfo.OutQty;
+                                totalOutPrice = OutWareInfo.OutPrice;
+                                dgdOutware.Items.Add(OutWareInfo);
                             }
-                            else if (item["Depth"].ToString() == "5")
+                        }
+
+                        if (dgdOutware.Items.Count > 0)
+                        {
+                            var OutWareTotalInfo = new Win_ord_OutWare_Product_QView_Total
                             {
-                                var window_OutwareProductViewInsert = new Win_ord_OutWare_Product_QView()
-                                {
-                                    NUM = i,
-                                    Depth = item["Depth"].ToString(),
-                                    OutwareID = "",
-                                    OutDate = item["OutDate"].ToString().Substring(4, 2) + "월계",
-                                    CustomID = item["CustomID"].ToString(),
-                                    KCustom = "",
+                                TotalCount = i,
+                                TotalOutPrice = totalOutPrice,
+                                TotalOutQty = totalOutQty,
+                            };
 
-                                    OrderNo = "",
-                                    OrderID = item["OrderID"].ToString(),
-                                    OutCustom = item["OutCustom"].ToString(),
-
-                                    Article = "",
-                                    WorkName = item["WorkName"].ToString(),
-
-                                    OrderQty = stringFormatN0(item["OrderQty"]),
-                                    UnitClss = item["UnitClss"].ToString(),
-                                    UnitClssName = item["UnitClssName"].ToString(),
-                                    LabelID = item["LabelID"].ToString(),
-                                    LabelGubun = item["LabelGubun"].ToString(),
-
-                                    FromLocName = item["FromLocName"].ToString(),
-                                    TOLocname = item["TOLocname"].ToString(),
-                                    OutClssname = "",
-                                    OutRoll = item["OutRoll"].ToString(),
-                                    OutQty = stringFormatN0(item["OutQty"]),
-
-                                    UnitPrice = item["UnitPrice"].ToString(),
-                                    Amount = item["Amount"].ToString(),
-                                    VatAmount = item["VatAmount"].ToString(),
-                                    TotAmount = item["TotAmount"].ToString(),
-                                    Remark = item["Remark"].ToString(),
-                                    ColorGreen = "false",
-                                    ColorRed = "true"
-                                };
-
-                                dgdOutware.Items.Add(window_OutwareProductViewInsert);
-                                i++;
-                            }
-                            else if (item["Depth"].ToString() == "6")
-                            {
-
-                                var window_OutwareProductViewInsert = new Win_ord_OutWare_Product_QView()
-                                {
-                                    NUM = i,
-                                    Depth = item["Depth"].ToString(),
-                                    OutwareID = "",
-                                    OutDate = "총 합계",
-                                    CustomID = item["CustomID"].ToString(),
-                                    KCustom = "",
-
-                                    OrderNo = "",
-                                    OrderID = item["OrderID"].ToString(),
-                                    OutCustom = item["OutCustom"].ToString(),
-
-                                    Article = "",
-                                    WorkName = item["WorkName"].ToString(),
-
-                                    OrderQty = stringFormatN0(item["OrderQty"]),
-                                    UnitClss = item["UnitClss"].ToString(),
-                                    UnitClssName = item["UnitClssName"].ToString(),
-                                    LabelID = item["LabelID"].ToString(),
-                                    LabelGubun = item["LabelGubun"].ToString(),
-
-                                    FromLocName = item["FromLocName"].ToString(),
-                                    TOLocname = item["TOLocname"].ToString(),
-                                    OutClssname = "",
-                                    OutRoll = item["OutRoll"].ToString(),
-                                    OutQty = stringFormatN0(item["OutQty"]),
-
-                                    UnitPrice = item["UnitPrice"].ToString(),
-                                    Amount = stringFormatN0(item["Amount"].ToString()),
-                                    VatAmount = stringFormatN0(item["VatAmount"].ToString()),
-                                    TotAmount = $"{Math.Truncate(Convert.ToDouble(item["TotAmount"])):###,###,###}",
-                                    Remark = item["Remark"].ToString(),
-                                    ColorGreen = "false",
-                                    ColorRed = "true"
-                                };
-
-                                dgdTotal.Items.Add(window_OutwareProductViewInsert);
-                                i++;
-                            }
-
+                            dgdTotal.Items.Add(OutWareTotalInfo);
                         }
 
                     }
 
-                    if (i == 2) //총계라서
-                    {
-                        MessageBox.Show("조회결과가 없습니다.");
-                    }
                 }
             }
             catch (Exception ex)
@@ -963,34 +468,50 @@ namespace WizMes_BooKyong
 
 
         // 사용자 편의. 엔터키로 플러스파인더 호출.
-        private void txtCustomer_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        //검색조건 - 거래처 - 키다운
+        private void txtCustomIDSrh_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                pf.ReturnCode(txtCustomIDSrh, 0, "");
+        }
+
+        //검색조건 - 거래처 - 버튼
+        private void btnCustomIDSrh_Click(object sender, RoutedEventArgs e)
+        {
+            pf.ReturnCode(txtCustomIDSrh, 0, "");
+
+        }
+
+        //검색조건 - 품번 - 키다운
+        private void txtBuyerArticleNoSrh_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                btnCustomer_Click(null, null);
+                pf.ReturnCode(txtBuyerArticleNoSrh, 7071, "");
             }
         }
-        private void txtInCustomer_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+
+        //검색조건 - 품번 - 버튼
+        private void btnBuyerArticleNoSrh_Click(object sender, RoutedEventArgs e)
+        {
+            pf.ReturnCode(txtBuyerArticleNoSrh, 76, "");
+
+        }
+
+        //검색조건 - 품명 - 키다운
+        private void txtArticleIDSrh_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                btnInCustomer_Click(null, null);
+                pf.ReturnCode(txtArticleIDSrh, 77, "");
             }
         }
-        private void txtBuyerArticleNo_KeyDown(object sender, KeyEventArgs e)
+        //검색조건 - 품명 - 버튼
+        private void btnArticleIDSrh_Click(object sender, RoutedEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
-                btnBuyerArticleNo_Click(null, null);
-            }
+            pf.ReturnCode(txtArticleIDSrh, 77, "");
         }
-        private void txtArticle_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                btnArticle_Click(null, null);
-            }
-        }
+
         private void DataGrid_SizeChange(object sender, SizeChangedEventArgs e)
         {
             DataGrid dgs = sender as DataGrid;
@@ -1122,6 +643,17 @@ namespace WizMes_BooKyong
 
         #endregion
 
+        private void CommonControl_Click(object sender, RoutedEventArgs e)
+        {
+            lib.CommonControl_Click(sender, e);
+        }
+
+        private void CommonControl_Click(object sender, MouseButtonEventArgs e)
+        {
+            lib.CommonControl_Click(sender, e);
+        }
+
+
     }
 
 
@@ -1136,14 +668,15 @@ namespace WizMes_BooKyong
 
     class Win_ord_OutWare_Product_QView : BaseView
     {
-        public override string ToString()
-        {
-            return (this.ReportAllProperties());
-        }
+        //public override string ToString()
+        //{
+        //    return (this.ReportAllProperties());
+        //}
 
         public ObservableCollection<CodeView> cboTrade { get; set; }
 
         // 조회 값.    
+        public int NUM { get; set; }
         public string Depth { get; set; }
         public string OutwareID { get; set; }
         public string OutDate { get; set; }
@@ -1153,6 +686,7 @@ namespace WizMes_BooKyong
         public string OrderNo { get; set; }
         public string OrderID { get; set; }
         public string OutCustom { get; set; }
+        public string Model { get; set; }
 
         public string BuyerArticleNo { get; set; }
         public string Article { get; set; }
@@ -1169,24 +703,33 @@ namespace WizMes_BooKyong
 
         public string FromLocName { get; set; }
         public string TOLocname { get; set; }
-        public string OutClssname { get; set; }
+        public string OutClssName { get; set; }
         public string OutRoll { get; set; }
         public string OutQty { get; set; }
 
         public string UnitPrice { get; set; }
+        public string OutPrice { get; set; }
         public string Amount { get; set; }
         public string VatAmount { get; set; }
         public string TotAmount { get; set; }
         public string Remark { get; set; }
 
-
+        public bool Color1 { get; set; } = false;
+        public bool Color2 { get; set; } = false;
         //순번
-        public int NUM { get; set; }
+
 
         //컬러 칠하기
         public string ColorGreen { get; set; }
         public string ColorRed { get; set; }
 
         public string LotID { get; set; }
+    }
+
+    public class Win_ord_OutWare_Product_QView_Total : BaseView
+    {
+        public int TotalCount { get; set; }
+        public string TotalOutQty { get; set; }
+        public string TotalOutPrice { get; set; }
     }
 }

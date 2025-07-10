@@ -1952,68 +1952,12 @@ namespace WizMes_BooKyong
 
         }
 
-        //캡쳐
+        //주 모니터 대신 어플리케이션 활성화 영역을 캡쳐
         private void BtnCapture_Click(object sender, RoutedEventArgs e)
         {
-            ScreenCapture();
-
-            if (!ImgImage.Source.Equals(null))
-            {
-                //전역변수 ImageData 소스에 원본 ImgImage 소스를 대입
-                ImageData.Source = ImgImage.Source;
-
-                //MainWindow에 imgage리스트에 담아서 ScreenChot페이지로 넘겨준다.
-                MainWindow.ScreenCapture.Clear();
-                MainWindow.ScreenCapture.Add(ImageData);
-
-            }
-
-            PopUp.ScreenShot SCshot = new PopUp.ScreenShot();
-
-            //보여줘
-            SCshot.ShowDialog();
+            FrameworkElement targetElement = this;
+            lib.ScreenCapture(targetElement);
         }
-
-
-        #region 가빈
-
-        //출처 : https://derveljunit.tistory.com/304 굳굳 고마습니다 모르는 블로그님  //가빈이 잘했다!!
-        public void ScreenCapture()
-        {
-            //화면의 크기 정보 
-            int width = (int)SystemParameters.PrimaryScreenWidth + 70;
-            int height = (int)SystemParameters.PrimaryScreenHeight;
-
-            //화면의 크기만큼 bitmap생성
-            using (Bitmap bmp = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
-            {
-                //bitmap 이미지 변경을 위해 Grapics 객체 생성
-                using (Graphics gr = Graphics.FromImage(bmp))
-                {
-                    // 화면을 그대로 카피해서 Bitmap 메모리에 저장 
-                    gr.CopyFromScreen(280, 130, 0, 0, bmp.Size);
-                }
-
-                //Bitmap 데이터를 파일로(저장 경로를 지정해서??)
-                bmp.Save(@"c:\temp\" + DateTime.Now.ToString("yyyy-MM-dd,HHmmss") + ".png", ImageFormat.Png);
-
-                using (MemoryStream memory = new MemoryStream())
-                {
-                    bmp.Save(memory, ImageFormat.Bmp);
-                    memory.Position = 0;
-                    BitmapImage bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.StreamSource = memory;
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.EndInit();
-
-                    ImgImage.Source = bitmapImage;
-
-                }
-            }
-        }
-        #endregion 가빈
-
 
         //제품그룹 체크
         private void ChkProductGroup_Checked(object sender, RoutedEventArgs e)

@@ -16,6 +16,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using WPF.MDI;
@@ -68,6 +69,45 @@ namespace WizMes_BooKyong
 
             return LastMonthInfo;
         }
+
+        //메서드 실행전에 파라미터가 null일 수 있어서 추가 작성
+        public DateTime[] BringLastDayDateTimeContinue(DatePicker fromDatePicker)
+        {
+            DateTime[] LastDayInfo = new DateTime[2];
+
+            try
+            {
+
+                if (fromDatePicker != null && fromDatePicker.SelectedDate != null)
+                {
+
+                    DateTime FromDate = fromDatePicker.SelectedDate.Value;
+
+                    DateTime BeforeDay = FromDate.AddDays(-1); // 선택한 일자 전일!
+
+                    LastDayInfo[0] = BeforeDay;
+                    LastDayInfo[1] = BeforeDay;
+
+                    return LastDayInfo;
+
+                }
+                else
+                {
+                    DateTime BeforeDay = DateTime.Today.AddDays(-1); // 어제
+
+                    LastDayInfo[0] = BeforeDay;
+                    LastDayInfo[1] = BeforeDay;
+                }
+            }
+            catch
+            {
+
+            }
+
+            return LastDayInfo;
+
+        }
+
         /// <summary>
         /// 전월(계속)
         /// </summary>
@@ -100,6 +140,43 @@ namespace WizMes_BooKyong
 
             return LastMonthInfo;
         }
+
+        public DateTime[] BringLastMonthContinue(DatePicker fromDate)
+        {
+            DateTime[] LastMonthInfo = new DateTime[2];
+            try
+            {
+                if (fromDate != null && fromDate.SelectedDate != null)
+                {
+                    DateTime FromDate = fromDate.SelectedDate.Value;
+                    DateTime ThatMonth1 = FromDate.AddDays(-(FromDate.Day - 1)); // 선택한 일자 달의 1일!
+
+                    DateTime LastMonth1 = ThatMonth1.AddMonths(-1); // 저번달 1일
+                    DateTime LastMonth31 = ThatMonth1.AddDays(-1); // 저번달 말일
+
+                    LastMonthInfo[0] = LastMonth1;
+                    LastMonthInfo[1] = LastMonth31;
+                }
+                else
+                {
+                    DateTime ThisMonth1 = DateTime.Today.AddDays(-(DateTime.Today.Day - 1)); // 이번달 1일
+
+                    DateTime LastMonth1 = ThisMonth1.AddMonths(-1); // 저번달 1일
+                    DateTime LastMonth31 = ThisMonth1.AddDays(-1); // 저번달 말일
+
+                    LastMonthInfo[0] = LastMonth1;
+                    LastMonthInfo[1] = LastMonth31;
+                }
+            }
+            catch
+            {
+
+            }
+
+
+            return LastMonthInfo;
+        }
+
         /// <summary>
         /// 금월 string 배열 형식
         /// [0]이달 1일 , [1] 현재일자
@@ -3638,6 +3715,41 @@ namespace WizMes_BooKyong
         #endregion
 
         #region 날짜변환
+
+        public bool DatePickerCheck(DatePicker sDatePicker, DatePicker eDatePicker, CheckBox chkDatePicker = null)
+        {
+            try
+            {
+                if (chkDatePicker != null)
+                {
+                    if (chkDatePicker.IsChecked == false)
+                        return true;
+                }
+
+                if ((sDatePicker == null && eDatePicker == null) || sDatePicker.SelectedDate == null || eDatePicker.SelectedDate == null)
+                {
+                    MessageBox.Show("검색기간 시작일과 종료일이 지정되었는지 확인하세요", "확인");
+                    return false;
+                }
+                else
+                {
+                    if (sDatePicker.SelectedDate > eDatePicker.SelectedDate)
+                    {
+                        MessageBox.Show("검색기간 시작일이 종료일보다 앞설 수 없습니다.", "확인");
+                        return false;
+                    }
+
+                }
+
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         //8자리 char형태 날짜 년도-월-일 하이픈 삽입
         //16자리 일경우 8자리 사이에 ~ 삽입
         public string DateTypeHyphen(string DigitsDate)
@@ -3853,6 +3965,75 @@ namespace WizMes_BooKyong
             timer.Start();
             currentTimer = timer;
         }
+        #endregion
+
+        #region 스크린샷
+
+        public void ScreenCapture(FrameworkElement targetElement)
+        {
+            try
+            {
+                //파라미터로 전달받기
+                //FrameworkElement targetElement = this;
+                //너무 커지는 것을 방지
+                double renderWidth = Math.Max(targetElement.ActualWidth, 400);
+                double renderHeight = Math.Max(targetElement.ActualHeight, 300);
+
+                //보이는 것들을 렌더링
+                RenderTargetBitmap renderTarget = new RenderTargetBitmap(
+                    (int)renderWidth,
+                    (int)renderHeight,
+                    96, 96,
+                    PixelFormats.Pbgra32
+                );
+
+                //지정이 안되어서 투명하게 되는것들(누끼따지는 것처럼 되는 것들)
+                //기본 WPF배경색상 채우기
+                DrawingVisual backgroundVisual = new DrawingVisual();
+                using (DrawingContext context = backgroundVisual.RenderOpen())
+                {
+                    context.DrawRectangle(
+                        new SolidColorBrush(Color.FromRgb(0xF0, 0xF0, 0xF0)),
+                        null,
+                        new Rect(0, 0, renderWidth, renderHeight)
+                    );
+                }
+
+                //그리기
+                renderTarget.Render(backgroundVisual);
+                renderTarget.Render(targetElement);
+
+                // PNG 파일로 저장
+                //string fileName = @"c:\temp\" + DateTime.Now.ToString("yyyy-MM-dd_HHmmss") + ".png";
+                //PngBitmapEncoder encoder = new PngBitmapEncoder();
+                //encoder.Frames.Add(BitmapFrame.Create(renderTarget));
+
+                //using (FileStream stream = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+                //{
+                //    encoder.Save(stream);
+                //}
+
+                //이미지를 팝업창에 전달
+                System.Windows.Controls.Image ImgImage = new System.Windows.Controls.Image();
+                ImgImage.Source = renderTarget;
+
+                if (ImgImage.Source != null)
+                {
+                    MainWindow.ScreenCapture.Clear();
+                    MainWindow.ScreenCapture.Add(ImgImage);
+                }
+                PopUp.ScreenShot SCshot = new PopUp.ScreenShot();
+
+                SCshot.ShowDialog();
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"스크린샷 캡처 중 오류가 발생했습니다: {ex.Message}");
+            }
+        }
+
         #endregion
     }
 
