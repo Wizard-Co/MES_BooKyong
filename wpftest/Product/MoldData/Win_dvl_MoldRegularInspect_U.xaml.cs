@@ -545,10 +545,12 @@ namespace WizMes_BooKyong
 
                             if ("01".Equals(WinMoldSub.MoldInspectRecordGbn)) 
                             {
+                                WinMoldSub.Num = dgdMold_InspectSub1.Items.Count + 1;
                                 dgdMold_InspectSub1.Items.Add(WinMoldSub);
                             }
                             else if ("02".Equals(WinMoldSub.MoldInspectRecordGbn))
                             {
+                                WinMoldSub.Num = dgdMold_InspectSub2.Items.Count + 1;
                                 dgdMold_InspectSub2.Items.Add(WinMoldSub);
                             }
                         }
