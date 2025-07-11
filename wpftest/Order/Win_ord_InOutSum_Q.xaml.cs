@@ -216,17 +216,20 @@ namespace WizMes_BooKyong
             //검색버튼 비활성화   
             btnSearch.IsEnabled = false;
 
-            Dispatcher.BeginInvoke(new Action(() =>
+            if(lib.DatePickerCheck(dtpFromDate, dtpToDate, chkDateSrh))
             {
-                DataStore.Instance.InsertLogByForm(this.GetType().Name, "R");
-                TabItem NowTI = tabconGrid.SelectedItem as TabItem;
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    DataStore.Instance.InsertLogByForm(this.GetType().Name, "R");
+                    TabItem NowTI = tabconGrid.SelectedItem as TabItem;
 
-                if (NowTI.Header.ToString() == "기간집계") { FillGrid_Period(); }
-                else if (NowTI.Header.ToString() == "일일집계") { FillGrid_Day(); }
-                else if (NowTI.Header.ToString() == "월별집계(세로)") { FillGrid_Month_V(); }
-                else if (NowTI.Header.ToString() == "월별집계(가로)") { FillGrid_Month_H(); }
+                    if (NowTI.Header.ToString() == "기간집계") { FillGrid_Period(); }
+                    else if (NowTI.Header.ToString() == "일일집계") { FillGrid_Day(); }
+                    else if (NowTI.Header.ToString() == "월별집계(세로)") { FillGrid_Month_V(); }
+                    else if (NowTI.Header.ToString() == "월별집계(가로)") { FillGrid_Month_H(); }
 
-            }), System.Windows.Threading.DispatcherPriority.Background);
+                }), System.Windows.Threading.DispatcherPriority.Background);
+            }
 
             btnSearch.IsEnabled = true;
         }
@@ -848,8 +851,8 @@ namespace WizMes_BooKyong
                     break;
                 case "월별집계(가로)":
                     txtblMessage.Visibility = Visibility.Visible;
-                    dtpFromDate.IsEnabled = false;
-                    dtpToDate.IsEnabled = false;
+                    dtpFromDate.IsEnabled = true;
+                    dtpToDate.IsEnabled = true;
                     break;
                 default: return;
             }

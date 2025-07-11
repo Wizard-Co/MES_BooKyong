@@ -650,9 +650,12 @@ namespace WizMes_BooKyong
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            using (Loading ld = new Loading(re_Search))
+            if(lib.DatePickerCheck(dtpSDate, dtpEDate, chkOrderDay))
             {
-                ld.ShowDialog();
+                using (Loading ld = new Loading(re_Search))
+                {
+                    ld.ShowDialog();
+                }
             }
         }
 

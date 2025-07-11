@@ -48,7 +48,7 @@ namespace WizMes_BooKyong
             First_Step();
             ComboBoxSetting();
             //제품으로 고정
-            cboArticleGroup.SelectedIndex = 3;
+            cboArticleGroupSrh.SelectedIndex = 3;
         }
 
         #region 첫단계 / 날짜버튼 세팅 / 조회용 체크박스 세팅
@@ -61,20 +61,8 @@ namespace WizMes_BooKyong
 
             chkInOutDate.IsChecked = true;
 
-            txtCustomer.IsEnabled = false;
-            btnCustomer.IsEnabled = false;
-            txtArticle.IsEnabled = false;
-            btnArticle.IsEnabled = false;
-            btnBuyerArticleNo.IsEnabled = false;
-            cboArticleGroup.IsEnabled = false;
-            cboWareHouse.IsEnabled = false;
-            cboInGbn.IsEnabled = false;
-            cboOutGbn.IsEnabled = false;
-            cboSupplyType.IsEnabled = false;
-
-
-            chkIn_NotApprovedIncloud.IsChecked = true;
-            chkAutoInOutItemsIncloud.IsChecked = true;
+            chkIn_NotApprovedIncloudSrh.IsChecked = true;
+            chkAutoInOutItemsIncloudSrh.IsChecked = true;
 
         }
 
@@ -174,218 +162,12 @@ namespace WizMes_BooKyong
                 dtpToDate.IsEnabled = true;
             }
         }
-        // 제품그룹
-        private void chkArticleGroup_Click(object sender, RoutedEventArgs e)
-        {
-            //if (chkArticleGroup.IsEnabled == true)
-            //{
-            //    if (chkArticleGroup.IsChecked == true)
-            //    {
-            //        cboArticleGroup.IsEnabled = true;
-            //        cboArticleGroup.Focus();
-            //    }
-            //    else
-            //    {
-            //        cboArticleGroup.IsEnabled = false;
-            //    }
-            //}
-        }
-        // 제품그룹
-        private void chkArticleGroup_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkArticleGroup.IsEnabled == true)
-            {
-                //if (chkArticleGroup.IsChecked == true)
-                //{
-                //    chkArticleGroup.IsChecked = false;
-                //    cboArticleGroup.IsEnabled = false;
-
-                //}
-                //else
-                //{
-                //    chkArticleGroup.IsChecked = true;
-                //    cboArticleGroup.IsEnabled = true;
-                //    cboArticleGroup.Focus();
-                //}
-            }
-        }
-        // 품명
-        private void chkArticle_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkArticle.IsChecked == true)
-            {
-                txtArticle.IsEnabled = true;
-                txtArticle.Focus();
-                btnArticle.IsEnabled = true;
-            }
-            else
-            {
-                txtArticle.IsEnabled = false;
-                btnArticle.IsEnabled = false;
-            }
-        }
-        // 품명
-        private void chkArticle_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkArticle.IsChecked == true)
-            {
-                chkArticle.IsChecked = false;
-                txtArticle.IsEnabled = false;
-                btnArticle.IsEnabled = false;
-            }
-            else
-            {
-                chkArticle.IsChecked = true;
-                txtArticle.IsEnabled = true;
-                btnArticle.IsEnabled = true;
-                txtArticle.Focus();
-            }
-        }
-        // 거래처
-        private void chkCustomer_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkCustomer.IsChecked == true)
-            {
-                txtCustomer.IsEnabled = true;
-                txtCustomer.Focus();
-                btnCustomer.IsEnabled = true;
-            }
-            else
-            {
-                txtCustomer.IsEnabled = false;
-                btnCustomer.IsEnabled = false;
-            }
-        }
-        // 거래처
-        private void chkCustomer_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkCustomer.IsChecked == true)
-            {
-                chkCustomer.IsChecked = false;
-                txtCustomer.IsEnabled = false;
-                btnCustomer.IsEnabled = false;
-            }
-            else
-            {
-                chkCustomer.IsChecked = true;
-                txtCustomer.IsEnabled = true;
-                txtCustomer.Focus();
-                btnCustomer.IsEnabled = true;
-            }
-        }
-        // 창고
-        private void chkWareHouse_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkWareHouse.IsChecked == true)
-            {
-                cboWareHouse.IsEnabled = true;
-                cboWareHouse.Focus();
-            }
-            else
-            {
-                cboWareHouse.IsEnabled = false;
-            }
-
-        }
-        // 창고
-        private void chkWareHouse_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkWareHouse.IsChecked == true)
-            {
-                chkWareHouse.IsChecked = false;
-                cboWareHouse.IsEnabled = false;
-            }
-            else
-            {
-                chkWareHouse.IsChecked = true;
-                cboWareHouse.IsEnabled = true;
-                cboWareHouse.Focus();
-            }
-        }
-        // 입고구분
-        private void chkInGbn_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkInGbn.IsChecked == true)
-            {
-                cboInGbn.IsEnabled = true;
-                cboInGbn.Focus();
-            }
-            else
-            {
-                cboInGbn.IsEnabled = false;
-            }
-        }
-        // 입고구분
-        private void chkInGbn_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkInGbn.IsChecked == true)
-            {
-                chkInGbn.IsChecked = false;
-                cboInGbn.IsEnabled = false;
-            }
-            else
-            {
-                chkInGbn.IsChecked = true;
-                cboInGbn.IsEnabled = true;
-                cboInGbn.Focus();
-            }
-        }
-        // 출고구분
-        private void chkOutGbn_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkOutGbn.IsChecked == true)
-            {
-                cboOutGbn.IsEnabled = true;
-                cboOutGbn.Focus();
-            }
-            else
-            {
-                cboOutGbn.IsEnabled = false;
-            }
-        }
-        // 출고구분
-        private void chkOutGbn_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkOutGbn.IsChecked == true)
-            {
-                chkOutGbn.IsChecked = false;
-                cboOutGbn.IsEnabled = false;
-            }
-            else
-            {
-                chkOutGbn.IsChecked = true;
-                cboOutGbn.IsEnabled = true;
-                cboOutGbn.Focus();
-            }
-        }
-        // 공급유형
-        private void chkSupplyType_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkSupplyType.IsChecked == true)
-            {
-                cboSupplyType.IsEnabled = true;
-                cboSupplyType.Focus();
-            }
-            else
-            {
-                cboSupplyType.IsEnabled = false;
-            }
-        }
-        // 공급유형
-        private void chkSupplyType_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkSupplyType.IsChecked == true)
-            {
-                chkSupplyType.IsChecked = false;
-                cboSupplyType.IsEnabled = false;
-            }
-            else
-            {
-                chkSupplyType.IsChecked = true;
-                cboSupplyType.IsEnabled = true;
-                cboSupplyType.Focus();
-            }
-        }
+  
+     
+      
+      
+  
+      
 
         #endregion
 
@@ -394,40 +176,41 @@ namespace WizMes_BooKyong
         // 콤보박스 세팅.
         private void ComboBoxSetting()
         {
-            cboArticleGroup.Items.Clear();
-            cboWareHouse.Items.Clear();
-            cboInGbn.Items.Clear();
-            cboOutGbn.Items.Clear();
-            cboSupplyType.Items.Clear();
+            cboArticleGroupSrh.Items.Clear();
+            cboWareHouseSrh.Items.Clear();
+            cboInGbnSrh.Items.Clear();
+            cboOutGbnSrh.Items.Clear();
+            cboSupplyTypeSrh.Items.Clear();
 
             ObservableCollection<CodeView> cbArticleGroup = ComboBoxUtil.Instance.Gf_DB_MT_sArticleGrp();
             ObservableCollection<CodeView> cbWareHouse = ComboBoxUtil.Instance.Gf_DB_CM_GetComCodeDataset(null, "LOC", "Y", "", "");
             ObservableCollection<CodeView> cbInGbn = ComboBoxUtil.Instance.Gf_DB_CM_GetComCodeDataset(null, "OCD", "Y", "", "");
             ObservableCollection<CodeView> cbSupplyType = ComboBoxUtil.Instance.Gf_DB_CM_GetComCodeDataset(null, "CMMASPLTYPE", "Y", "", "");
 
-            this.cboArticleGroup.ItemsSource = cbArticleGroup;
-            this.cboArticleGroup.DisplayMemberPath = "code_name";
-            this.cboArticleGroup.SelectedValuePath = "code_id";
-            this.cboArticleGroup.SelectedIndex = 0;
+            this.cboArticleGroupSrh.ItemsSource = cbArticleGroup;
+            this.cboArticleGroupSrh.DisplayMemberPath = "code_name";
+            this.cboArticleGroupSrh.SelectedValuePath = "code_id";
+            this.cboArticleGroupSrh.SelectedIndex = 0;
 
-            this.cboWareHouse.ItemsSource = cbWareHouse;
-            this.cboWareHouse.DisplayMemberPath = "code_name";
-            this.cboWareHouse.SelectedValuePath = "code_id";
-            this.cboWareHouse.SelectedIndex = 0;
+            this.cboWareHouseSrh.ItemsSource = cbWareHouse;
+            this.cboWareHouseSrh.DisplayMemberPath = "code_name";
+            this.cboWareHouseSrh.SelectedValuePath = "code_id";
+            this.cboWareHouseSrh.SelectedIndex = 0;
 
-            this.cboInGbn.ItemsSource = cbInGbn;
-            this.cboInGbn.DisplayMemberPath = "code_id_plus_code_name";
-            this.cboInGbn.SelectedValuePath = "code_id";
-            this.cboInGbn.SelectedIndex = 0;
-            this.cboOutGbn.ItemsSource = cbInGbn;
-            this.cboOutGbn.DisplayMemberPath = "code_id_plus_code_name";
-            this.cboOutGbn.SelectedValuePath = "code_id";
-            this.cboOutGbn.SelectedIndex = 0;
+            this.cboInGbnSrh.ItemsSource = cbInGbn;
+            this.cboInGbnSrh.DisplayMemberPath = "code_id_plus_code_name";
+            this.cboInGbnSrh.SelectedValuePath = "code_id";
+            this.cboInGbnSrh.SelectedIndex = 0;
 
-            this.cboSupplyType.ItemsSource = cbSupplyType;
-            this.cboSupplyType.DisplayMemberPath = "code_name";
-            this.cboSupplyType.SelectedValuePath = "code_id";
-            this.cboSupplyType.SelectedIndex = 0;
+            this.cboOutGbnSrh.ItemsSource = cbInGbn;
+            this.cboOutGbnSrh.DisplayMemberPath = "code_id_plus_code_name";
+            this.cboOutGbnSrh.SelectedValuePath = "code_id";
+            this.cboOutGbnSrh.SelectedIndex = 0;
+
+            this.cboSupplyTypeSrh.ItemsSource = cbSupplyType;
+            this.cboSupplyTypeSrh.DisplayMemberPath = "code_name";
+            this.cboSupplyTypeSrh.SelectedValuePath = "code_id";
+            this.cboSupplyTypeSrh.SelectedIndex = 0;
         }
 
         #endregion
@@ -437,17 +220,6 @@ namespace WizMes_BooKyong
         // 조회.
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            if (chkCustomer.IsChecked == true && txtCustomer.Text == "")
-            {
-                MessageBox.Show("거래처를 입력한 후 검색을 하거나 거래처 체크를 해제 후 검색 하세요");
-                return;
-            }
-            else if (chkArticle.IsChecked == true && txtArticle.Text == "")
-            {
-                MessageBox.Show("품번를 입력한 후 검색을 하거나 품번 체크를 해제 후 검색 하세요");
-                return;
-            }
-
             using (Loading ld = new Loading(beSearch))
             {
                 ld.ShowDialog();
@@ -459,115 +231,64 @@ namespace WizMes_BooKyong
             //검색버튼 비활성화
             btnSearch.IsEnabled = false;
 
-            Dispatcher.BeginInvoke(new Action(() =>
+            if(lib.DatePickerCheck(dtpFromDate, dtpToDate, chkInOutDate))
             {
-                //로직
-                FillGrid();
-            }), System.Windows.Threading.DispatcherPriority.Background);
+
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    //로직
+                    FillGrid();
+                }), System.Windows.Threading.DispatcherPriority.Background);
+            }
 
             btnSearch.IsEnabled = true;
         }
 
         private void FillGrid()
         {
-            int nChkDate = 0;
-            if (chkInOutDate.IsChecked == true) { nChkDate = 1; }
-
-            int nChkCustom = 0;
-            if (chkCustomer.IsChecked == true) { nChkCustom = 1; }
-            else { txtCustomer.Tag = ""; }
-
-            int nChkArticleID = 0;
-            if (chkArticle.IsChecked == true) { nChkArticleID = 1; }
-            else { txtArticle.Tag = ""; }
-
-            string ArticleGrpID = string.Empty;
-            if (chkArticleGroup.IsChecked == true) { ArticleGrpID = cboArticleGroup.SelectedValue.ToString(); }
-
-            string sFromLocID = string.Empty;
-            if (chkWareHouse.IsChecked == true) { sFromLocID = cboWareHouse.SelectedValue.ToString(); }
-
-            int nChkOutClss = 0;
-            string sOutClss = string.Empty;
-            if (chkOutGbn.IsChecked == true)
-            {
-                nChkOutClss = 1;
-                sOutClss = cboOutGbn.SelectedValue.ToString();
-            }
-
-            int nChkInClss = 0;
-            string sInClss = string.Empty;
-            if (chkInGbn.IsChecked == true)
-            {
-                nChkInClss = 1;
-                sInClss = cboInGbn.SelectedValue.ToString();
-            }
-
-            string incNotApprovalYN = "N";
-            if (chkIn_NotApprovedIncloud.IsChecked == true) { incNotApprovalYN = "Y"; }
-
-            string incAutoInOutYN = "N";
-            if (chkAutoInOutItemsIncloud.IsChecked == true) { incAutoInOutYN = "Y"; }
-
-            string sMissSafelyStockQty = "";
-            if (chkOptimumStockBelowSee.IsChecked == true) { sMissSafelyStockQty = "Y"; }
-
-            int nMainItem = 0;
-            if (chkMainInterestItemsSee.IsChecked == true) { nMainItem = 1; }
-
-            int nCustomItem = 0;
-            if (chkRegistItemsByCustomer.IsChecked == true) { nCustomItem = 1; }
-
-            int nSupplyType = 0;
-            string sSupplyType = string.Empty;
-            if (chkSupplyType.IsChecked == true)
-            {
-                nSupplyType = 1;
-                sSupplyType = cboSupplyType.SelectedValue.ToString();
-            }
-
+            dgdStock.Items.Clear();
+            dgdStockQTotal.Items.Clear();
 
             try
             {
 
                 Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
-                sqlParameter.Add("nChkDate", nChkDate);
-                sqlParameter.Add("sSDate", dtpFromDate.Text.Substring(0, 10).Replace("-", ""));
-                sqlParameter.Add("sEDate", dtpToDate.Text.Substring(0, 10).Replace("-", ""));
-                sqlParameter.Add("nChkCustom", nChkCustom);
-                sqlParameter.Add("sCustomID", txtCustomer.Tag.ToString());
+                sqlParameter.Add("nChkDate", chkInOutDate.IsChecked == true ?  1: 0);
+                sqlParameter.Add("sSDate", dtpFromDate.SelectedDate?.ToString("yyyyMMdd") ?? string.Empty);
+                sqlParameter.Add("sEDate", dtpToDate.SelectedDate?.ToString("yyyyMMdd") ?? string.Empty);
+                sqlParameter.Add("nChkCustom", chkCustomIDSrh.IsChecked == true ? 1:0);
+                sqlParameter.Add("sCustomID", chkCustomIDSrh.IsChecked == true ? txtCustomIDSrh.Tag?.ToString() ?? string.Empty : string.Empty);
 
-                sqlParameter.Add("nChkArticleID", 0);// nChkArticleID);
-                sqlParameter.Add("sArticleID", ""); //txtArticle.Tag.ToString());
-                sqlParameter.Add("nChkOrder", 0);
-                sqlParameter.Add("sOrder", "");
-                sqlParameter.Add("ArticleGrpID", ArticleGrpID);
+                sqlParameter.Add("nChkArticleID", chkArticleIDSrh.IsChecked == true ? 1:0 );
+                sqlParameter.Add("sArticleID", chkArticleIDSrh.IsChecked == true? txtArticleIDSrh.Tag?.ToString() ?? string.Empty : string.Empty); 
+                sqlParameter.Add("nChkOrder", 0);               //화면내 조건없음 --추가시에 적용 -- orderID 또는 orderNo
+                sqlParameter.Add("sOrder", string.Empty);       //화면내 조건없음 --추가시에 적용
+                sqlParameter.Add("ArticleGrpID", cboArticleGroupSrh.SelectedValue?.ToString() ?? string.Empty); //제품구분
 
-                sqlParameter.Add("sFromLocID", sFromLocID);
-                sqlParameter.Add("sToLocID", "");
-                sqlParameter.Add("nChkOutClss", nChkOutClss);
-                sqlParameter.Add("sOutClss", sOutClss);
-                sqlParameter.Add("nChkInClss", nChkInClss);
+                sqlParameter.Add("sFromLocID", cboWareHouseSrh.SelectedValue?.ToString() ?? string.Empty); //창고
+                sqlParameter.Add("sToLocID", string.Empty);                                                //창고위치
+                sqlParameter.Add("nChkOutClss", chkOutGbnSrh.IsChecked == true ? 1:0);                     //출고구분
+                sqlParameter.Add("sOutClss", chkOutGbnSrh.IsChecked == true ? cboOutGbnSrh.SelectedValue?.ToString() ?? string.Empty : string.Empty);
+                sqlParameter.Add("nChkInClss", chkInGbnSrh.IsChecked == true ? 1:0);                        //입고구분
+                sqlParameter.Add("sInClss", chkInGbnSrh.IsChecked == true ? cboInGbnSrh.SelectedValue?.ToString() ?? string.Empty : string.Empty);
 
-                sqlParameter.Add("sInClss", sInClss);
-                sqlParameter.Add("nChkReqID", 0);
-                sqlParameter.Add("sReqID", "");
-                sqlParameter.Add("incNotApprovalYN", incNotApprovalYN);
-                sqlParameter.Add("incAutoInOutYN", incAutoInOutYN);
+                sqlParameter.Add("nChkReqID", 0);               //발주번호
+                sqlParameter.Add("sReqID", string.Empty);       //발주번호
+                sqlParameter.Add("incNotApprovalYN", chkIn_NotApprovedIncloudSrh.IsChecked == true ? 1:0);
+                sqlParameter.Add("incAutoInOutYN", chkAutoInOutItemsIncloudSrh.IsChecked == true? 1:0);
 
-                sqlParameter.Add("sArticleIDS", "");
-                sqlParameter.Add("sMissSafelyStockQty", sMissSafelyStockQty);
+                sqlParameter.Add("sArticleIDS", string.Empty);
+                sqlParameter.Add("sMissSafelyStockQty", chkOptimumStockBelowSeeSrh.IsChecked == true ? "Y" : "");
                 sqlParameter.Add("sProductYN", "Y");
-                sqlParameter.Add("nMainItem", nMainItem);
-                sqlParameter.Add("nCustomItem", nCustomItem);
+                sqlParameter.Add("nMainItem", chkMainInterestItemsSeeSrh.IsChecked == true ? 1:0);
+                sqlParameter.Add("nCustomItem", chkRegistItemsByCustomerSrh.IsChecked == true ? 1:0);
 
-                sqlParameter.Add("nSupplyType", nSupplyType);
-                sqlParameter.Add("sSupplyType", sSupplyType);
+                sqlParameter.Add("nSupplyType", chkSupplyTypeSrh.IsChecked == true ? 1:0);
+                sqlParameter.Add("sSupplyType", chkCustomIDSrh.IsChecked == true ? cboSupplyTypeSrh.SelectedValue?.ToString() ?? string.Empty : string.Empty);
 
                 sqlParameter.Add("JaturiNoYN", ""); //이건 뭐하는 거지
-                sqlParameter.Add("nBuyerArticleNo", chkArticle.IsChecked == true ? 1 : 0); //일단 빈값
-                sqlParameter.Add("BuyerArticleNo", txtArticle.Text);
-
+                sqlParameter.Add("nBuyerArticleNo", chkBuyerArticleNoSrh.IsChecked == true ? 1 : 0); //일단 빈값
+                sqlParameter.Add("BuyerArticleNo", chkBuyerArticleNoSrh.IsChecked == true ? txtBuyerArticleNoSrh.Tag?.ToString() ?? string.Empty : string.Empty);
 
                 DataSet ds = DataStore.Instance.ProcedureToDataSet_LogWrite("xp_Subul_sStockList", sqlParameter, true, "R");
                 DataTable dt = null;
@@ -585,8 +306,13 @@ namespace WizMes_BooKyong
                     else
                     {
                         int NUM = 1;
+                        int totalInitStockQty = 0;
+                        int totalStuffQty = 0;
+                        int TotalOutQty = 0;
+                        int TotalStockQty = 0;
+
                         DT = dt;
-                        dgdStock.Items.Clear();
+                     
                         DataRowCollection drc = dt.Rows;
                         foreach (DataRow item in drc)
                         {
@@ -668,8 +394,15 @@ namespace WizMes_BooKyong
                                     OverQty = String.Format("{0:#,##0}", Convert.ToDouble(item["OverQty"].ToString())),
                                     StockRate = item["StockRate"].ToString().Split('.')[0].Trim(),
                                     FontRed = "false",
-                                    ColorGreen = "true"
+                                    ColorGreen = "true"                                   
+
                                 };
+
+                                totalInitStockQty += lib.RemoveComma(item["initStockQty"].ToString(), 0);
+                                totalStuffQty += lib.RemoveComma(item["StuffQty"].ToString(), 0);
+                                TotalOutQty += lib.RemoveComma(item["OutQty"].ToString(), 0);
+                                TotalStockQty += lib.RemoveComma(item["StockQty"].ToString(), 0);
+
                                 dgdStock.Items.Add(Win_ord_Stock_Q_Insert);
                                 NUM++;
                             }
@@ -707,6 +440,19 @@ namespace WizMes_BooKyong
                                 dgdStock.Items.Add(Win_ord_Stock_Q_Insert);
                                 NUM++;
                             }
+                        }
+
+                        if(dgdStock.Items.Count > 0)
+                        {
+                            var stockTotal = new Win_ord_Stock_Q_View_Total
+                            {
+                                TotalInitStockQty = stringFormatN0(totalInitStockQty),
+                                TotalOutQty = stringFormatN0(TotalOutQty),
+                                TotalStuffQty = stringFormatN0(totalStuffQty),
+                                TotalStockQty = stringFormatN0(TotalStockQty),
+                            };
+
+                            dgdStockQTotal.Items.Add(stockTotal);
                         }
                     }
 
@@ -805,27 +551,27 @@ namespace WizMes_BooKyong
 
         #region 플러스 파인더 
         //플러스파인더 _ 거래처_클릭.
-        private void btnCustomer_Click(object sender, RoutedEventArgs e)
+        private void btnCustomIDSrh_Click(object sender, RoutedEventArgs e)
         {
-            pf.ReturnCode(txtCustomer, 0, "");
+            pf.ReturnCode(txtCustomIDSrh, 0, "");
         }
         //플러스파인더 _ 거래처_키다운.
-        private void TxtCustomer_KeyDown(object sender, KeyEventArgs e)
+        private void txtCustomIDSrh_KeyDown(object sender, KeyEventArgs e)
         {
-            pf.ReturnCode(txtCustomer, 0, "");
+            pf.ReturnCode(txtCustomIDSrh, 0, "");
         }
 
         //플러스파인더 _ 품명_클릭. (품번이 검색되도록 수정, 2020.03.18, 장가빈)
-        private void btnArticle_Click(object sender, RoutedEventArgs e)
+        private void btnArticleIDSrh_Click(object sender, RoutedEventArgs e)
         {
-            pf.ReturnCode(txtArticle, 77, txtArticle.Text);
+            pf.ReturnCode(txtArticleIDSrh, 77, txtArticleIDSrh.Text);
         }
         //플러스파인더 _ 품명_키다운
-        private void TxtArticle_KeyDown(object sender, KeyEventArgs e)
+        private void txtArticleIDSrh_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                pf.ReturnCode(txtArticle, 77, txtArticle.Text);
+                pf.ReturnCode(txtArticleIDSrh, 77, txtArticleIDSrh.Text);
             }
         }
 
@@ -915,10 +661,10 @@ namespace WizMes_BooKyong
                     workrange.Font.Size = 11;
                 }
 
-                if ((chkWareHouse.IsChecked == true) && (cboWareHouse.SelectedIndex != -1))     // 창고정보.
+                if ((chkWareHouseSrh.IsChecked == true) && (cboWareHouseSrh.SelectedIndex != -1))     // 창고정보.
                 {
                     workrange = worksheet.get_Range("D3");//셀 범위 지정
-                    workrange.Value2 = ((WizMes_BooKyong.CodeView)cboWareHouse.SelectedItem).code_name.ToString();
+                    workrange.Value2 = ((WizMes_BooKyong.CodeView)cboWareHouseSrh.SelectedItem).code_name.ToString();
                     workrange.HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft;
                     workrange.Font.Size = 11;
                 }
@@ -1119,51 +865,34 @@ namespace WizMes_BooKyong
             }
         }
 
-        private void chkBuyerArticleNo_Click(object sender, MouseButtonEventArgs e)
+        //검색조건 -품번 - 클릭
+        private void btnBuyerArticleNoSrh_Click(object sender, RoutedEventArgs e)
         {
-            if (chkBuyerArticleNo.IsChecked == true)
-            {
-                chkBuyerArticleNo.IsChecked = false;
-                txtBuyerArticleNo.IsEnabled = false;
-                btnBuyerArticleNo.IsEnabled = false;
-            }
-            else
-            {
-                chkBuyerArticleNo.IsChecked = true;
-                txtBuyerArticleNo.IsEnabled = true;
-                txtBuyerArticleNo.Focus();
-                btnBuyerArticleNo.IsEnabled = true;
-            }
+            pf.ReturnCode(txtBuyerArticleNoSrh, 76, txtBuyerArticleNoSrh.Text);
         }
 
-        private void chkBuyerArticleNo_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkBuyerArticleNo.IsChecked == true)
-            {
-                chkBuyerArticleNo.IsChecked = false;
-                txtBuyerArticleNo.IsEnabled = false;
-                btnBuyerArticleNo.IsEnabled = false;
-            }
-            else
-            {
-                chkBuyerArticleNo.IsChecked = true;
-                txtBuyerArticleNo.IsEnabled = true;
-                txtBuyerArticleNo.Focus();
-                btnBuyerArticleNo.IsEnabled = true;
-            }
-        }
-
-        private void btnBuyerArticleNo_Click(object sender, RoutedEventArgs e)
-        {
-            pf.ReturnCode(txtBuyerArticleNo, 76, txtBuyerArticleNo.Text);
-        }
-
-        private void TxtBuyerArticleNo_KeyDown(object sender, KeyEventArgs e)
+        //검색조건 - 품번 -키다운
+        private void txtBuyerArticleNoSrh_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                btnBuyerArticleNo_Click(null, null);
+                pf.ReturnCode(txtBuyerArticleNoSrh, 76, txtBuyerArticleNoSrh.Text);
             }
+        }
+
+        private void CommonControl_Click(object sender, MouseButtonEventArgs e)
+        {
+            lib.CommonControl_Click(sender, e);
+        }
+
+        private void CommonControl_Click(object sender, RoutedEventArgs e)
+        {
+            lib.CommonControl_Click(sender, e);
+        }
+
+        private string stringFormatN0(object obj)
+        {
+            return string.Format("{0:N0}", obj);
         }
     }
 
@@ -1208,5 +937,13 @@ namespace WizMes_BooKyong
         public string ColorGreen { get; set; }
 
 
+    }
+
+    public class Win_ord_Stock_Q_View_Total : BaseView
+    {
+        public string TotalInitStockQty { get; set; }
+        public string TotalStuffQty { get; set; }
+        public string TotalOutQty { get; set; }
+        public string TotalStockQty { get; set; }
     }
 }
