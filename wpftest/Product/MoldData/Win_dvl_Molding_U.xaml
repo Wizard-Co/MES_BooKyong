@@ -1242,7 +1242,8 @@
                                 Grid.Column="1"
                                 Margin="1"
                                 PreviewTextInput="onlyNemeric"
-                                Text="{Binding AfterRepairHitcount}" />
+                                Text="{Binding AfterRepairHitcount}"
+                                IsReadOnly="True"/>
                         </Grid>
 
                         <!--  세척주기/세척후 만들기  -->
@@ -1270,7 +1271,8 @@
                                 Grid.Column="1"
                                 Margin="1"
                                 PreviewTextInput="onlyNemeric"
-                                Text="{Binding AfterWashHitcount}" />
+                                Text="{Binding AfterWashHitcount}"
+                                IsReadOnly="True"/>
                         </Grid>
 
                         <!--  수명타발수/현재 만들기  -->
@@ -1298,7 +1300,8 @@
                                 Grid.Column="1"
                                 Margin="1"
                                 PreviewTextInput="onlyNemeric"
-                                Text="{Binding HitCount}" />
+                                Text="{Binding HitCount}"
+                                IsReadOnly="True"/>
                         </Grid>
 
                         <!--  초기설정타발수 만들기  -->
