@@ -608,7 +608,6 @@
                             Style="{DynamicResource DataGridSet1}">
                             <DataGrid.Resources>
                                 <Style TargetType="DataGridCell">
-
                                     <EventSetter Event="KeyUp" Handler="TextBoxFocusInDataGrid" />
                                     <EventSetter Event="MouseUp" Handler="TextBoxFocusInDataGrid_MouseUp" />
                                     <EventSetter Event="GotFocus" Handler="DataGridCell_GotFocus" />

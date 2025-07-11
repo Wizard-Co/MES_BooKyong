@@ -16,6 +16,7 @@ using static System.Net.WebRequestMethods;
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
 using WizMes_BooKyong.PopUp;
+using System.Windows.Media;
 
 namespace WizMes_BooKyong
 {
@@ -482,10 +483,12 @@ namespace WizMes_BooKyong
 
                             if ("01".Equals(WinMoldSub.MoldInspectRecordGbn))
                             {
+                                WinMoldSub.Num = dgdMold_InspectSub1.Items.Count + 1;
                                 dgdMold_InspectSub1.Items.Add(WinMoldSub);
                             }
                             else if ("02".Equals(WinMoldSub.MoldInspectRecordGbn))
                             {
+                                WinMoldSub.Num = dgdMold_InspectSub2.Items.Count + 1;
                                 dgdMold_InspectSub2.Items.Add(WinMoldSub);
                             }
                         }
@@ -751,7 +754,7 @@ namespace WizMes_BooKyong
 
                 sqlParameter = new Dictionary<string, object>();
                 sqlParameter.Clear();
-                sqlParameter.Add("MoldInspectID", txtMoldInspectID.Text);
+                sqlParameter.Add("MoldInspectID", inspectID);
                 sqlParameter.Add("MoldInspectSubSeq", sub.MoldInspectSeq);
                 sqlParameter.Add("MoldInsBasisID", sub.MoldInspectBasisID);
                 sqlParameter.Add("MldValue", sub.MldValue);
@@ -1011,14 +1014,37 @@ namespace WizMes_BooKyong
             if (lblMsg.Visibility == Visibility.Visible)
             {
                 DataGridCell cell = sender as DataGridCell;
+                DataGrid grid = FindParent<DataGrid>(cell);
+                int currCol = grid.Columns.IndexOf(grid.CurrentCell.Column);
+
                 cell.IsEditing = true;
+                //if ((currCol > 0 && currCol < 14)
+               
+                //{
+                //    DataGridCell cell = sender as DataGridCell;
+                //    cell.IsEditing = true;
+                //}
+
             }
+
+           
+        }
+        public static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(child);
+
+            while (parent != null && !(parent is T))
+            {
+                parent = VisualTreeHelper.GetParent(parent);
+            }
+
+            return parent as T;
         }
 
-       
+
         #endregion
 
-        
+
         private void clearGrid()
         {
             if (dgdMold_InspectSub1.Items.Count > 0)
