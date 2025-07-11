@@ -491,8 +491,11 @@ namespace WizMes_BooKyong
                                 WinMoldSub.Num = dgdMold_InspectSub2.Items.Count + 1;
                                 dgdMold_InspectSub2.Items.Add(WinMoldSub);
                             }
+
+                            txtMoldBasisID.Text = WinMoldSub.MoldInspectBasisID;
+
                         }
-                    }
+                    } 
                 }
             }
             catch (Exception ex)
@@ -866,10 +869,6 @@ namespace WizMes_BooKyong
                 {
                     getMoldInfo(txtMoldID.Tag.ToString());
                 }
-                if(cboInspectCycle.SelectedValue != null)
-                {
-                    getBasisSub(txtMoldID.Tag.ToString(), cboInspectCycle.SelectedValue.ToString());
-                }
 
                 dtpMoldInspectDate.Focus();
             }
@@ -884,10 +883,7 @@ namespace WizMes_BooKyong
             {
                 getMoldInfo(txtMoldID.Tag.ToString());
             }
-            if (cboInspectCycle.SelectedValue != null)
-            {
-                getBasisSub(txtMoldID.Tag.ToString(), cboInspectCycle.SelectedValue.ToString());
-            }
+
 
             dtpMoldInspectDate.Focus();
         }
@@ -928,8 +924,7 @@ namespace WizMes_BooKyong
                             txtComments.Text = dr["Comments"].ToString();
                             txtArticle.Text = dr["Article"].ToString();
 
-                            date = dr["MoldInspectDate"].ToString();
-                            dtpMoldInspectDate.SelectedDate = !string.IsNullOrWhiteSpace(date) ? (DateTime?) DateTime.Parse(DatePickerFormat(date)) : DateTime.Now;
+                            dtpMoldInspectDate.SelectedDate = DateTime.Now;
 
                             personID = dr["MoldInspectPersonID"].ToString();
                             txtPerson.Tag = !string.IsNullOrWhiteSpace(personID) ? personID : MainWindow.CurrentUser;
@@ -937,6 +932,11 @@ namespace WizMes_BooKyong
                             person = dr["MoldInspectPerson"].ToString();
                             txtPerson.Text = !string.IsNullOrWhiteSpace(person) ? person : MainWindow.CurrentUser;
                         }
+                    } else
+                    {
+                        MessageBox.Show("해당 금형번호로 등록된 점검기준이 없습니다");
+                        InputClear();
+                        return;
                     }
                 }
             }
@@ -983,13 +983,11 @@ namespace WizMes_BooKyong
         }
         private void cboInspectCycle_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cboInspectCycle.SelectedValue != null)
-            {
-                if (!String.IsNullOrWhiteSpace(txtMoldID.Tag.ToString()))
-                {
-                    getBasisSub(txtMoldID.Tag.ToString(), cboInspectCycle.SelectedValue.ToString());
-                }
-            }
+            if (cboInspectCycle.SelectedValue == null) return;
+            if (string.IsNullOrWhiteSpace(txtMoldID.Tag.ToString())) return;
+
+            getBasisSub(txtMoldID.Tag.ToString(), cboInspectCycle.SelectedValue.ToString());
+
         }
         #endregion
 
@@ -1017,13 +1015,7 @@ namespace WizMes_BooKyong
                 DataGrid grid = FindParent<DataGrid>(cell);
                 int currCol = grid.Columns.IndexOf(grid.CurrentCell.Column);
 
-                cell.IsEditing = true;
-                //if ((currCol > 0 && currCol < 14)
-               
-                //{
-                //    DataGridCell cell = sender as DataGridCell;
-                //    cell.IsEditing = true;
-                //}
+                if (currCol >5 && currCol < 8) cell.IsEditing = true;
 
             }
 

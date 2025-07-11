@@ -579,21 +579,7 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellEditingTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTemplateColumn
-                                    MinWidth="100"
-                                    Header="이미지"
-                                    SortMemberPath="Comments">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Margin="2" Text="{Binding Comments}" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                    <DataGridTemplateColumn.CellEditingTemplate>
-                                        <DataTemplate>
-                                            <TextBox Text="{Binding Comments}" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellEditingTemplate>
-                                </DataGridTemplateColumn>
+                            
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>
@@ -619,15 +605,7 @@
                                 <DataGridTextColumn Binding="{Binding MoldInspectItemName}" Header="점검항목" />
                                 <DataGridTextColumn Binding="{Binding MoldInspectContent}" Header="점검내용" />
                                 <DataGridTextColumn Binding="{Binding MoldInspectCheckName}" Header="점검방법" />
-                                <DataGridTextColumn
-                                    Binding="{Binding MoldInspectCheckGbn}"
-                                    Header="점검방법Code"
-                                    Visibility="Hidden" />
                                 <DataGridTextColumn Binding="{Binding MoldInspectCycleName}" Header="점검주기" />
-                                <DataGridTextColumn
-                                    Binding="{Binding MoldInspectCycleGbn}"
-                                    Header="점검주기Code"
-                                    Visibility="Hidden" />
                                 <DataGridTemplateColumn
                                     x:Name="dgdtpeMldValue"
                                     Header="점검결과"
