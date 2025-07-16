@@ -65,22 +65,8 @@ namespace WizMes_BooKyong
             dtpToDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
             dtpFromDate.IsEnabled = true;
             dtpToDate.IsEnabled = true;
-            rbnManageNumber.IsChecked = true;
+            rbnManageNumberSrh.IsChecked = true;
 
-
-            // no check > no use.
-            txtCustomer.IsEnabled = false;
-            btnCustomer.IsEnabled = false;
-            txtArticle.IsEnabled = false;
-            btnArticle.IsEnabled = false;
-
-            txtArticleNo.IsEnabled = false;
-            btnArticleNo.IsEnabled = false;
-
-            txtOrderID.IsEnabled = false;
-            cboFaultyGBN.IsEnabled = false;
-            txtBoxID.IsEnabled = false;
-            txtCID.IsEnabled = false;
         }
 
         //전일
@@ -149,192 +135,27 @@ namespace WizMes_BooKyong
             }
         }
 
-        //거래처
-        private void chkCustomer_Click(object sender, RoutedEventArgs e)
+     
+
+        private void rbnOrderNoSrh_Click(object sender, RoutedEventArgs e)
         {
-            if (chkCustomer.IsChecked == true)
-            {
-                txtCustomer.IsEnabled = true;
-                txtCustomer.Focus();
-                btnCustomer.IsEnabled = true;
-            }
-            else
-            {
-                txtCustomer.IsEnabled = false;
-                btnCustomer.IsEnabled = false;
-            }
-        }
-        //거래처
-        private void chkCustomer_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkCustomer.IsChecked == true)
-            {
-                chkCustomer.IsChecked = false;
-                txtCustomer.IsEnabled = false;
-                btnCustomer.IsEnabled = false;
-            }
-            else
-            {
-                chkCustomer.IsChecked = true;
-                txtCustomer.IsEnabled = true;
-                txtCustomer.Focus();
-                btnCustomer.IsEnabled = true;
-            }
-        }
-        // 품명
-        private void chkArticle_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkArticle.IsChecked == true)
-            {
-                txtArticle.IsEnabled = true;
-                txtArticle.Focus();
-                btnArticle.IsEnabled = true;
-            }
-            else
-            {
-                txtArticle.IsEnabled = false;
-                btnArticle.IsEnabled = false;
-            }
-        }
-        // 품명
-        private void chkArticle_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (chkArticle.IsChecked == true)
-            {
-                chkArticle.IsChecked = false;
-                txtArticle.IsEnabled = false;
-                btnArticle.IsEnabled = false;
-            }
-            else
-            {
-                chkArticle.IsChecked = true;
-                txtArticle.IsEnabled = true;
-                txtArticle.Focus();
-                btnArticle.IsEnabled = true;
-            }
-        }
-        //관리번호 + order NO.
-        private void chkOrderID_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkOrderID.IsChecked == true)
-            {
-                txtOrderID.IsEnabled = true;
-                txtOrderID.Focus();
-            }
-            else { txtOrderID.IsEnabled = false; }
-        }
-        //관리번호 + order NO.
-        private void chkOrderID_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (chkOrderID.IsChecked == true)
-            {
-                chkOrderID.IsChecked = false;
-                txtOrderID.IsEnabled = false;
-            }
-            else
-            {
-                chkOrderID.IsChecked = true;
-                txtOrderID.IsEnabled = true;
-                txtOrderID.Focus();
-            }
+            tblOrderID.Text = "Order NO";
         }
 
-        //불량구분
-        private void chkFaultyGBN_Click(object sender, RoutedEventArgs e)
+        private void rbnManageNumberSrh_Click(object sender, RoutedEventArgs e)
         {
-            if (chkFaultyGBN.IsChecked == true)
-            {
-                cboFaultyGBN.IsEnabled = true;
-                cboFaultyGBN.Focus();
-            }
-            else { cboFaultyGBN.IsEnabled = false; }
-        }
-        //불량구분
-        private void chkFaultyGBN_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkFaultyGBN.IsChecked == true)
-            {
-                chkFaultyGBN.IsChecked = false;
-                cboFaultyGBN.IsEnabled = false;
-            }
-            else
-            {
-                chkFaultyGBN.IsChecked = true;
-                cboFaultyGBN.IsEnabled = true;
-                cboFaultyGBN.Focus();
-            }
-        }
-        //박스번호
-        private void chkBoxID_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkBoxID.IsChecked == true)
-            {
-                txtBoxID.IsEnabled = true;
-                txtBoxID.Focus();
-            }
-            else { txtBoxID.IsEnabled = false; }
-        }
-        //박스번호
-        private void chkBoxID_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkBoxID.IsChecked == true)
-            {
-                chkBoxID.IsChecked = false;
-                txtBoxID.IsEnabled = false;
-            }
-            else
-            {
-                chkBoxID.IsChecked = true;
-                txtBoxID.IsEnabled = true;
-                txtBoxID.Focus();
-            }
-        }
-        //박스번호
-        private void chkCID_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkCID.IsChecked == true)
-            {
-                txtCID.IsEnabled = true;
-                txtCID.Focus();
-            }
-            else { txtCID.IsEnabled = false; }
-        }
-        //박스번호
-        private void chkCID_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (chkCID.IsChecked == true)
-            {
-                chkCID.IsChecked = false;
-                txtCID.IsEnabled = false;
-            }
-            else
-            {
-                chkCID.IsChecked = true;
-                txtCID.IsEnabled = true;
-                txtCID.Focus();
-            }
-        }
-        private void rbnOrderNO_Click(object sender, RoutedEventArgs e)
-        {
-            txbOrderID.Text = "Order NO";
-        }
-
-        private void rbnManageNumber_Click(object sender, RoutedEventArgs e)
-        {
-            txbOrderID.Text = "관리번호";
+            tblOrderID.Text = "관리번호";
         }
 
         // 콤보박스 목록 불러오기.
         private void ComboBoxSetting()
         {
-            cboFaultyGBN.Items.Clear();
-
             ObservableCollection<CodeView> cbFaultyGBN = ComboBoxUtil.Instance.Gf_DB_CM_GetComCodeDataset(null, "DFGRP", "Y", "", "");
 
-            this.cboFaultyGBN.ItemsSource = cbFaultyGBN;
-            this.cboFaultyGBN.DisplayMemberPath = "code_name";
-            this.cboFaultyGBN.SelectedValuePath = "code_id";
-            this.cboFaultyGBN.SelectedIndex = 0;
+            this.cboDefectGrpIDSrh.ItemsSource = cbFaultyGBN;
+            this.cboDefectGrpIDSrh.DisplayMemberPath = "code_name";
+            this.cboDefectGrpIDSrh.SelectedValuePath = "code_id";
+            this.cboDefectGrpIDSrh.SelectedIndex = 0;
         }
 
         #endregion
@@ -344,15 +165,14 @@ namespace WizMes_BooKyong
         //플러스 파인더
 
         // 거래처
-        private void btnCustomer_Click(object sender, RoutedEventArgs e)
+        private void btnCustomIDSrh_Click(object sender, RoutedEventArgs e)
         {
-            pf.ReturnCode(txtCustomer, 0, "");
+            pf.ReturnCode(txtCustomIDSrh, 0, txtCustomIDSrh.Text);
         }
 
-        // 품명(품번 검색으로 변경요청, 2020.03.23, 장가빈)
-        private void btnArticle_Click(object sender, RoutedEventArgs e)
+        private void btnArticleIDSrh_Click(object sender, RoutedEventArgs e)
         {
-            pf.ReturnCode(txtArticle, 77, txtArticle.Text);
+            pf.ReturnCode(txtArticleIDSrh, 77, txtArticleIDSrh.Text);
         }
 
         #endregion
@@ -388,80 +208,36 @@ namespace WizMes_BooKyong
 
         private void FillGrid()
         {
-            //날짜.
-            string sDate = dtpFromDate.ToString().Substring(0, 10).Replace("-", "");
-            string eDate = dtpToDate.ToString().Substring(0, 10).Replace("-", "");
-            if (chkInspectDay.IsChecked == false)
-            {
-                sDate = "20000101";
-                eDate = "29991230";
-            }
-            int nClss = 0;              //불량구분.
-            if (chkFaultyGBN.IsChecked == true)
-            {
-                nClss = Convert.ToInt32(cboFaultyGBN.SelectedValue.ToString());
-            }
-            int nChkCustom = 0;        //거래처.
-            string sCustomID = string.Empty;
-            if (chkCustomer.IsChecked == true)
-            {
-                nChkCustom = 1;
-                sCustomID = txtCustomer.Tag.ToString();
-            }
-            int nChkOrder = 0;       //관리번호.
-            string sOrder = string.Empty;
-            if (chkOrderID.IsChecked == true)
-            {
-                nChkOrder = 1;
-                sOrder = txtOrderID.Text;
-            }
-            int nChkBoxID = 0;       //박스번호.
-            string sBoxID = string.Empty;
-            if (chkBoxID.IsChecked == true)
-            {
-                nChkBoxID = 1;
-                sBoxID = txtBoxID.Text;
-            }
-            int nChkCID = 0;       //박스번호.
-            string sCID = string.Empty;
-            if (chkCID.IsChecked == true)
-            {
-                nChkCID = 1;
-                sCID = txtCID.Text;
-            }
 
-            //품명 또는 품번
-            int chkArticleID = 0;
-            string ArticleID = "";
+            dgdInspect.Items.Clear();
+            dgdTotal.Items.Clear();
 
-            if (chkArticle.IsChecked == true && txtArticle.Text != "")
-            {
-                chkArticleID = 1;
-                ArticleID = txtArticle.Tag.ToString();
-            }
-            if (chkArticleNo.IsChecked == true && txtArticleNo.Text != "")
-            {
-                chkArticleID = 1;
-                ArticleID = txtArticleNo.Tag.ToString();
-            }
 
             Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
-            sqlParameter.Add("sDate", sDate);
-            sqlParameter.Add("eDate", eDate);
-            sqlParameter.Add("nClss", nClss);
-            sqlParameter.Add("nChkCustom", nChkCustom);
-            sqlParameter.Add("sCustomID", sCustomID);
+            sqlParameter.Add("ChkDate", chkInspectDay.IsChecked == true ? 1 : 0);
+            sqlParameter.Add("sDate", chkInspectDay.IsChecked == true ?  dtpFromDate.SelectedDate?.ToString("yyyyMMdd") ?? string.Empty :string.Empty);
+            sqlParameter.Add("eDate", chkInspectDay.IsChecked == true ? dtpToDate.SelectedDate?.ToString("yyyyMMdd") ?? string.Empty : string.Empty);
 
-            sqlParameter.Add("nChkArticle", chkArticleID); // nChkArticle);
-            sqlParameter.Add("sArticleID", ArticleID); // sArticleID);
-            sqlParameter.Add("nChkOrder", nChkOrder);
-            sqlParameter.Add("sOrder", sOrder);
-            sqlParameter.Add("nChkCID", nChkCID);
-            sqlParameter.Add("sCID", sCID);
-            sqlParameter.Add("nChkBoxID", nChkBoxID);
-            sqlParameter.Add("sBoxID", sBoxID);
-            sqlParameter.Add("BuyerArticleNo", chkArticleNo.IsChecked == true ? txtArticleNo.Text : "");
-            sqlParameter.Add("BuyerArticleNme", chkArticle.IsChecked == true ? txtArticle.Text : "");
+            sqlParameter.Add("ChkCustomID", chkCustomIDSrh.IsChecked ==true ? 1:0);
+            sqlParameter.Add("CustomID", chkCustomIDSrh.IsChecked == true ? txtCustomIDSrh.Tag?.ToString() ?? string.Empty : string.Empty);
+
+            sqlParameter.Add("ChkArticleID", chkArticleIDSrh.IsChecked == true ? 1 : 0);
+            sqlParameter.Add("ArticleID", chkArticleIDSrh.IsChecked == true ? txtArticleIDSrh.Tag?.ToString() ?? string.Empty : string.Empty);
+
+            sqlParameter.Add("ChkBuyerArticleNo", chkBuyerArticleNoSrh.IsChecked == true ? 1 : 0);
+            sqlParameter.Add("BuyerArticleNo", chkBuyerArticleNoSrh.IsChecked == true ? txtBuyerArticleNoSrh.Tag?.ToString() ?? string.Empty : string.Empty);
+
+            sqlParameter.Add("ChkDefectGrpID", chkDefectGrpIDSrh.IsChecked == true ? 1 : 0);
+            sqlParameter.Add("DefectGrpID", chkDefectGrpIDSrh.IsChecked == true ? cboDefectGrpIDSrh.SelectedValue?.ToString() ?? string.Empty : string.Empty);
+
+            sqlParameter.Add("ChkLabelID", chkCLabelSrh.IsChecked == true ? 1 : 0);
+            sqlParameter.Add("LabelID", chkCLabelSrh.IsChecked == true ? txtCLabelSrh.Text : string.Empty);
+
+            sqlParameter.Add("ChkBoxID", chkBLabelSrh.IsChecked == true ? 1 : 0);
+            sqlParameter.Add("BoxID", chkBLabelSrh.IsChecked == true ? txtBLabelSrh.Text : string.Empty);
+
+            sqlParameter.Add("ChkOrderID", chkOrderIDSrh.IsChecked != true ?  0 : rbnManageNumberSrh.IsChecked == true ? 1 : rbnOrderNoSrh.IsChecked == true ? 2 : 0);
+            sqlParameter.Add("OrderID", txtOrderIDSrh.Text ?? string.Empty);
 
             DataSet ds = DataStore.Instance.ProcedureToDataSet_LogWrite("xp_Inspect_sInspectByBox", sqlParameter, true, "R");
 
@@ -484,154 +260,65 @@ namespace WizMes_BooKyong
                         dgdInspect.Items.Clear();
                         DataRowCollection drc = dt.Rows;
 
+                        int i = 0;
+                        int rowCount = 0;
+                        int totalRealQty = 0;
+                        int totalCtrlQty = 0;
+                        int totalDefectQty = 0;
                         foreach (DataRow item in drc)
                         {
-                            if (item["cls"].ToString() == "1")
+                            i++;
+                            var DefectInfo = new Win_Qul_DateBox_QView
                             {
-                                var Window_Ins_DateBox_ViewInsert = new Win_Qul_DateBox_QView()
-                                {
-                                    ExamDate = item["ExamDate"].ToString(),
-                                    KCustom = item["KCustom"].ToString(),
-                                    OrderNo = item["OrderNo"].ToString(),
-                                    OrderID = item["OrderID"].ToString(),
-                                    Article = item["Article"].ToString(),
+                                num = i,
+                                Gbn = item["Gbn"].ToString(),
+                                ExamDate = lib.DateTypeHyphen(item["ExamDate"].ToString()),
+                                KCustom = item["KCustom"].ToString(),
+                                OrderID = item["OrderID"].ToString(),
+                                OrderNo = item["OrderNo"].ToString(),
+                                Model = item["Model"].ToString(),
+                                Article = item["Article"].ToString(),
+                                BuyerArticleNo = item["BuyerArticleNo"].ToString(),
+                                OrderQty = stringFormatN0(item["OrderQty"]),
+                                InBoxID = item["InBoxID"].ToString(),
+                                LabelID = item["LabelID"].ToString(),
+                                RealQty = stringFormatN0(item["RealQty"]),
+                                CtrlQty = stringFormatN0(item["CtrlQty"]),
+                                DefectQty = stringFormatN0(item["DefectQty"]),
+                                UnitClssName = item["UnitClssName"].ToString(),
+                                Name = item["Name"].ToString()
 
-                                    spec = item["spec"].ToString(),
-                                    BuyerModel = item["BuyerModel"].ToString(),
-                                    BuyerArticleNo = item["BuyerArticleNo"].ToString(),
-                                    OrderQty = stringFormatN0(item["OrderQty"]),
-                                    PackBoxID = item["PackBoxID"].ToString(),
+                            };
 
-                                    BoxID = item["BoxID"].ToString(), //2021-06-25
-                                    PackID = item["PackID"].ToString(),      //2021-06-25
-
-                                    CtrlQty = item["CtrlQty"].ToString(),
-                                    PassRoll = item["PassRoll"].ToString(),
-                                    PassQty = item["PassQty"].ToString(),
-                                    DefectRoll = item["DefectRoll"].ToString(),
-                                    DefectQty = item["DefectQty"].ToString(),
-
-                                    ExamNo = item["ExamNo"].ToString(),
-                                    UnitClss = item["UnitClss"].ToString(),
-
-                                    ColorGreen = "false",
-                                    ColorRed = "false"
-                                };
-                                Window_Ins_DateBox_ViewInsert.CtrlQty = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.CtrlQty);
-                                Window_Ins_DateBox_ViewInsert.PassRoll = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.PassRoll);
-                                Window_Ins_DateBox_ViewInsert.PassQty = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.PassQty);
-                                Window_Ins_DateBox_ViewInsert.DefectRoll = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.DefectRoll);
-                                Window_Ins_DateBox_ViewInsert.DefectQty = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.DefectQty);
-                                dgdInspect.Items.Add(Window_Ins_DateBox_ViewInsert);
-                            }
-                            if (item["cls"].ToString() == "2")        // 오더계
+                            if (DefectInfo.Gbn.Equals("1"))
                             {
-                                var Window_Ins_DateBox_ViewInsert = new Win_Qul_DateBox_QView()
-                                {
-                                    ExamDate = item["ExamDate"].ToString(),
-                                    KCustom = item["KCustom"].ToString(),
-                                    OrderNo = item["OrderNO"].ToString(),
-                                    OrderID = item["OrderID"].ToString(),
-                                    Article = item["Article"].ToString(),
-
-                                    spec = "",
-                                    BuyerModel = "",
-                                    BuyerArticleNo = item["BuyerArticleNo"].ToString(),
-                                    OrderQty = stringFormatN0(item["OrderQty"]),
-                                    PackID = "오더계",
-
-                                    CtrlQty = item["CtrlQty"].ToString(),
-                                    PassRoll = item["PassRoll"].ToString(),
-                                    PassQty = item["PassQty"].ToString(),
-                                    DefectRoll = item["DefectRoll"].ToString(),
-                                    DefectQty = item["DefectQty"].ToString(),
-
-                                    ExamNo = item["ExamNo"].ToString(),
-                                    UnitClss = item["UnitClss"].ToString(),
-
-                                    ColorGreen = "true",
-                                    ColorRed = "false"
-                                };
-                                Window_Ins_DateBox_ViewInsert.CtrlQty = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.CtrlQty);
-                                Window_Ins_DateBox_ViewInsert.PassRoll = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.PassRoll);
-                                Window_Ins_DateBox_ViewInsert.PassQty = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.PassQty);
-                                Window_Ins_DateBox_ViewInsert.DefectRoll = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.DefectRoll);
-                                Window_Ins_DateBox_ViewInsert.DefectQty = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.DefectQty);
-                                dgdInspect.Items.Add(Window_Ins_DateBox_ViewInsert);
+                                rowCount++;
+                                dgdInspect.Items.Add(DefectInfo);
                             }
-                            if (item["cls"].ToString() == "3")        // 일계
+                            else if (DefectInfo.Gbn.Equals("2"))
                             {
-                                var Window_Ins_DateBox_ViewInsert = new Win_Qul_DateBox_QView()
-                                {
-                                    ExamDate = "일계",
-                                    KCustom = "",
-                                    OrderNo = "",
-                                    OrderID = "",
-                                    Article = "",
-
-                                    spec = "",
-                                    BuyerModel = "",
-                                    BuyerArticleNo = "",
-                                    OrderQty = "",
-                                    BoxID = "",
-
-                                    CtrlQty = item["CtrlQty"].ToString(),
-                                    PassRoll = item["PassRoll"].ToString(),
-                                    PassQty = item["PassQty"].ToString(),
-                                    DefectRoll = item["DefectRoll"].ToString(),
-                                    DefectQty = item["DefectQty"].ToString(),
-
-                                    ExamNo = item["ExamNo"].ToString(),
-                                    UnitClss = item["UnitClss"].ToString(),
-
-                                    ColorGreen = "true",
-                                    ColorRed = "false"
-                                };
-                                Window_Ins_DateBox_ViewInsert.CtrlQty = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.CtrlQty);
-                                Window_Ins_DateBox_ViewInsert.PassRoll = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.PassRoll);
-                                Window_Ins_DateBox_ViewInsert.PassQty = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.PassQty);
-                                Window_Ins_DateBox_ViewInsert.DefectRoll = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.DefectRoll);
-                                Window_Ins_DateBox_ViewInsert.DefectQty = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.DefectQty);
-                                dgdInspect.Items.Add(Window_Ins_DateBox_ViewInsert);
-                            }
-                            if (item["cls"].ToString() == "4")        // 총계
-                            {
-                                dgdTotal.Items.Clear();
-                                var Window_Ins_DateBox_ViewInsert = new Win_Qul_DateBox_QView()
-                                {
-                                    ExamDate = "총계",
-                                    KCustom = "",
-                                    OrderNo = "",
-                                    OrderID = "",
-                                    Article = "",
-
-                                    spec = "",
-                                    BuyerModel = "",
-                                    BuyerArticleNo = "",
-                                    OrderQty = "",
-                                    BoxID = "",
-
-                                    CtrlQty = item["CtrlQty"].ToString(),
-                                    PassRoll = item["PassRoll"].ToString(),
-                                    PassQty = item["PassQty"].ToString(),
-                                    DefectRoll = item["DefectRoll"].ToString(),
-                                    DefectQty = item["DefectQty"].ToString(),
-
-                                    ExamNo = item["ExamNo"].ToString(),
-                                    UnitClss = "",
-
-                                    ColorGreen = "false",
-                                    ColorRed = "false"
-                                };
-                                Window_Ins_DateBox_ViewInsert.CtrlQty = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.CtrlQty);
-                                Window_Ins_DateBox_ViewInsert.PassRoll = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.PassRoll);
-                                Window_Ins_DateBox_ViewInsert.PassQty = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.PassQty);
-                                Window_Ins_DateBox_ViewInsert.DefectRoll = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.DefectRoll);
-                                Window_Ins_DateBox_ViewInsert.DefectQty = Lib.Instance.returnNumString(Window_Ins_DateBox_ViewInsert.DefectQty);
-
-                                dgdTotal.Items.Add(Window_Ins_DateBox_ViewInsert);
-                            }
+                                DefectInfo.Color1 = true;
+                                DefectInfo.OrderQty = string.Empty;
+                                totalRealQty += lib.RemoveComma(item["RealQty"].ToString(),0);
+                                totalCtrlQty += lib.RemoveComma(item["CtrlQty"].ToString(), 0);
+                                totalDefectQty += lib.RemoveComma(item["DefectQty"].ToString(), 0);
+                                dgdInspect.Items.Add(DefectInfo);
+                            }                            
                         }
+
+                        if(dgdInspect.Items.Count > 0)
+                        {
+                            var total = new Win_Qul_DateBox_QView_Total
+                            {
+                                TotalCount = rowCount,
+                                TotalRealQty = totalRealQty,
+                                TotalCtrlQty = totalCtrlQty,
+                                TotalDefectQty = totalDefectQty
+                            };
+
+                            dgdTotal.Items.Add(total);
+                        }
+
                     }
                     catch (Exception ex)
                     {
@@ -756,20 +443,20 @@ namespace WizMes_BooKyong
             }
         }
 
-        private void TxtArticle_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void txtArticleIDSrh_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                btnArticle_Click(null, null);
+                pf.ReturnCode(txtArticleIDSrh, 77, txtArticleIDSrh.Text);
             }
         }
 
-        private void txtCustomer_KeyDown(object sender, KeyEventArgs e)
+        private void txtCustomIDSrh_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                btnCustomer_Click(null, null);
-            }
+                pf.ReturnCode(txtCustomIDSrh, 0, txtCustomIDSrh.Text);
+            }   
         }
 
         private string stringFormatN0(object obj)
@@ -795,64 +482,34 @@ namespace WizMes_BooKyong
             }
         }
 
-        //품명 체크 이벤트
-        private void ChkArticle_Checked(object sender, RoutedEventArgs e)
-        {
-            txtArticle.IsEnabled = true;
-            btnArticle.IsEnabled = true;
-        }
-
-        //품명 체크 해제 이벤트
-        private void ChkArticle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            txtArticle.IsEnabled = false;
-            btnArticle.IsEnabled = false;
-        }
+      
 
         // 플러스파인더 _ 품번 찾기
-        private void btnArticleNo_Click(object sender, RoutedEventArgs e)
+        private void btnBuyerArticleNoSrh_Click(object sender, RoutedEventArgs e)
         {
-            pf.ReturnCode(txtArticleNo, 76, txtArticleNo.Text);
+            pf.ReturnCode(txtBuyerArticleNoSrh, 76, txtBuyerArticleNoSrh.Text);
         }
 
-        //품번
-        private void chkArticleNo_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkArticleNo.IsChecked == true)
-            {
-                txtArticleNo.IsEnabled = true;
-                txtArticleNo.Focus();
-                btnArticleNo.IsEnabled = true;
-            }
-            else
-            {
-                txtArticleNo.IsEnabled = false;
-                btnArticleNo.IsEnabled = false;
-            }
-        }
+     
 
-        private void TxtArticleNo_KeyDown(object sender, KeyEventArgs e)
+        private void txtBuyerArticleNoSrh_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                pf.ReturnCode(txtArticleNo, 76, txtArticleNo.Text);
+                pf.ReturnCode(txtBuyerArticleNoSrh, 76, txtBuyerArticleNoSrh.Text);
             }
         }
 
-        //품번
-        private void chkArticleNo_Click(object sender, MouseButtonEventArgs e)
+  
+
+        private void CommonControl_Click(object sender, MouseButtonEventArgs e)
         {
-            if (chkArticleNo.IsChecked == true)
-            {
-                txtArticleNo.IsEnabled = true;
-                txtArticleNo.Focus();
-                btnArticleNo.IsEnabled = true;
-            }
-            else
-            {
-                txtArticleNo.IsEnabled = false;
-                btnArticleNo.IsEnabled = false;
-            }
+            lib.CommonControl_Click(sender, e);
+        }
+
+        private void CommonControl_Click(object sender, RoutedEventArgs e)
+        {
+            lib.CommonControl_Click(sender, e);
         }
     }
 
@@ -863,40 +520,34 @@ namespace WizMes_BooKyong
             return (this.ReportAllProperties());
         }
 
-        public string cls { get; set; }
-
+        public int num { get; set; }
+        public string Gbn { get; set; }
         public string ExamDate { get; set; }
-        public string OrderID { get; set; }
-        public string OrderNo { get; set; }
-        public string OrderSeq { get; set; }
-        public string BoxID { get; set; }
-
-        public string OrderQty { get; set; }
-        public string CustomID { get; set; }
-        public string ArticleID { get; set; }
-        public string Article { get; set; }
-        public string BuyerModelID { get; set; }
-
-        public string BuyerModel { get; set; }
-        public string UnitClss { get; set; }
         public string KCustom { get; set; }
-        public string spec { get; set; }
-        public string BuyerArticleNo { get; set; }
-
-        public string DefectClss { get; set; }
+        public string OrderID { get; set; } 
+        public string OrderNo { get; set; }
+        public string Model { get; set; }
+        public string Article { get; set; }
+        public string BuyerArticleNo { get; set; } 
+        public string OrderQty { get; set; }
+        public string InBoxID { get; set; }
+        public string LabelID { get; set; }
+        public string RealQty { get; set; }
         public string CtrlQty { get; set; }
-        public string lossQty { get; set; }
-        public string PassRoll { get; set; }
-        public string PassQty { get; set; }
-
-        public string DefectRoll { get; set; }
         public string DefectQty { get; set; }
-        public string ExamNo { get; set; }
+        public string UnitClssName { get; set; }
+        public string Name { get; set; }
+        public bool Color1 { get; set; } = false;
+        public bool Color2 { get; set; } = false;
 
-        public string PackBoxID { get; set; }
-        public string PackID { get; set; }
-        public string ColorGreen { get; set; }
-        public string ColorRed { get; set; }
+    }
+
+    class Win_Qul_DateBox_QView_Total : BaseView
+    {
+        public int TotalCount { get; set; }
+        public int TotalRealQty { get; set; }
+        public int TotalCtrlQty { get; set; }
+        public int TotalDefectQty { get; set; }
     }
 
 }

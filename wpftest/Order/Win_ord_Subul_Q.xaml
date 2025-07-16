@@ -318,20 +318,20 @@
 
                 <Label Grid.Column="0" Style="{DynamicResource LabelSearch}">
                     <StackPanel>
-                        <CheckBox x:Name="chkIn_NotApprovedIncloud" Content="입고미승인건 포함" Style="{DynamicResource CheckBoxInputArea}"/>
+                        <CheckBox x:Name="chkIn_NotApprovedIncloudSrh" Content="입고미승인건 포함" Style="{DynamicResource CheckBoxInputArea}"/>
                         <TextBlock/>
-                        <CheckBox x:Name="chkMainInterestItemsSee" Content="주요관심품목만 보기" Style="{DynamicResource CheckBoxInputArea}" />
+                        <CheckBox x:Name="chkMainInterestItemsSeeSrh" Content="주요관심품목만 보기" Style="{DynamicResource CheckBoxInputArea}" />
                         <TextBlock/>
-                        <CheckBox x:Name="chkRegistItemsByCustomer" Content="거래처별 등록 품목" Style="{DynamicResource CheckBoxInputArea}" />
+                        <CheckBox x:Name="chkRegistItemsByCustomerSrh" Content="거래처별 등록 품목" Style="{DynamicResource CheckBoxInputArea}" />
                     </StackPanel>
                 </Label>
 
                 <Label Grid.Column="1" Style="{DynamicResource LabelSearch}">
                     <StackPanel>
-                        <CheckBox x:Name="chkAutoInOutItemsIncloud" Content="자동입출고건 포함" Style="{DynamicResource CheckBoxInputArea}" />
+                        <CheckBox x:Name="chkAutoInOutItemsIncloudSrh" Content="자동입출고건 포함" Style="{DynamicResource CheckBoxInputArea}" />
                         <TextBlock/>
 
-                        <CheckBox x:Name="chkHideInOutReasonNumber" Content="입출고 근거번호 숨김" Style="{DynamicResource CheckBoxInputArea}" Click="chkHideInOutReasonNumber_Click" />
+                        <CheckBox x:Name="chkHideInOutReasonNumberSrh" Content="입출고 근거번호 숨김" Style="{DynamicResource CheckBoxInputArea}" Click="chkHideInOutReasonNumber_Click" />
                         <TextBlock/>
                         <TextBlock/>
 
@@ -626,7 +626,7 @@
                 <ColumnDefinition Width="90*"/>
             </Grid.ColumnDefinitions>
             <DataGridRowHeader Grid.Column="0" Content="합 계" Style="{StaticResource RowHeaderStyle}"/>
-            <DataGrid x:Name="dgdStockQTotal" Grid.Column="1" Style="{DynamicResource DataGridSet1}" HeadersVisibility="Column">
+            <DataGrid x:Name="dgdSubulQTotal" Grid.Column="1" Style="{DynamicResource DataGridSet1}" HeadersVisibility="Column">
                 <DataGrid.Columns>
                     <!--<DataGridTextColumn Header="이월" Binding="{Binding TotalInitStockQty}" Width="*" ElementStyle="{DynamicResource DataGridCellCenter}"/>-->
                     <DataGridTextColumn Header="입고" Binding="{Binding TotalStuffQty}"  Width="*" ElementStyle="{DynamicResource DataGridCellCenter}"/>

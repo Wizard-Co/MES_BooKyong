@@ -279,6 +279,7 @@ namespace WizMes_BooKyong
                         DataRowCollection drc = dt.Rows;
 
                         int i = 0;
+                        int count = 0;
                         string totalOutQty = string.Empty;
                         string totalOutPrice = string.Empty;
                         foreach (DataRow dr in drc)
@@ -309,6 +310,7 @@ namespace WizMes_BooKyong
 
                             if (OutWareInfo.Depth == "0")
                             {
+                                count++;
                                 dgdOutware.Items.Add(OutWareInfo);
                             }
                             else if (OutWareInfo.Depth == "1")
@@ -331,7 +333,7 @@ namespace WizMes_BooKyong
                         {
                             var OutWareTotalInfo = new Win_ord_OutWare_Product_QView_Total
                             {
-                                TotalCount = i,
+                                TotalCount = count,
                                 TotalOutPrice = totalOutPrice,
                                 TotalOutQty = totalOutQty,
                             };
