@@ -1,6 +1,6 @@
 using GalaSoft.MvvmLight;
 
-namespace WizMes_SaeHyung.ViewModel
+namespace WizMes_BooKyong.ViewModel
 {
     /// <summary>
     /// This class contains properties that the main View can data bind to.

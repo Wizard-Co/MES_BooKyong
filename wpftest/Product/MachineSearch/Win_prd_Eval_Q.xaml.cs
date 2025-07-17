@@ -6,10 +6,10 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WizMes_SaeHyung.PopUP;
+using WizMes_BooKyong.PopUP;
 using WPF.MDI;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     /// <summary>
     /// Win_com_MCEvalCal_U.xaml에 대한 상호 작용 논리
@@ -432,12 +432,12 @@ namespace WizMes_SaeHyung
             }
             else
             {
-                Type type = Type.GetType("WizMes_SaeHyung." + MainWindow.mMenulist[k].ProgramID.Trim(), true);
+                Type type = Type.GetType("WizMes_BooKyong." + MainWindow.mMenulist[k].ProgramID.Trim(), true);
                 object uie = Activator.CreateInstance(type);
 
                 MainWindow.mMenulist[k].subProgramID = new MdiChild()
                 {
-                    Title = "(주)SaeHyung [" + MainWindow.mMenulist[k].MenuID.Trim() + "] " + MainWindow.mMenulist[k].Menu.Trim() + 
+                    Title = "(주)BooKyong [" + MainWindow.mMenulist[k].MenuID.Trim() + "] " + MainWindow.mMenulist[k].Menu.Trim() + 
                             " (→" + MainWindow.mMenulist[k].ProgramID + ")",
                     Height = SystemParameters.PrimaryScreenHeight * 0.8,
                     MaxHeight = SystemParameters.PrimaryScreenHeight * 0.85,

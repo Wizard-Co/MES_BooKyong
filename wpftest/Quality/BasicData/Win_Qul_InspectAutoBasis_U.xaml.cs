@@ -15,12 +15,12 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using WizMes_SaeHyung.PopUp;
-using WizMes_SaeHyung.PopUP;
+using WizMes_BooKyong.PopUp;
+using WizMes_BooKyong.PopUP;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     /**************************************************************************************************
     '** System 명 : WizMes_GLS

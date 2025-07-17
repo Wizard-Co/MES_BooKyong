@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Media.Imaging;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     class Win_Qul_InspectAutoBasis_U_CodeView : BaseView
     {

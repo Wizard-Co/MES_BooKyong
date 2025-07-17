@@ -1,4 +1,4 @@
-﻿namespace WizMes_SaeHyung
+﻿namespace WizMes_BooKyong
 {
     //    class ChartInfoMCRunningRate
     //    {

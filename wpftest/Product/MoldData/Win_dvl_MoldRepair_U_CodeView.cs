@@ -1,6 +1,6 @@
 ﻿
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     class Win_dvl_MoldRepair_U_CodeView : BaseView
     {

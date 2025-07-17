@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Windows;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     public class Procedure
     {

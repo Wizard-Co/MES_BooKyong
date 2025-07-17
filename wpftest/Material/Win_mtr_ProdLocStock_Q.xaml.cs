@@ -10,9 +10,9 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using WizMes_SaeHyung.PopUP;
+using WizMes_BooKyong.PopUP;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     /// <summary>
     /// Win_mtr_ProdLocStock_Q.xaml에 대한 상호 작용 논리

@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     /// <summary>
     /// Win_com_Infoset_U.xaml에 대한 상호 작용 논리

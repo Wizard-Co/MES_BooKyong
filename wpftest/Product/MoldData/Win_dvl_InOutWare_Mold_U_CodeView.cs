@@ -1,4 +1,4 @@
-﻿namespace WizMes_SaeHyung
+﻿namespace WizMes_BooKyong
 {
     class Win_dvl_InOutWare_Mold_U_CodeView : BaseView
     {

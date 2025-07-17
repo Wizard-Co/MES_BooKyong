@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     class SettingINI
     {

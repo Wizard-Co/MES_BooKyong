@@ -7,10 +7,10 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WizMes_SaeHyung.PopUP;
+using WizMes_BooKyong.PopUP;
 using WPF.MDI;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     /// <summary>
     /// 
@@ -33,7 +33,7 @@ namespace WizMes_SaeHyung
         // 엑셀 활용 용도 (프린트)
 
 
-        WizMes_SaeHyung.PopUp.NoticeMessage msg = new PopUp.NoticeMessage();
+        WizMes_BooKyong.PopUp.NoticeMessage msg = new PopUp.NoticeMessage();
         //(기다림 알림 메시지창)
 
         System.Data.DataTable DT;

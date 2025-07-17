@@ -4,9 +4,9 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using WizMes_SaeHyung.PopUP;
+using WizMes_BooKyong.PopUP;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     /// <summary>
     /// Win_sys_CommonCode_U.xaml에 대한 상호 작용 논리

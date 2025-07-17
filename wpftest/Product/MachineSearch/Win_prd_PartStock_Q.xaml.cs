@@ -14,13 +14,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WizMes_SaeHyung.PopUP;
+using WizMes_BooKyong.PopUP;
 using WPF.MDI;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     /**************************************************************************************************
-   '** System 명 : WizMes_SaeHyung
+   '** System 명 : WizMes_BooKyong
    '** Author    : Wizard
    '** 작성자    : 최준호
    '** 내용      : 금형/설비 부품 재고조회

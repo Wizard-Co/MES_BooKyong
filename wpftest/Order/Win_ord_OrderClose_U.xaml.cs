@@ -6,15 +6,15 @@ using System.Windows.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WizMes_SaeHyung.PopUP;
-using WizMes_SaeHyung.PopUp;
+using WizMes_BooKyong.PopUP;
+using WizMes_BooKyong.PopUp;
 using WPF.MDI;
 using System.Linq;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Text.RegularExpressions;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     /// <summary>
     /// Win_ord_OrderClose_U.xaml에 대한 상호 작용 논리

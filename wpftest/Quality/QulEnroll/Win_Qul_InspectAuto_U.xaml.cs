@@ -19,9 +19,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
-using WizMes_SaeHyung.PopUp;
-using WizMes_SaeHyung.PopUP;
-using WizMes_SaeHyung.Quality.PopUp;
+using WizMes_BooKyong.PopUp;
+using WizMes_BooKyong.PopUP;
+using WizMes_BooKyong.Quality.PopUp;
 using WPF.MDI;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
@@ -40,7 +40,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
                     , 측정값 저장 로직 변경
 '**************************************************************************************************/
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     /// <summary>
     /// Win_Qul_InspectAuto_U.xaml에 대한 상호 작용 논리
@@ -114,7 +114,7 @@ namespace WizMes_SaeHyung
 
         string rowHeaderNum = string.Empty;
 
-        WizMes_SaeHyung.PopUp.NoticeMessage msg = new PopUp.NoticeMessage();
+        WizMes_BooKyong.PopUp.NoticeMessage msg = new PopUp.NoticeMessage();
 
         // FTP 활용모음.
         string FullPath1 = string.Empty;

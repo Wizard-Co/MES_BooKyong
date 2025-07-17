@@ -16,14 +16,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WizMes_SaeHyung.PopUP;
-using WizMes_SaeHyung.PopUp;
-using WizMes_SaeHyung;
+using WizMes_BooKyong.PopUP;
+using WizMes_BooKyong.PopUp;
+using WizMes_BooKyong;
 using WPF.MDI;
 using System.Net;
 using System.Threading;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     /// <summary>
     /// Win_prd_RegularInspectBasis_U.xaml에 대한 상호 작용 논리

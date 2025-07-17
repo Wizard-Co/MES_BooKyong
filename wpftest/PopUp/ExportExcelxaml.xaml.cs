@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace WizMes_SaeHyung.PopUP
+namespace WizMes_BooKyong.PopUP
 {
     /// <summary>
     /// ExportExcelxaml.xaml에 대한 상호 작용 논리

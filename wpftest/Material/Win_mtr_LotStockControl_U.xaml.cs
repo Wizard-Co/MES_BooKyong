@@ -15,12 +15,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using WizMes_SaeHyung.PopUp;
+using WizMes_BooKyong.PopUp;
 using System.Collections.ObjectModel;
-using WizMes_SaeHyung;
-using WizMes_SaeHyung.PopUP;
+using WizMes_BooKyong;
+using WizMes_BooKyong.PopUP;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     /// <summary>
     /// Win_mtr_LotStockControl_U.xaml에 대한 상호 작용 논리

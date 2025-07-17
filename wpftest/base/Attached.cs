@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     public class Attached
     {

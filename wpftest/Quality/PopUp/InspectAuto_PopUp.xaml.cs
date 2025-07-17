@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
-namespace WizMes_SaeHyung.Quality.PopUp
+namespace WizMes_BooKyong.Quality.PopUp
 {
     public partial class InspectAuto_PopUp : Window
     {

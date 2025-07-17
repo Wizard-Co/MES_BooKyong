@@ -5,10 +5,10 @@ using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WizMes_SaeHyung.PopUp;
-using WizMes_SaeHyung.PopUP;
+using WizMes_BooKyong.PopUp;
+using WizMes_BooKyong.PopUP;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     /// <summary>
     /// Win_mtr_StuffIN_Inspect_U.xaml에 대한 상호 작용 논리

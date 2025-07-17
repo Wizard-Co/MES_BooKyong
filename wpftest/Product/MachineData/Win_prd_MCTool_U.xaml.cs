@@ -11,13 +11,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using WizMes_SaeHyung.PopUP;
-using WizMes_SaeHyung.PopUp;
+using WizMes_BooKyong.PopUP;
+using WizMes_BooKyong.PopUp;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     /**************************************************************************************************
-   '** System 명 : WizMes_SaeHyung
+   '** System 명 : WizMes_BooKyong
    '** Author    : Wizard
    '** 작성자    : 최준호
    '** 내용      : 부품 등록

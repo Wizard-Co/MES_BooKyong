@@ -12,10 +12,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using WizMes_SaeHyung.PopUp;
-using WizMes_SaeHyung.PopUP;
+using WizMes_BooKyong.PopUp;
+using WizMes_BooKyong.PopUP;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     /// <summary>
     /// Win_com_Person_U.xaml에 대한 상호 작용 논리

@@ -21,7 +21,7 @@ using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using WPF.MDI;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     public class Lib
     {
@@ -2893,7 +2893,7 @@ namespace WizMes_SaeHyung
                 sqlParameter.Add("sUserID", MainWindow.CurrentUser);
                 sqlParameter.Add("sWorkComputer", System.Environment.MachineName);
                 sqlParameter.Add("sWorkComputerIP", userhost.ToString());
-                sqlParameter.Add("sWorkLog", "SaeHyung" + " " + "[" + MenuID + "]" + " " + MenuName + " " + "(" + objList.ToString() + ")");
+                sqlParameter.Add("sWorkLog", "BooKyong" + " " + "[" + MenuID + "]" + " " + MenuName + " " + "(" + objList.ToString() + ")");
 
 
                 string[] result = DataStore.Instance.ExecuteProcedure("xp_iWorkLogWPF", sqlParameter, false);

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace WizMes_SaeHyung
+namespace WizMes_BooKyong
 {
     class Win_Qul_sts_XBarR_Q_View : BaseView
     {
