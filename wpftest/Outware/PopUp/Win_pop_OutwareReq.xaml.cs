@@ -12,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using WizMes_BooKyong.PopUp;
+using WizMes_SaeHyung.PopUp;
 
 /**************************************************************************************************
 '** 프로그램명 : Win_pop_OutwareReq
@@ -26,7 +26,7 @@ using WizMes_BooKyong.PopUp;
 ' 2023.03.29, 장시영, 삼익SDT에서 가져옴
 '**************************************************************************************************/
 
-namespace WizMes_BooKyong.PopUp
+namespace WizMes_SaeHyung.PopUp
 {
     /// <summary>
     /// RheoChoice.xaml에 대한 상호 작용 논리

@@ -1,4 +1,4 @@
-﻿namespace WizMes_BooKyong
+﻿namespace WizMes_SaeHyung
 {
     class Win_Qul_MeasureMachine_U_CodeView : BaseView
     {

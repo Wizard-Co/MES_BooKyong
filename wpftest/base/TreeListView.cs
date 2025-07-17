@@ -5,7 +5,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Represents a control that displays hierarchical data in a tree structure

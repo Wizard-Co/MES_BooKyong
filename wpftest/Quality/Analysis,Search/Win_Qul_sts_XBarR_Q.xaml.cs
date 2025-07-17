@@ -14,8 +14,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using WizMes_BooKyong.PopUP;
-namespace WizMes_BooKyong
+using WizMes_SaeHyung.PopUP;
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_Qul_sts_XBarR_Q.xaml에 대한 상호 작용 논리

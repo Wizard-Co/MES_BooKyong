@@ -7,10 +7,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using WizMes_BooKyong.PopUp;
-using WizMes_BooKyong.PopUP;
+using WizMes_SaeHyung.PopUp;
+using WizMes_SaeHyung.PopUP;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_mtr_Move_U_New.xaml에 대한 상호 작용 논리

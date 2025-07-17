@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Windows;
 
-namespace WizMes_BooKyong.PopUp
+namespace WizMes_SaeHyung.PopUp
 {
     /// <summary>
     /// ShowCircleGraph.xaml에 대한 상호 작용 논리

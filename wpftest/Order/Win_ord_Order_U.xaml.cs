@@ -12,8 +12,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using WizMes_BooKyong.PopUp;
-using WizMes_BooKyong.PopUP;
+using WizMes_SaeHyung.PopUp;
+using WizMes_SaeHyung.PopUP;
 using Excel = Microsoft.Office.Interop.Excel;
 
 /**************************************************************************************************
@@ -29,7 +29,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 ' 2024.08.23, 다중 선택 삭제 지원, 작지, 생산, 출하 있을 시 삭제 불가 조건 추가
 '**************************************************************************************************/
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_ord_Order_U.xaml에 대한 상호 작용 논리

@@ -16,11 +16,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using WizMes_BooKyong.PopUp;
-using WizMes_BooKyong.PopUP;
+using WizMes_SaeHyung.PopUp;
+using WizMes_SaeHyung.PopUP;
 using WPF.MDI;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_prd_RemainMove_Q.xaml에 대한 상호 작용 논리

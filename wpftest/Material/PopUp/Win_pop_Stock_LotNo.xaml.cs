@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace WizMes_BooKyong.PopUp
+namespace WizMes_SaeHyung.PopUp
 {
     /// <summary>
     /// RheoChoice.xaml에 대한 상호 작용 논리

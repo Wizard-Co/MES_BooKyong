@@ -14,11 +14,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WizMes_BooKyong.PopUP;
-using WizMes_BooKyong.PopUp;
+using WizMes_SaeHyung.PopUP;
+using WizMes_SaeHyung.PopUp;
 using WPF.MDI;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_prd_Repair_U.xaml에 대한 상호 작용 논리

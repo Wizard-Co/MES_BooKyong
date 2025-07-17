@@ -6,10 +6,10 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WizMes_BooKyong.PopUp;
-using WizMes_BooKyong.PopUP;
+using WizMes_SaeHyung.PopUp;
+using WizMes_SaeHyung.PopUP;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_mtr_Move_U_New.xaml에 대한 상호 작용 논리
@@ -44,7 +44,7 @@ namespace WizMes_BooKyong
         private Microsoft.Office.Interop.Excel.Range workrange;
         private Microsoft.Office.Interop.Excel.Worksheet copysheet;
         private Microsoft.Office.Interop.Excel.Worksheet pastesheet;
-        WizMes_BooKyong.PopUp.NoticeMessage msg = new WizMes_BooKyong.PopUp.NoticeMessage();
+        WizMes_SaeHyung.PopUp.NoticeMessage msg = new WizMes_SaeHyung.PopUp.NoticeMessage();
         bool printYN = true;
 
         public Win_mtr_Move_U()

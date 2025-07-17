@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WizMes_BooKyong.PopUP;
-using WizMes_BooKyong.PopUp;
+using WizMes_SaeHyung.PopUP;
+using WizMes_SaeHyung.PopUp;
 using LiveCharts.Wpf;
 using LiveCharts;
 using System.Windows.Markup;
 
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_prd_KPI_Q.xaml에 대한 상호 작용 논리

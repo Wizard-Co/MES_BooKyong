@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Media.Imaging;
 
-namespace WizMes_BooKyong.PopUp
+namespace WizMes_SaeHyung.PopUp
 {
     /// <summary>
     /// LargeImagePopUp.xaml에 대한 상호 작용 논리

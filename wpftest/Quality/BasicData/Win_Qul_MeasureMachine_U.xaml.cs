@@ -9,9 +9,9 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WizMes_BooKyong.PopUP;
+using WizMes_SaeHyung.PopUP;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /**************************************************************************************************
     '** System 명 : WizMes_GLS
@@ -43,7 +43,7 @@ namespace WizMes_BooKyong
         ObservableCollection<Win_Qul_MeasureMachine_U_CodeView> ovcMeasureMachine
             = new ObservableCollection<Win_Qul_MeasureMachine_U_CodeView>();
 
-        WizMes_BooKyong.PopUp.NoticeMessage msg = new PopUp.NoticeMessage();
+        WizMes_SaeHyung.PopUp.NoticeMessage msg = new PopUp.NoticeMessage();
 
         // FTP 활용모음.
         string strImagePath = string.Empty;

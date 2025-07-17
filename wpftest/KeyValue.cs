@@ -1,4 +1,4 @@
-﻿namespace WizMes_BooKyong
+﻿namespace WizMes_SaeHyung
 {
     public class KeyValue
     {

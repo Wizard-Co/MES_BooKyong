@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Windows;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     class ComboBoxUtil
     {

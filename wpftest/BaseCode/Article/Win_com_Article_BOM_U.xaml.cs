@@ -8,13 +8,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using WizMes_BooKyong.PopUP;
-using WizMes_BooKyong.PopUp;
+using WizMes_SaeHyung.PopUP;
+using WizMes_SaeHyung.PopUp;
 using System.Runtime.InteropServices;
 using Excel = Microsoft.Office.Interop.Excel;
 
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_com_ArticleBOM_U.xaml에 대한 상호 작용 논리
@@ -40,7 +40,7 @@ namespace WizMes_BooKyong
         private Microsoft.Office.Interop.Excel.Worksheet copysheet;
         private Microsoft.Office.Interop.Excel.Worksheet pastesheet;
 
-        WizMes_BooKyong.PopUp.NoticeMessage msg = new WizMes_BooKyong.PopUp.NoticeMessage();
+        WizMes_SaeHyung.PopUp.NoticeMessage msg = new WizMes_SaeHyung.PopUp.NoticeMessage();
         ObservableCollection<Win_com_ArticleBOM_ItemList> ovcArticleBom = new ObservableCollection<Win_com_ArticleBOM_ItemList>();
 
         //

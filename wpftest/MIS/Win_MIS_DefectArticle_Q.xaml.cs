@@ -8,10 +8,10 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WizMes_BooKyong.PopUP;
+using WizMes_SaeHyung.PopUP;
 using WPF.MDI;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_MIS_DefectArticle_Q.xaml에 대한 상호 작용 논리
@@ -20,7 +20,7 @@ namespace WizMes_BooKyong
     {
         #region 변수 선언 및 로드
 
-        WizMes_BooKyong.PopUp.NoticeMessage msg = new PopUp.NoticeMessage();
+        WizMes_SaeHyung.PopUp.NoticeMessage msg = new PopUp.NoticeMessage();
         Lib lib = new Lib();
 
         public Win_MIS_DefectArticle_Q()

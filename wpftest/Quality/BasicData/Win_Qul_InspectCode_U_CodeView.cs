@@ -1,4 +1,4 @@
-﻿namespace WizMes_BooKyong
+﻿namespace WizMes_SaeHyung
 {
     class Win_Qul_InspectCode_U_Defect_CodeView : BaseView
     {

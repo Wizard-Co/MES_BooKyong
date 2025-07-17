@@ -4,9 +4,9 @@ using System.Data;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using WizMes_BooKyong.PopUP;
+using WizMes_SaeHyung.PopUP;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_com_CarModelMaster_U.xaml에 대한 상호 작용 논리

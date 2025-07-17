@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Data;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     internal class RangeConverter : IValueConverter
     {

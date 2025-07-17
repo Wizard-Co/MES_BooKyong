@@ -10,9 +10,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using WizMes_BooKyong.PopUP;
+using WizMes_SaeHyung.PopUP;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_Qul_Measure_U.xaml에 대한 상호 작용 논리

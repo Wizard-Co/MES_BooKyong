@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
-using WizMes_BooKyong.PopUP;
+using WizMes_SaeHyung.PopUP;
 
 //*******************************************************************************
 //프로그램명    Win_Qul_InspectCode_U.cs
@@ -24,7 +24,7 @@ using WizMes_BooKyong.PopUP;
 //*******************************************************************************
 
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_Qul_InspectCode_U.xaml에 대한 상호 작용 논리

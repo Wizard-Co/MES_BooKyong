@@ -13,10 +13,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
 using System.Collections.ObjectModel;
-using WizMes_BooKyong.PopUP;
+using WizMes_SaeHyung.PopUP;
 using System.Reflection;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_mtr_LotStock_Q.xaml에 대한 상호 작용 논리

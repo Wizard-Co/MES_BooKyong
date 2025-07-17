@@ -1,4 +1,4 @@
-﻿using WizMes_BooKyong.PopUP;
+﻿using WizMes_SaeHyung.PopUP;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Data.SqlClient;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_Mold_sMoldHistory.xaml에 대한 상호 작용 논리

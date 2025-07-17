@@ -3,11 +3,11 @@ using System;
 using System.Collections.ObjectModel;
 using System.Data;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     class PrintWorkAll
     {
-        WizMes_BooKyong.PopUp.NoticeMessage msg = new PopUp.NoticeMessage();
+        WizMes_SaeHyung.PopUp.NoticeMessage msg = new PopUp.NoticeMessage();
 
         private Application excelapp;
         private Workbook workbook;

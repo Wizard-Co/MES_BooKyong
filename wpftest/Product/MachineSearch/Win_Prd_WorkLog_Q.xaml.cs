@@ -5,11 +5,11 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using WizMes_BooKyong.PopUp;
-using WizMes_BooKyong.PopUP;
+using WizMes_SaeHyung.PopUp;
+using WizMes_SaeHyung.PopUP;
 using System.Windows.Input;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_Prd_ProcessResult_Q.xaml에 대한 상호 작용 논리

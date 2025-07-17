@@ -13,11 +13,11 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using WizMes_BooKyong.PopUP;
+using WizMes_SaeHyung.PopUP;
 using WPF.MDI;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_Qul_XBarR_Q.xaml에 대한 상호 작용 논리
@@ -1165,12 +1165,12 @@ namespace WizMes_BooKyong
                     }
                     else
                     {
-                        Type type = Type.GetType("WizMes_BooKyong." + MainWindow.mMenulist[i].ProgramID.Trim(), true);
+                        Type type = Type.GetType("WizMes_SaeHyung." + MainWindow.mMenulist[i].ProgramID.Trim(), true);
                         object uie = Activator.CreateInstance(type);
 
                         MainWindow.mMenulist[i].subProgramID = new MdiChild()
                         {
-                            Title = "BooKyong [" + MainWindow.mMenulist[i].MenuID.Trim() + "] " + MainWindow.mMenulist[i].Menu.Trim() +
+                            Title = "SaeHyung [" + MainWindow.mMenulist[i].MenuID.Trim() + "] " + MainWindow.mMenulist[i].Menu.Trim() +
                                     " (→" + MainWindow.mMenulist[i].ProgramID + ")",
                             Height = SystemParameters.PrimaryScreenHeight * 0.8,
                             MaxHeight = SystemParameters.PrimaryScreenHeight * 0.85,

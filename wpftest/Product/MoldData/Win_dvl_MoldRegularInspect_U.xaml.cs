@@ -1,4 +1,4 @@
-﻿using WizMes_BooKyong.PopUP;
+﻿using WizMes_SaeHyung.PopUP;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,10 +15,10 @@ using System.Windows.Media.Imaging;
 using static System.Net.WebRequestMethods;
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
-using WizMes_BooKyong.PopUp;
+using WizMes_SaeHyung.PopUp;
 using System.Windows.Media;
 
-namespace WizMes_BooKyong
+namespace WizMes_SaeHyung
 {
     /// <summary>
     /// Win_dvl_MoldRegularInspect_U.xaml에 대한 상호 작용 논리
