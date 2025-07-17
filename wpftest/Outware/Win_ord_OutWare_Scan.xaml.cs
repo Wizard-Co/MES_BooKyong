@@ -500,8 +500,7 @@ namespace WizMes_BooKyong
                 cboFromLoc.SelectedIndex = 0; //사내제품창고가 기본값이 되게 설정
                 cboToLoc.SelectedIndex = 0;
 
-                dgdOutwareSub.Items.Clear();
-
+                dgdOutwareSub.Items.Clear();            
 
             }
             catch (Exception ee)
@@ -2924,7 +2923,30 @@ namespace WizMes_BooKyong
         {
             try
             {
-                SumColorQty();
+                //박스포장량 검증 추가
+                TextBox textbox = sender as TextBox;
+                if(textbox != null  && decimal.TryParse(textbox.Text, out decimal OutQty))
+                {
+                    var selectedRow = dgdOutwareSub.CurrentItem as Win_ord_OutWare_Scan_Sub_CodeView;
+                    if(selectedRow != null)
+                    {
+                        if (!string.IsNullOrEmpty(selectedRow.LabelID))
+                        {
+                            int boxQty = lib.GetBoxQty(selectedRow.LabelID);
+                            if(boxQty > 0 && OutQty > boxQty)
+                            {
+                                e.Handled = true;
+                                textbox.Text = stringFormatN0(boxQty);
+                                MessageBox.Show($"입력된 수량이 남은 수량 ({boxQty}) 보다 많이 입력 되었습니다.", "확인");
+                                return;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    SumColorQty();
+                }
             }
             catch (Exception ee)
             {
@@ -2933,6 +2955,8 @@ namespace WizMes_BooKyong
 
         
         }
+
+
 
         private void dgdOutwareSubRequest_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {

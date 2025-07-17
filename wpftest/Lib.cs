@@ -4035,6 +4035,49 @@ namespace WizMes_BooKyong
         }
 
         #endregion
+
+        #region 출하
+
+        //박스수량구하기, 재고함수 프로시저 사용
+        public int GetBoxQty(string BoxID)
+        {
+            int qty = 0;
+
+            try
+            {
+
+                Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
+                sqlParameter.Clear();
+                sqlParameter.Add("BoxID", BoxID);
+
+                DataSet ds = DataStore.Instance.ProcedureToDataSet("xp_Outware_sGetBoxQty", sqlParameter, false);
+
+
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    DataTable dt = ds.Tables[0];
+
+                    if (dt.Rows.Count > 0)
+                    {
+                        DataRowCollection drc = dt.Rows;
+
+                        foreach (DataRow dr in drc)
+                        {
+                            qty = RemoveComma(dr["BoxQty"].ToString(), 0);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+
+
+            return qty;
+        }
+
+        #endregion
     }
 
     public class TextBoxColumnControl : TextBox
