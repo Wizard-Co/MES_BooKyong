@@ -199,18 +199,20 @@ namespace WizMes_BooKyong
                             {
                                 Num = i + 1,
 
-                                WorkDate = DatePickerFormat(dr["WorkDate"].ToString()),
-          
+                                //WorkDate = DatePickerFormat(dr["WorkDate"].ToString()),
+                                WorkDate = dr["WorkDate"].ToString(),
+
                                 WorkQty = stringFormatN0(dr["WorkQty"]),
                                 WorkTime = stringFormatN1(dr["WorkTime"]),
                                 WorkQtyPerHour = stringFormatN0(dr["WorkQtyPerHour"]),
-                                Daily_WorkQty = stringFormatN0(dr["Daily_WorkQty"]),
+                                //Daily_WorkQty = stringFormatN0(dr["Daily_WorkQty"]),
                                 DefectQty = stringFormatN0(dr["DefectQty"]),
                                 DefectWorkQty = stringFormatN0(dr["DefectWorkQty"]),
                                 DefectRate = stringFormatN2(dr["DefectRate"]),
                                 DefectUpRate = stringFormatN1(dr["DefectUpRate"]),
                                 DefectGoalRate = stringFormatN1(dr["DefectGoalRate"]),
                                 gbn = dr["gbn"].ToString(),
+                                
                                 Sort = dr["Sort"].ToString(),
                                 WorkUpRate = stringFormatN1(dr["WorkUpRate"]),
                                 WorkGoalRate = stringFormatN1(dr["WorkGoalRate"])
@@ -263,9 +265,10 @@ namespace WizMes_BooKyong
                         chart.Labels[index] = Rating.WorkDate;
                         index++;
 
-                        if (Rating.Daily_WorkQty != null)
+                        if (Rating.WorkQtyPerHour != null)
                         {
-                            chart.lineQty.Add(Convert.ToInt32(Rating.Daily_WorkQty.Replace("," , "")));
+                            chart.lineQty.Add(Convert.ToInt32(Rating.WorkQtyPerHour.Replace("," , "")));
+                            //chart.lineQty.Add(Convert.ToInt32(Rating.Daily_WorkQty.Replace("," , "")));
                         }
                         else
                         {
@@ -644,6 +647,7 @@ namespace WizMes_BooKyong
         {
             get; set;
         }
+        public string GbnName { get; set; }
         public string WorkDate { get; set; }
         public string ArticleNo { get; internal set; }
         public string Article { get; internal set; }
