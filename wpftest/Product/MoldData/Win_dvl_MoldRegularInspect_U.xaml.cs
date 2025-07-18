@@ -392,8 +392,8 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("nChkDate", chkInspectDaySrh.IsChecked == true ? 1 : 0);
                 sqlParameter.Add("SDate", chkInspectDaySrh.IsChecked == true ? dtpSDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
                 sqlParameter.Add("EDate", chkInspectDaySrh.IsChecked == true ? dtpEDate.SelectedDate.Value.ToString("yyyyMMdd") : "");
-                sqlParameter.Add("nChkMold", chkMoldSrh.IsChecked == true ? (txtMoldSrh.Tag != null ? 1 : 2) : 0);
-                sqlParameter.Add("MoldID", chkMoldSrh.IsChecked == true ? (txtMoldSrh.Tag != null ? txtMoldSrh.Tag.ToString() : txtMoldSrh.Text) : "");
+                sqlParameter.Add("nChkMold", chkMoldSrh.IsChecked == true ? 1: 0);
+                sqlParameter.Add("MoldID", chkMoldSrh.IsChecked == true  && txtMoldSrh.Tag != null ? txtMoldSrh.Tag.ToString()  : "");
 
                 DataSet ds = DataStore.Instance.ProcedureToDataSet("xp_Mold_sInspect", sqlParameter, false);
 
