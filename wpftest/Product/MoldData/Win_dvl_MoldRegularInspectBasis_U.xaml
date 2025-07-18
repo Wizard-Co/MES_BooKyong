@@ -48,7 +48,7 @@
                             VerticalAlignment="Center"
                             Checked="chkMoldSrh_Checked"
                             Unchecked="chkMoldSrh_Unchecked" />
-                        <TextBlock VerticalAlignment="Center" Text="금형LotNo" />
+                        <TextBlock VerticalAlignment="Center" Text="금형명" />
                     </StackPanel>
                 </Label>
                 <TextBox
@@ -70,13 +70,13 @@
                     x:Name="lblArticleSrh"
                     Grid.Column="0"
                     Margin="1"
-                    MouseLeftButtonUp="lblMoldSrh_MouseLeftButtonUp">
+                    MouseLeftButtonUp="lblArticleSrh_MouseLeftButtonUp">
                     <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                         <CheckBox
                             x:Name="chkArticleSrh"
                             VerticalAlignment="Center"
-                            Checked="chkMoldSrh_Checked"
-                            Unchecked="chkMoldSrh_Unchecked" />
+                            Checked="chkArticleSrh_Checked"
+                            Unchecked="chkArticleSrh_Unchecked" />
                         <TextBlock VerticalAlignment="Center" Text="품명" />
                     </StackPanel>
                 </Label>
@@ -257,19 +257,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>-->
-                            <DataGridTemplateColumn
-                                Width="auto"
-                                Header="금형 관리대장번호"
-                                Visibility="Hidden">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock
-                                            Padding="3,0"
-                                            Text="{Binding MoldInspectBasisID}"
-                                            TextAlignment="Center" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+
                             <DataGridTemplateColumn
                                 Width="auto"
                                 Header="금형 ID"
@@ -283,7 +271,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width="auto" Header="금형 LotNO">
+                            <DataGridTemplateColumn Width="auto" Header="금형명">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock
@@ -401,7 +389,7 @@
                             Background="#c2fdc3"
                             IsHitTestVisible="False"
                             Text="{Binding MoldInspectBasisID}" />
-                        <!--점검주기구분-->
+                        <!--  점검주기구분  -->
                         <Label
                             Grid.Row="1"
                             Margin="1"
@@ -414,8 +402,8 @@
                             Grid.Column="1"
                             Margin="1"
                             VerticalContentAlignment="Center"
-                            Style="{DynamicResource ComboBoxInputString}"
-                            SelectedValue="{Binding InspectCycle}" />
+                            SelectedValue="{Binding InspectCycle}"
+                            Style="{DynamicResource ComboBoxInputString}" />
 
                         <!--  금형 Lot No  -->
                         <Label
@@ -424,7 +412,7 @@
                             Margin="1"
                             HorizontalContentAlignment="Left"
                             VerticalContentAlignment="Center"
-                            Content="금형LotNo" />
+                            Content="금형명" />
                         <TextBox
                             x:Name="txtMoldID"
                             Grid.Row="2"
@@ -433,8 +421,8 @@
                             VerticalContentAlignment="Center"
                             Background="#fff2d2"
                             KeyDown="txtMoldID_KeyDown"
-                            Tag="{Binding MoldID}"
-                            Text="{Binding MoldNo}" />
+                            Tag="{Binding MoldID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Text="{Binding MoldNo, UpdateSourceTrigger=PropertyChanged}" />
                         <Button
                             x:Name="btnPfMoldID"
                             Grid.Row="2"
@@ -444,7 +432,7 @@
                             <Image Source="{DynamicResource btiPlusFind}" />
                         </Button>
 
-                        <!-- 개정일자  -->
+                        <!--  개정일자  -->
                         <Label
                             Grid.Row="3"
                             Grid.Column="0"
@@ -694,9 +682,11 @@
                                     </DataGridTemplateColumn.CellTemplate>
                                     <DataGridTemplateColumn.CellEditingTemplate>
                                         <DataTemplate>
-                                            <TextBox Loaded="txtBox_Loaded" Text="{Binding MoldInspectCycleDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                                     PreviewTextInput="txt_PreviewTextInput"
-                                                     InputMethod.IsInputMethodEnabled="False" />
+                                            <TextBox
+                                                InputMethod.IsInputMethodEnabled="False"
+                                                Loaded="txtBox_Loaded"
+                                                PreviewTextInput="txt_PreviewTextInput"
+                                                Text="{Binding MoldInspectCycleDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellEditingTemplate>
                                 </DataGridTemplateColumn>

@@ -175,6 +175,28 @@ namespace WizMes_BooKyong
             chkMoldNoSrh.IsChecked = false;
             txtMoldNoSrh.IsEnabled = false;
         }
+        // 품명
+        private void lblArticleSrh_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (chkArticleSrh.IsChecked == true)
+            {
+                chkArticleSrh.IsChecked = false;
+            }
+            else
+            {
+                chkArticleSrh.IsChecked = true;
+            }
+        }
+        private void chkArticleSrh_Checked(object sender, RoutedEventArgs e)
+        {
+            chkArticleSrh.IsChecked = true;
+            txtArticleSrh.IsEnabled = true;
+        }
+        private void chkArticleSrh_Unchecked(object sender, RoutedEventArgs e)
+        {
+            chkArticleSrh.IsChecked = false;
+            txtArticleSrh.IsEnabled = false;
+        }
 
         #endregion // Header 부분 - 검색 조건
 
@@ -1223,6 +1245,7 @@ namespace WizMes_BooKyong
             {
                 dgdMain.Items.Clear();
                 dgdSub.Items.Clear();
+                this.DataContext = null;
             }
 
             try
@@ -1230,8 +1253,8 @@ namespace WizMes_BooKyong
                 Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
 
                 sqlParameter.Add("MoldID", "");
-                sqlParameter.Add("MoldNo", chkMoldNoSrh.IsChecked == true ? txtMoldNoSrh.Text.ToString() : "");
-                sqlParameter.Add("Article", chkArticleSrh.IsChecked == true ? txtArticleSrh.Text.ToString() : "");
+                sqlParameter.Add("MoldNo", chkMoldNoSrh.IsChecked == true ? txtMoldNoSrh.Text : "");
+                sqlParameter.Add("Article", chkArticleSrh.IsChecked == true ? txtArticleSrh.Text : "");
 
                 DataSet ds = DataStore.Instance.ProcedureToDataSet("xp_DvlMold_sInspectBasis", sqlParameter, false);
 
@@ -1387,6 +1410,8 @@ namespace WizMes_BooKyong
             {
                 try
                 {
+                    var mold = dgdMain.SelectedItem as Win_dvl_MoldRegularInspectBasis_U_CodeView;
+
                     string sGetID = txtMoldInspectBasisID.Text.Trim().ToString();
                     Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
                     sqlParameter.Clear();
