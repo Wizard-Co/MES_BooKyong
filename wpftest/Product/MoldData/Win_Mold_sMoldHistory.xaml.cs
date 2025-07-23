@@ -176,9 +176,11 @@ namespace WizMes_BooKyong
             DataTable dt = null;
             string Name = string.Empty;
 
-            string[] lst = new string[6];
+            string[] lst = new string[4];
             lst[0] = "금형이력";
-            lst[1] = dgdMain.Name;
+            lst[1] = "금형이력 상세";
+            lst[2] = dgdMain.Name;
+            lst[3] = dgdSub.Name;
 
             ExportExcelxaml ExpExc = new ExportExcelxaml(lst);
 
@@ -199,7 +201,22 @@ namespace WizMes_BooKyong
                         lib.excel.Visible = true;
                     else
                         return;
-                } else {
+                }
+                else if (ExpExc.choice.Equals(dgdSub.Name))
+                {
+                    if (ExpExc.Check.Equals("Y"))
+                        dt = lib.DataGridToDTinHidden(dgdSub);
+                    else
+                        dt = lib.DataGirdToDataTable(dgdSub);
+
+                    Name = dgdSub.Name;
+
+                    if (lib.GenerateExcel(dt, Name))
+                        lib.excel.Visible = true;
+                    else
+                        return;
+                }
+                else {
                     if (dt != null)
                     {
                         dt.Clear();
