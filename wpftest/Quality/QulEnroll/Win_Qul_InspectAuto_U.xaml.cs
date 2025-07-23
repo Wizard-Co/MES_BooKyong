@@ -5243,8 +5243,7 @@ namespace WizMes_BooKyong
                         for (int col = 0; col < transposedTable.Rows.Count; col++) 
                         {
                             DataRow dataRow = transposedTable.Rows[col];
-                            string columnName = dataRow[0].ToString(); // 첫 번째 셀이 컬럼명
-                            matchedValueCount = 0;  //정량적 검사 필드에 일치했는지 여부
+                            string columnName = dataRow[0].ToString(); // 첫 번째 셀이 컬럼명                            
 
                             // dgdSub2에서 해당 컬럼명과 일치하는 행 찾기
                             for (int rowIndex = 0; rowIndex < dgdSub2.Items.Count; rowIndex++)
