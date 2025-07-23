@@ -201,7 +201,7 @@ namespace WizMes_BooKyong
         // 검색(조회) 버튼 클릭
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            if (lib.DatePickerCheck(dtpFromDate, dtpToDate, chkDateSrh))
+            if (tiMonth_H.IsSelected || tiMonth_V.IsSelected || lib.DatePickerCheck(dtpFromDate, dtpToDate, chkDateSrh) )
             {
                 using (Loading ld = new Loading(beSearch))
                 {
@@ -216,20 +216,17 @@ namespace WizMes_BooKyong
             //검색버튼 비활성화   
             btnSearch.IsEnabled = false;
 
-            if(lib.DatePickerCheck(dtpFromDate, dtpToDate, chkDateSrh))
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    DataStore.Instance.InsertLogByForm(this.GetType().Name, "R");
-                    TabItem NowTI = tabconGrid.SelectedItem as TabItem;
+                DataStore.Instance.InsertLogByForm(this.GetType().Name, "R");
+                TabItem NowTI = tabconGrid.SelectedItem as TabItem;
 
-                    if (NowTI.Header.ToString() == "기간집계") { FillGrid_Period(); }
-                    else if (NowTI.Header.ToString() == "일일집계") { FillGrid_Day(); }
-                    else if (NowTI.Header.ToString() == "월별집계(세로)") { FillGrid_Month_V(); }
-                    else if (NowTI.Header.ToString() == "월별집계(가로)") { FillGrid_Month_H(); }
+                if (NowTI.Header.ToString() == "기간집계") { FillGrid_Period(); }
+                else if (NowTI.Header.ToString() == "일일집계") { FillGrid_Day(); }
+                else if (NowTI.Header.ToString() == "월별집계(세로)") { FillGrid_Month_V(); }
+                else if (NowTI.Header.ToString() == "월별집계(가로)") { FillGrid_Month_H(); }
 
-                }), System.Windows.Threading.DispatcherPriority.Background);
-            }
+            }), System.Windows.Threading.DispatcherPriority.Background);      
 
             btnSearch.IsEnabled = true;
         }
@@ -719,12 +716,16 @@ namespace WizMes_BooKyong
 
                                 H_TotalMonthRoll = stringFormatN0(dr["TotalRoll"]),
                                 H_TotalMonthQty = stringFormatN0(dr["TotalQty"]),
+                                H_TotalMonthAmount = stringFormatN0(dr["TotalAmount"]),
                                 H_BaseMonthRoll = stringFormatN0(dr["BaseMonthRoll"]),
                                 H_BaseMonthQty = stringFormatN0(dr["BaseMonthQty"]),
+                                H_BaseMonthAmount = stringFormatN0(dr["BaseMonthAmount"]),
                                 H_Add1MonthRoll = stringFormatN0(dr["Add1MonthRoll"]),
                                 H_Add1MonthQty = stringFormatN0(dr["Add1MonthQty"]),
+                                H_Add1MonthAmount = stringFormatN0(dr["Add1MonthAmount"]),
                                 H_Add2MonthRoll = stringFormatN0(dr["Add2MonthRoll"]),
                                 H_Add2MonthQty = stringFormatN0(dr["Add2MonthQty"]),
+                                H_Add2MonthAmount = stringFormatN0(dr["Add2MonthAmount"]),
                             };
 
                             if (MonthHItem.H_Gbn.Equals("1"))       //화면디자인이 출고가 먼저 나와야 하기에..
@@ -1286,12 +1287,16 @@ namespace WizMes_BooKyong
 
         public string H_TotalMonthQty { get; set; }
         public string H_TotalMonthRoll { get; set; }
+        public string H_TotalMonthAmount { get; set; }
         public string H_BaseMonthQty { get; set; }
         public string H_BaseMonthRoll { get; set; }
+        public string H_BaseMonthAmount { get; set; }
         public string H_Add1MonthQty { get; set; }
         public string H_Add1MonthRoll { get; set; }
+        public string H_Add1MonthAmount { get; set; }
         public string H_Add2MonthQty { get; set; }
         public string H_Add2MonthRoll { get; set; }
+        public string H_Add2MonthAmount { get; set; }
         public bool H_Color1 { get; set; } = false;
         public bool H_Color2 { get; set; } = false;
 

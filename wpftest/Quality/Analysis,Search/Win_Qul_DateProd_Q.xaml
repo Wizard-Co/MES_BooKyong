@@ -292,71 +292,71 @@
                     <DataGridTemplateColumn Header="생산일자" Width="1*">
                         <DataGridTemplateColumn.CellTemplate >
                             <DataTemplate>
-                                <TextBlock Text="{Binding ScanDate}" TextAlignment="Center"/>
+                                <TextBlock Text="{Binding ScanDate}" Style="{DynamicResource DataGridCellCenter}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="공정" Width="1.5*">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
-                                <TextBlock Text="{Binding Process}" TextAlignment="Center"/>
+                                <TextBlock Text="{Binding Process}" Style="{DynamicResource DataGridCellCenter}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="호기" Width="1.5*">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding MCNAME}" TextAlignment="Center"/>
+                                <TextBlock Text="{Binding MCNAME}" Style="{DynamicResource DataGridCellCenter}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="차종" Width="*" >
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
-                                <TextBlock Text="{Binding BuyerModelID}" TextAlignment="Center"/>
+                                <TextBlock Text="{Binding BuyerModelID}" Style="{DynamicResource DataGridCellCenter}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     
-                    <DataGridTemplateColumn Header="품번" Width="1.5*">
+                    <DataGridTemplateColumn Header="품번" Width="auto" >
                         <DataGridTemplateColumn.CellTemplate >
                             <DataTemplate>
-                                <TextBlock Text="{Binding BuyerArticleNo}" TextAlignment="Left"/>
+                                <TextBlock Text="{Binding BuyerArticleNo}" Style="{DynamicResource DataGridCellLeft}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="품명" Width="1.5*">
+                    <DataGridTemplateColumn Header="품명" Width="auto">
                         <DataGridTemplateColumn.CellTemplate >
                             <DataTemplate>
-                                <TextBlock Text="{Binding Article}" TextAlignment="Left"/>
+                                <TextBlock Text="{Binding Article}" Style="{DynamicResource DataGridCellLeft}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="불량유형" Width="1.5*">
                             <DataGridTemplateColumn.CellTemplate >
                                 <DataTemplate>
-                                <TextBlock Text="{Binding KDefect}" TextAlignment="Left"/>
+                                <TextBlock Text="{Binding KDefect}" Style="{DynamicResource DataGridCellCenter}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="발생수량" Width="*" CellStyle="{StaticResource NumericDataGridCell}">
                         <DataGridTemplateColumn.CellTemplate >
                             <DataTemplate>
-                                <TextBlock Text="{Binding DefectQty}" TextAlignment="Right"  />
+                                <TextBlock Text="{Binding DefectQty}" Style="{DynamicResource DataGridCellRight}"  />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="작업자" Width="*">
                         <DataGridTemplateColumn.CellTemplate >
                             <DataTemplate>
-                                <TextBlock Text="{Binding WorkPersonName}" TextAlignment="Center"/>
+                                <TextBlock Text="{Binding WorkPersonName}" Style="{DynamicResource DataGridCellCenter}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="생산량" Width="*">
                         <DataGridTemplateColumn.CellTemplate >
                             <DataTemplate>
-                                <TextBlock Text="{Binding WorkQty}" TextAlignment="Center"/>
+                                <TextBlock Text="{Binding WorkQty}" Style="{DynamicResource DataGridCellRight}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

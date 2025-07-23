@@ -4143,7 +4143,7 @@ namespace WizMes_BooKyong
                 }
                 else
                 {
-                    MessageBoxResult msgresult = MessageBox.Show($"검사기준번호 : {BasisID}에 등록된 정기점검기준서 파일을 찾았습니다.\n파일명 : {FileName}\n다운로드 하시겠습니까?", "확인", MessageBoxButton.YesNo);
+                    MessageBoxResult msgresult = MessageBox.Show($"검사기준번호 : {BasisID}에 등록된 정기점검기준서 정보가 있습니다.\n파일명 : {FileName}\n다운로드 하시겠습니까?", "확인", MessageBoxButton.YesNo);
                     if (msgresult == MessageBoxResult.Yes)
                     {
                         InsCycleForm_FTPDownload(BasisID, FileName);
@@ -4194,7 +4194,7 @@ namespace WizMes_BooKyong
 
                 try
                 {
-                    if (_ftp.download(str_remotepath, str_localpath, false))
+                    if (_ftp.download(str_remotepath, str_localpath, true))
                     {
                         MessageBoxResult msgresult = MessageBox.Show($"파일 다운로드를 완료했습니다.\n지금 폴더를 여시겠습니까?\n파일은 {LOCAL_DOWN_PATH}에 다운로드 되었습니다. ", "확인", MessageBoxButton.YesNo);
                         if (msgresult == MessageBoxResult.Yes)
@@ -4206,6 +4206,11 @@ namespace WizMes_BooKyong
                             }
                         }
 
+                    }
+                    else
+                    {
+                        MessageBox.Show("다운로드에 실패했습니다.\n시스템과 연결된 파일서버가 다르거나 저장된 파일이 삭제되었을 수 있습니다.\n관리자에게 문의하세요","확인");
+                        return false;
                     }
                 }
                 catch

@@ -3756,10 +3756,15 @@ namespace WizMes_BooKyong
         {
             string pattern1 = @"(\d{4})(\d{2})(\d{2})";
             string pattern2 = @"(\d{4})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})";
+            string pattern3 = @"(\d{4})(\d{2})";
 
             if (DigitsDate.Length == 8)
             {
                 DigitsDate = Regex.Replace(DigitsDate, pattern1, "$1-$2-$3");
+            }
+            else if(DigitsDate.Length == 6)
+            {
+                DigitsDate = Regex.Replace(DigitsDate, pattern3, "$1-$2");
             }
             else if (DigitsDate.Length == 16)
             {

@@ -603,7 +603,7 @@
 
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="순서" Binding="{Binding V_NUM}" ElementStyle="{StaticResource DataGridCellCenter}"/>
-                                <DataGridTextColumn Header="월" Binding="{Binding V_IODate}" ElementStyle="{StaticResource DataGridCellCenter}"/>
+                                <DataGridTextColumn Header="년월" Binding="{Binding V_IODate}" ElementStyle="{StaticResource DataGridCellCenter}"/>
                                 <DataGridTextColumn Header="구분" Binding="{Binding V_Gbn}" ElementStyle="{StaticResource DataGridCellCenter}"/>
                                 <DataGridTextColumn Header="거래처" Binding="{Binding V_CustomName}" Width="*" ElementStyle="{StaticResource DataGridCellCenter}"/>
                                 <DataGridTextColumn Header="품번" Binding="{Binding V_BuyerArticleNo}" Width="*"  ElementStyle="{StaticResource DataGridCellLeft}"/>
@@ -734,20 +734,20 @@
                                     <DataGridTextColumn Header="단위" x:Name="H_UnitClssName" Binding="{Binding H_UnitClssName}" MinWidth="80" IsReadOnly="True" CellStyle="{DynamicResource DataGridCellAndCentering}"/>
 
                                     <!--합계-->
-                                    <DataGridTextColumn Header="수량" x:Name="H_TotalMonthRoll" Binding="{Binding H_TotalMonthRoll}" MinWidth="80" Width="*" IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
-                                    <DataGridTextColumn Header="금액" x:Name="H_TotalMonthQty" Binding="{Binding H_TotalMonthQty}" MinWidth="80" Width="*" IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
+                                    <DataGridTextColumn Header="수량" x:Name="H_TotalMonthRoll" Binding="{Binding H_TotalMonthQty}" MinWidth="80" Width="*" IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
+                                    <DataGridTextColumn Header="금액" x:Name="H_TotalMonthQty" Binding="{Binding H_TotalMonthAmount}" MinWidth="80" Width="*" IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
 
                                     <!--기준월-->
-                                    <DataGridTextColumn Header="수량" x:Name="H_BaseMonthRoll" Binding="{Binding H_BaseMonthRoll}" MinWidth="80" Width="*" IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
-                                    <DataGridTextColumn Header="금액" x:Name="H_BaseMonthQty" Binding="{Binding H_BaseMonthQty}" MinWidth="80" Width="*" IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
+                                    <DataGridTextColumn Header="수량" x:Name="H_BaseMonthRoll" Binding="{Binding H_BaseMonthQty}" MinWidth="80" Width="*" IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
+                                    <DataGridTextColumn Header="금액" x:Name="H_BaseMonthQty" Binding="{Binding H_BaseMonthAmount}" MinWidth="80" Width="*" IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
 
                                     <!--기준+1월-->
-                                    <DataGridTextColumn Header="수량" x:Name="H_Add1MonthRoll" Binding="{Binding H_Add1MonthRoll}" MinWidth="80" Width="*" IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
-                                    <DataGridTextColumn Header="금액" x:Name="H_Add1MonthQty" Binding="{Binding H_Add1MonthQty}" MinWidth="80" Width="*" IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
+                                    <DataGridTextColumn Header="수량" x:Name="H_Add1MonthRoll" Binding="{Binding H_Add1MonthQty}" MinWidth="80" Width="*" IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
+                                    <DataGridTextColumn Header="금액" x:Name="H_Add1MonthQty" Binding="{Binding H_Add1MonthAmount}" MinWidth="80" Width="*" IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
 
                                     <!--기준+2월-->
-                                    <DataGridTextColumn Header="수량" x:Name="H_Add2MonthRoll" Binding="{Binding H_Add2MonthRoll}" MinWidth="80" Width="*"  IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
-                                    <DataGridTextColumn Header="금액" x:Name="H_Add2MonthQty" Binding="{Binding H_Add2MonthQty}" MinWidth="80" Width="*" IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
+                                    <DataGridTextColumn Header="수량" x:Name="H_Add2MonthRoll" Binding="{Binding H_Add2MonthQty}" MinWidth="80" Width="*"  IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
+                                    <DataGridTextColumn Header="금액" x:Name="H_Add2MonthQty" Binding="{Binding H_Add2MonthAmount}" MinWidth="80" Width="*" IsReadOnly="True" CellStyle="{DynamicResource NumericDataGridCell}"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>
