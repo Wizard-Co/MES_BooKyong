@@ -79,6 +79,7 @@ namespace WizMes_BooKyong
         string LabelID_Global = string.Empty;
         string InspectID_Global = string.Empty;
         int chkUserReport = 0;
+        bool CallTensileCompleted = false;
 
         string strPoint = string.Empty;     //  1: 수입, 3:자주, 5:출하
         string strFlag = string.Empty;
@@ -1939,8 +1940,8 @@ namespace WizMes_BooKyong
                                 SubSeq = dr["SubSeq"].ToString(),
                                 insType = dr["insType"].ToString(),
                                 insItemName = dr["insItemName"].ToString(),
-                                SpecMin = lib.returnNumStringTwo(dr["SpecMin"].ToString()),
-                                SpecMax = lib.returnNumStringTwo(dr["SpecMax"].ToString()),
+                                SpecMin = lib.returnNumStringThree(dr["SpecMin"].ToString()),
+                                SpecMax = lib.returnNumStringThree(dr["SpecMax"].ToString()),
                                 InsTPSpecMin = dr["InsTPSpecMin"].ToString(),
                                 InsTPSpecMax = dr["InsTPSpecMax"].ToString(),
                                 InsSampleQty = dr["InsSampleQty"].ToString(),
@@ -1965,7 +1966,7 @@ namespace WizMes_BooKyong
                             for (int i = 0; i < 10; i++)
                             {
                                 int num = i + 1;
-                                WinQulInsAutoSub.arrInspectValue[i] = lib.returnNumStringTwo(dr["InspectValue" + num.ToString()].ToString());
+                                WinQulInsAutoSub.arrInspectValue[i] = lib.returnNumStringThree(dr["InspectValue" + num.ToString()].ToString());
                                 WinQulInsAutoSub.arrInspectText[i] = dr["InspectText" + num.ToString()].ToString();
                             }
 
@@ -2341,6 +2342,53 @@ namespace WizMes_BooKyong
                             }
                         }
 
+
+                        if (CallTensileCompleted)
+                        {
+                            var item = dgdSub2.Items.Cast<Win_Qul_InspectAuto_U_Sub_CodeView>().FirstOrDefault(x => x.insItemName == "인장강도");
+                            if(item != null)
+                            {
+                                sqlParameter = new Dictionary<string, object>();
+                                sqlParameter.Clear();
+                                int sampleQty = Convert.ToInt32(item.InsSampleQty);
+
+                                for (int i = 1; i < sampleQty + 1; i++)
+                                {
+                                    var propertyValue = item.GetType().GetProperty($"InspectValue{i}")?.GetValue(item);
+                                    double inspectValue = Convert.ToDouble(propertyValue ?? 0);
+
+                                    sqlParameter.Add($"InspectValue{i}", inspectValue);
+
+                                    // 불량 여부 체크
+                                    double minValue = Convert.ToDouble(item.InsTPSpecMin ?? "0");
+                                    double maxValue = Convert.ToDouble(item.InsTPSpecMax ?? "0");
+
+                                    string defectYN = (inspectValue < minValue || inspectValue > maxValue) ? "Y" : "N";
+                                    sqlParameter.Add($"InspectValueDefectYN{i}", defectYN);
+                                }
+
+                                sqlParameter.Add("SampleQty", sampleQty);
+                                sqlParameter.Add("InspectID", txtinspectID.Text);
+                                sqlParameter.Add("LotID", txtLotNO.Text);
+                                sqlParameter.Add("WorkDate", dtpInspectDate.SelectedDate?.ToString("yyyyMMdd") ?? DateTime.Now.ToString("yyyyMMdd"));
+
+                                if (sqlParameter.Count > 0)
+                                {
+                                    sqlParameter.Add("CreateUserID", MainWindow.CurrentUser);
+
+                                    Procedure pro4 = new Procedure();
+                                    pro4.Name = "xp_Inspect_iAutoInspectSub_wk_WorkLog";
+
+                                    Prolist.Add(pro4);
+                                    ListParameter.Add(sqlParameter);
+
+                                }
+
+                            }
+
+                        }
+
+
                         // 첨부파일 등록
                         if (txtSKetch.Text != string.Empty || txtFile.Text != string.Empty || txtInsCycleFile.Text != string.Empty)
                         {
@@ -2373,6 +2421,9 @@ namespace WizMes_BooKyong
                         }
                         else
                             flag = true;
+
+
+
                     }
                 }
             }
@@ -2956,8 +3007,8 @@ namespace WizMes_BooKyong
                                 SubSeq = dr["SubSeq"].ToString(),
                                 insType = dr["insType"].ToString(),
                                 insItemName = dr["insItemName"].ToString(),
-                                SpecMin = lib.returnNumStringTwo(dr["SpecMin"].ToString()),
-                                SpecMax = lib.returnNumStringTwo(dr["SpecMax"].ToString()),
+                                SpecMin = lib.returnNumStringThree(dr["SpecMin"].ToString()),
+                                SpecMax = lib.returnNumStringThree(dr["SpecMax"].ToString()),
                                 InsTPSpecMin = dr["InsTPSpecMin"].ToString(),
                                 InsTPSpecMax = dr["InsTPSpecMax"].ToString(),
                                 InsSampleQty = dr["InsSampleQty"].ToString(),
@@ -2970,7 +3021,7 @@ namespace WizMes_BooKyong
                             for (int i = 0; i < 10; i++)
                             {
                                 int num = i + 1;
-                                WinQulInsAutoSub.arrInspectValue[i] = lib.returnNumStringTwo(dr["InspectValue" + num.ToString()].ToString());
+                                WinQulInsAutoSub.arrInspectValue[i] = lib.returnNumStringThree(dr["InspectValue" + num.ToString()].ToString());
                                 WinQulInsAutoSub.arrInspectText[i] = dr["InspectText" + num.ToString()].ToString();
                             }
 
@@ -3071,8 +3122,8 @@ namespace WizMes_BooKyong
                                         + "(-" + dr["InsRaSpecMin"].ToString() + "~ +"
                                         + dr["insRASpecMax"].ToString() + ")";
                                     WinQulInsAutoByBasis.insSpec = dr["insRaSpec"].ToString();
-                                    WinQulInsAutoByBasis.SpecMax = lib.returnNumStringTwo(dr["insRASpecMax"].ToString());
-                                    WinQulInsAutoByBasis.SpecMin = lib.returnNumStringTwo(dr["InsRaSpecMin"].ToString());
+                                    WinQulInsAutoByBasis.SpecMax = lib.returnNumStringThree(dr["insRASpecMax"].ToString());
+                                    WinQulInsAutoByBasis.SpecMin = lib.returnNumStringThree(dr["InsRaSpecMin"].ToString());
 
                                     if (lib.IsNumOrAnother(WinQulInsAutoByBasis.insSpec) &&
                                         lib.IsNumOrAnother(WinQulInsAutoByBasis.SpecMax))
@@ -3091,8 +3142,8 @@ namespace WizMes_BooKyong
                                 {
                                     WinQulInsAutoByBasis.Spec_CV = dr["insRaSpec"].ToString();
                                     WinQulInsAutoByBasis.insSpec = dr["insRaSpec"].ToString();
-                                    WinQulInsAutoByBasis.SpecMax = lib.returnNumStringTwo(dr["insRASpecMax"].ToString());
-                                    WinQulInsAutoByBasis.SpecMin = lib.returnNumStringTwo(dr["InsRaSpecMin"].ToString());
+                                    WinQulInsAutoByBasis.SpecMax = lib.returnNumStringThree(dr["insRASpecMax"].ToString());
+                                    WinQulInsAutoByBasis.SpecMin = lib.returnNumStringThree(dr["InsRaSpecMin"].ToString());
                                 }
 
 
@@ -5297,6 +5348,7 @@ namespace WizMes_BooKyong
                         {
                             MessageBox.Show("검사항목명과 일치하는 만능시험기 검사값을 불러왔습니다.\n", "완료", MessageBoxButton.OK);
                             lib.ShowTooltipMessage(txtDimsHeader, "값이 변경 되었습니다.", MessageBoxImage.Information, System.Windows.Controls.Primitives.PlacementMode.Right, 1.3);
+                            CallTensileCompleted = true;
                         }
 
                       
