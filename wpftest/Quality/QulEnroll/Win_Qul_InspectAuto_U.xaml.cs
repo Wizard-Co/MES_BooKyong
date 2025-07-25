@@ -1548,6 +1548,7 @@ namespace WizMes_BooKyong
                     }
 
                     strFlag = string.Empty;  // 추가했는지, 수정했는지 알려면 맨 마지막에 flag 값을 비워야 한다.
+                    CallTensileCompleted = false;
                 }
 
             }), System.Windows.Threading.DispatcherPriority.Background);
@@ -2342,35 +2343,37 @@ namespace WizMes_BooKyong
                             }
                         }
 
-
-                        if (CallTensileCompleted)
+                        //2025-07-25
+                        //만능검사기값을 불러왔을 경우 Wk_Worklog테이블에 값 INSERT하기
+                        //서류변경신청을 왜 안했을까용
+                        if (CallTensileCompleted) //불러왔을 경우
                         {
-                            var item = dgdSub2.Items.Cast<Win_Qul_InspectAuto_U_Sub_CodeView>().FirstOrDefault(x => x.insItemName == "인장강도");
-                            if(item != null)
+                            var item = dgdSub2.Items.Cast<Win_Qul_InspectAuto_U_Sub_CodeView>().FirstOrDefault(x => x.insItemName == "인장강도"); //인장강도라고 된 값 찾기 만능검사기에 검사항목명이 이걸로 되어있음
+                            if(item != null) // 있으면
                             {
                                 sqlParameter = new Dictionary<string, object>();
                                 sqlParameter.Clear();
-                                int sampleQty = Convert.ToInt32(item.InsSampleQty);
+                                int sampleQty = Convert.ToInt32(item.InsSampleQty); //샘플 수량만큼 row를 반복 Insert
 
                                 for (int i = 1; i < sampleQty + 1; i++)
                                 {
-                                    var propertyValue = item.GetType().GetProperty($"InspectValue{i}")?.GetValue(item);
-                                    double inspectValue = Convert.ToDouble(propertyValue ?? 0);
+                                    var propertyValue = item.GetType().GetProperty($"InspectValue{i}")?.GetValue(item); //샘플 수량만큼 번호매겨서 프로시저로 값을 전달
+                                    double inspectValue = Convert.ToDouble(propertyValue ?? 0); // 소숫점 세자리까지의 값이니 double
 
                                     sqlParameter.Add($"InspectValue{i}", inspectValue);
 
                                     // 불량 여부 체크
-                                    double minValue = Convert.ToDouble(item.InsTPSpecMin ?? "0");
+                                    double minValue = Convert.ToDouble(item.InsTPSpecMin ?? "0"); //Wk_WorkLog에 하필 불량여부가 있다 걍 N넣어 버릴까보다
                                     double maxValue = Convert.ToDouble(item.InsTPSpecMax ?? "0");
 
                                     string defectYN = (inspectValue < minValue || inspectValue > maxValue) ? "Y" : "N";
                                     sqlParameter.Add($"InspectValueDefectYN{i}", defectYN);
                                 }
 
-                                sqlParameter.Add("SampleQty", sampleQty);
-                                sqlParameter.Add("InspectID", txtinspectID.Text);
-                                sqlParameter.Add("LotID", txtLotNO.Text);
-                                sqlParameter.Add("WorkDate", dtpInspectDate.SelectedDate?.ToString("yyyyMMdd") ?? DateTime.Now.ToString("yyyyMMdd"));
+                                sqlParameter.Add("SampleQty", sampleQty);               //프로시저에서 샘플 수량만큼 반복하기
+                                sqlParameter.Add("InspectID", txtinspectID.Text);       //현재는 INSERT밖에 없는데 혹시나 저장한걸 수정해야 한다면 찾아야 하므로 - workcomment에 InspectID + / + 번호 (프로시저에서의 i값 seq대용 worklog에 없어서) 을 넣음
+                                sqlParameter.Add("LotID", txtLotNO.Text);               //LotID도 있다
+                                sqlParameter.Add("WorkDate", dtpInspectDate.SelectedDate?.ToString("yyyyMMdd") ?? DateTime.Now.ToString("yyyyMMdd")); //WorkDate는 검사일자가 있는데 WorkTime은 프로시저에서 삽입하는 시각을 넣도록 했음
 
                                 if (sqlParameter.Count > 0)
                                 {
