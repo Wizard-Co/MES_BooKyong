@@ -1404,10 +1404,10 @@ namespace WizMes_BooKyong
 
             //가장 나중에 하는걸 역순으로 검사
 
-            string[] sqlList = { "select orderid from outware where outclss= '01' AND orderid = ",
-                                 "select orderid from Inspect where orderid = ",
-                                  "select orderid from outware where outclss= '03' AND orderid = ",
-                                 "select orderid from pl_Input where orderid = ",
+            string[] sqlList = { "select orderid from outware where outclss= '01' AND orderid = '{0}' ",
+                                 "select orderid from Inspect where orderid = '{0}' ",
+                                  "select orderid from outware where outclss= '03' AND orderid = '{0}' ",
+                                 "select orderid from pl_Input where orderid = '{0}' ",
 
             };
 
@@ -1424,7 +1424,7 @@ namespace WizMes_BooKyong
             //반복문을 돌다가 걸리면 종료, 경고문 띄우고 false반환
             for (int i = 0; i < sqlList.Length; i++)
             {
-                DataSet ds = DataStore.Instance.QueryToDataSet(sqlList[i] + orderID);
+                DataSet ds = DataStore.Instance.QueryToDataSet(string.Format(sqlList[i], orderID));
                 if (ds != null && ds.Tables.Count > 0)
                 {
                     DataTable dt = ds.Tables[0];

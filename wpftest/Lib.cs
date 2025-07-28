@@ -3071,6 +3071,29 @@ namespace WizMes_BooKyong
             return returnString;
         }
 
+
+        //소수점 시자리 리턴
+        public string returnNumStringThree(string strTarget)
+        {
+            string returnString = string.Empty;
+
+            if (strTarget.Contains(","))
+            {
+                strTarget = strTarget.Replace(",", "");
+            }
+
+            if (this.IsNumOrAnother(strTarget))
+            {
+                returnString = string.Format("{0:N3}", double.Parse(strTarget));
+            }
+            else
+            {
+                returnString = strTarget;
+            }
+
+            return returnString;
+        }
+
         //소수점은 놔두고 리턴
         public string returnNumStringTwoExceptDot(string strTarget)
         {
@@ -3756,10 +3779,15 @@ namespace WizMes_BooKyong
         {
             string pattern1 = @"(\d{4})(\d{2})(\d{2})";
             string pattern2 = @"(\d{4})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})";
+            string pattern3 = @"(\d{4})(\d{2})";
 
             if (DigitsDate.Length == 8)
             {
                 DigitsDate = Regex.Replace(DigitsDate, pattern1, "$1-$2-$3");
+            }
+            else if(DigitsDate.Length == 6)
+            {
+                DigitsDate = Regex.Replace(DigitsDate, pattern3, "$1-$2");
             }
             else if (DigitsDate.Length == 16)
             {

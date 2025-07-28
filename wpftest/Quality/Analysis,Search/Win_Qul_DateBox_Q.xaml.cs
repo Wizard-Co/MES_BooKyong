@@ -186,24 +186,28 @@ namespace WizMes_BooKyong
             //검색버튼 비활성화
             btnSearch.IsEnabled = false;
 
-            Dispatcher.BeginInvoke(new Action(() =>
-
+            if(lib.DatePickerCheck(dtpFromDate, dtpToDate, chkInspectDay))
             {
-                Thread.Sleep(2000);
+                Dispatcher.BeginInvoke(new Action(() =>
 
-                //로직
-                FillGrid();
+                {
+                    Thread.Sleep(2000);
 
-            }), System.Windows.Threading.DispatcherPriority.Background);
+                    //로직
+                    FillGrid();
+
+                }), System.Windows.Threading.DispatcherPriority.Background);
 
 
 
-            Dispatcher.BeginInvoke(new Action(() =>
+                Dispatcher.BeginInvoke(new Action(() =>
 
-            {
-                btnSearch.IsEnabled = true;
+                {
+                    btnSearch.IsEnabled = true;
 
-            }), System.Windows.Threading.DispatcherPriority.Background);
+                }), System.Windows.Threading.DispatcherPriority.Background);
+            }
+
         }
 
         private void FillGrid()

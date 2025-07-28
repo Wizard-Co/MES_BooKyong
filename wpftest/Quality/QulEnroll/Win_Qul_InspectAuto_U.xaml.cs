@@ -79,6 +79,7 @@ namespace WizMes_BooKyong
         string LabelID_Global = string.Empty;
         string InspectID_Global = string.Empty;
         int chkUserReport = 0;
+        bool CallTensileCompleted = false;
 
         string strPoint = string.Empty;     //  1: 수입, 3:자주, 5:출하
         string strFlag = string.Empty;
@@ -1547,6 +1548,7 @@ namespace WizMes_BooKyong
                     }
 
                     strFlag = string.Empty;  // 추가했는지, 수정했는지 알려면 맨 마지막에 flag 값을 비워야 한다.
+                    CallTensileCompleted = false;
                 }
 
             }), System.Windows.Threading.DispatcherPriority.Background);
@@ -1939,8 +1941,8 @@ namespace WizMes_BooKyong
                                 SubSeq = dr["SubSeq"].ToString(),
                                 insType = dr["insType"].ToString(),
                                 insItemName = dr["insItemName"].ToString(),
-                                SpecMin = lib.returnNumStringTwo(dr["SpecMin"].ToString()),
-                                SpecMax = lib.returnNumStringTwo(dr["SpecMax"].ToString()),
+                                SpecMin = lib.returnNumStringThree(dr["SpecMin"].ToString()),
+                                SpecMax = lib.returnNumStringThree(dr["SpecMax"].ToString()),
                                 InsTPSpecMin = dr["InsTPSpecMin"].ToString(),
                                 InsTPSpecMax = dr["InsTPSpecMax"].ToString(),
                                 InsSampleQty = dr["InsSampleQty"].ToString(),
@@ -1965,7 +1967,7 @@ namespace WizMes_BooKyong
                             for (int i = 0; i < 10; i++)
                             {
                                 int num = i + 1;
-                                WinQulInsAutoSub.arrInspectValue[i] = lib.returnNumStringTwo(dr["InspectValue" + num.ToString()].ToString());
+                                WinQulInsAutoSub.arrInspectValue[i] = lib.returnNumStringThree(dr["InspectValue" + num.ToString()].ToString());
                                 WinQulInsAutoSub.arrInspectText[i] = dr["InspectText" + num.ToString()].ToString();
                             }
 
@@ -2341,6 +2343,55 @@ namespace WizMes_BooKyong
                             }
                         }
 
+                        //2025-07-25
+                        //만능검사기값을 불러왔을 경우 Wk_Worklog테이블에 값 INSERT하기
+                        //서류변경신청을 왜 안했을까용
+                        if (CallTensileCompleted) //불러왔을 경우
+                        {
+                            var item = dgdSub2.Items.Cast<Win_Qul_InspectAuto_U_Sub_CodeView>().FirstOrDefault(x => x.insItemName == "인장강도"); //인장강도라고 된 값 찾기 만능검사기에 검사항목명이 이걸로 되어있음
+                            if(item != null) // 있으면
+                            {
+                                sqlParameter = new Dictionary<string, object>();
+                                sqlParameter.Clear();
+                                int sampleQty = Convert.ToInt32(item.InsSampleQty); //샘플 수량만큼 row를 반복 Insert
+
+                                for (int i = 1; i < sampleQty + 1; i++)
+                                {
+                                    var propertyValue = item.GetType().GetProperty($"InspectValue{i}")?.GetValue(item); //샘플 수량만큼 번호매겨서 프로시저로 값을 전달
+                                    double inspectValue = Convert.ToDouble(propertyValue ?? 0); // 소숫점 세자리까지의 값이니 double
+
+                                    sqlParameter.Add($"InspectValue{i}", inspectValue);
+
+                                    // 불량 여부 체크
+                                    double minValue = Convert.ToDouble(item.InsTPSpecMin ?? "0"); //Wk_WorkLog에 하필 불량여부가 있다 걍 N넣어 버릴까보다
+                                    double maxValue = Convert.ToDouble(item.InsTPSpecMax ?? "0");
+
+                                    string defectYN = (inspectValue < minValue || inspectValue > maxValue) ? "Y" : "N";
+                                    sqlParameter.Add($"InspectValueDefectYN{i}", defectYN);
+                                }
+
+                                sqlParameter.Add("SampleQty", sampleQty);               //프로시저에서 샘플 수량만큼 반복하기
+                                sqlParameter.Add("InspectID", txtinspectID.Text);       //현재는 INSERT밖에 없는데 혹시나 저장한걸 수정해야 한다면 찾아야 하므로 - workcomment에 InspectID + / + 번호 (프로시저에서의 i값 seq대용 worklog에 없어서) 을 넣음
+                                sqlParameter.Add("LotID", txtLotNO.Text);               //LotID도 있다
+                                sqlParameter.Add("WorkDate", dtpInspectDate.SelectedDate?.ToString("yyyyMMdd") ?? DateTime.Now.ToString("yyyyMMdd")); //WorkDate는 검사일자가 있는데 WorkTime은 프로시저에서 삽입하는 시각을 넣도록 했음
+
+                                if (sqlParameter.Count > 0)
+                                {
+                                    sqlParameter.Add("CreateUserID", MainWindow.CurrentUser);
+
+                                    Procedure pro4 = new Procedure();
+                                    pro4.Name = "xp_Inspect_iAutoInspectSub_wk_WorkLog";
+
+                                    Prolist.Add(pro4);
+                                    ListParameter.Add(sqlParameter);
+
+                                }
+
+                            }
+
+                        }
+
+
                         // 첨부파일 등록
                         if (txtSKetch.Text != string.Empty || txtFile.Text != string.Empty || txtInsCycleFile.Text != string.Empty)
                         {
@@ -2373,6 +2424,9 @@ namespace WizMes_BooKyong
                         }
                         else
                             flag = true;
+
+
+
                     }
                 }
             }
@@ -2956,8 +3010,8 @@ namespace WizMes_BooKyong
                                 SubSeq = dr["SubSeq"].ToString(),
                                 insType = dr["insType"].ToString(),
                                 insItemName = dr["insItemName"].ToString(),
-                                SpecMin = lib.returnNumStringTwo(dr["SpecMin"].ToString()),
-                                SpecMax = lib.returnNumStringTwo(dr["SpecMax"].ToString()),
+                                SpecMin = lib.returnNumStringThree(dr["SpecMin"].ToString()),
+                                SpecMax = lib.returnNumStringThree(dr["SpecMax"].ToString()),
                                 InsTPSpecMin = dr["InsTPSpecMin"].ToString(),
                                 InsTPSpecMax = dr["InsTPSpecMax"].ToString(),
                                 InsSampleQty = dr["InsSampleQty"].ToString(),
@@ -2970,7 +3024,7 @@ namespace WizMes_BooKyong
                             for (int i = 0; i < 10; i++)
                             {
                                 int num = i + 1;
-                                WinQulInsAutoSub.arrInspectValue[i] = lib.returnNumStringTwo(dr["InspectValue" + num.ToString()].ToString());
+                                WinQulInsAutoSub.arrInspectValue[i] = lib.returnNumStringThree(dr["InspectValue" + num.ToString()].ToString());
                                 WinQulInsAutoSub.arrInspectText[i] = dr["InspectText" + num.ToString()].ToString();
                             }
 
@@ -3071,8 +3125,8 @@ namespace WizMes_BooKyong
                                         + "(-" + dr["InsRaSpecMin"].ToString() + "~ +"
                                         + dr["insRASpecMax"].ToString() + ")";
                                     WinQulInsAutoByBasis.insSpec = dr["insRaSpec"].ToString();
-                                    WinQulInsAutoByBasis.SpecMax = lib.returnNumStringTwo(dr["insRASpecMax"].ToString());
-                                    WinQulInsAutoByBasis.SpecMin = lib.returnNumStringTwo(dr["InsRaSpecMin"].ToString());
+                                    WinQulInsAutoByBasis.SpecMax = lib.returnNumStringThree(dr["insRASpecMax"].ToString());
+                                    WinQulInsAutoByBasis.SpecMin = lib.returnNumStringThree(dr["InsRaSpecMin"].ToString());
 
                                     if (lib.IsNumOrAnother(WinQulInsAutoByBasis.insSpec) &&
                                         lib.IsNumOrAnother(WinQulInsAutoByBasis.SpecMax))
@@ -3091,8 +3145,8 @@ namespace WizMes_BooKyong
                                 {
                                     WinQulInsAutoByBasis.Spec_CV = dr["insRaSpec"].ToString();
                                     WinQulInsAutoByBasis.insSpec = dr["insRaSpec"].ToString();
-                                    WinQulInsAutoByBasis.SpecMax = lib.returnNumStringTwo(dr["insRASpecMax"].ToString());
-                                    WinQulInsAutoByBasis.SpecMin = lib.returnNumStringTwo(dr["InsRaSpecMin"].ToString());
+                                    WinQulInsAutoByBasis.SpecMax = lib.returnNumStringThree(dr["insRASpecMax"].ToString());
+                                    WinQulInsAutoByBasis.SpecMin = lib.returnNumStringThree(dr["InsRaSpecMin"].ToString());
                                 }
 
 
@@ -4143,7 +4197,7 @@ namespace WizMes_BooKyong
                 }
                 else
                 {
-                    MessageBoxResult msgresult = MessageBox.Show($"검사기준번호 : {BasisID}에 등록된 정기점검기준서 파일을 찾았습니다.\n파일명 : {FileName}\n다운로드 하시겠습니까?", "확인", MessageBoxButton.YesNo);
+                    MessageBoxResult msgresult = MessageBox.Show($"검사기준번호 : {BasisID}에 등록된 정기점검기준서 정보가 있습니다.\n파일명 : {FileName}\n다운로드 하시겠습니까?", "확인", MessageBoxButton.YesNo);
                     if (msgresult == MessageBoxResult.Yes)
                     {
                         InsCycleForm_FTPDownload(BasisID, FileName);
@@ -4194,7 +4248,7 @@ namespace WizMes_BooKyong
 
                 try
                 {
-                    if (_ftp.download(str_remotepath, str_localpath, false))
+                    if (_ftp.download(str_remotepath, str_localpath, true))
                     {
                         MessageBoxResult msgresult = MessageBox.Show($"파일 다운로드를 완료했습니다.\n지금 폴더를 여시겠습니까?\n파일은 {LOCAL_DOWN_PATH}에 다운로드 되었습니다. ", "확인", MessageBoxButton.YesNo);
                         if (msgresult == MessageBoxResult.Yes)
@@ -4206,6 +4260,11 @@ namespace WizMes_BooKyong
                             }
                         }
 
+                    }
+                    else
+                    {
+                        MessageBox.Show("다운로드에 실패했습니다.\n시스템과 연결된 파일서버가 다르거나 저장된 파일이 삭제되었을 수 있습니다.\n관리자에게 문의하세요","확인");
+                        return false;
                     }
                 }
                 catch
@@ -5292,6 +5351,7 @@ namespace WizMes_BooKyong
                         {
                             MessageBox.Show("검사항목명과 일치하는 만능시험기 검사값을 불러왔습니다.\n", "완료", MessageBoxButton.OK);
                             lib.ShowTooltipMessage(txtDimsHeader, "값이 변경 되었습니다.", MessageBoxImage.Information, System.Windows.Controls.Primitives.PlacementMode.Right, 1.3);
+                            CallTensileCompleted = true;
                         }
 
                       

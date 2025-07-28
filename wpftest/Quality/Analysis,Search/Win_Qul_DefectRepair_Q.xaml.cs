@@ -582,7 +582,7 @@ namespace WizMes_BooKyong
                 sqlParameter.Add("ArticleID", chkArticle.IsChecked == true ? txtArticle.Tag.ToString() : "");
                 //sqlParameter.Add("BuyerArticleNo", chkArticle.IsChecked == true ? txtArticle.Text : "");
                 sqlParameter.Add("nchkBuyerArticleNo", chkArticleNo.IsChecked == true ? 1 : 0);
-                sqlParameter.Add("BuyerArticleNo", chkArticleNo.IsChecked == true ? (txtArticleNo.Tag != null ? txtArticleNo.Tag.ToString(): ""): "");
+                sqlParameter.Add("BuyerArticleNo", chkArticleNo.IsChecked == true ? (txtArticleNo.Tag != null ? txtArticleNo.Tag.ToString() : "") : "");
                 sqlParameter.Add("sGrouping", 1);   //불량유형
                 ds1 = DataStore.Instance.ProcedureToDataSet("xp_Qul_sStsDefectRepair_Sum", sqlParameter, false);
 
@@ -1006,7 +1006,8 @@ namespace WizMes_BooKyong
 
                                 ////콤보박스 선택에 따른 수량 명칭 변경
                                 strGubun1 = cboOccurStepSrh.SelectedValue.Equals("1") ? "입고수량" :
-                                            cboOccurStepSrh.SelectedValue.Equals("3") ? "생산수량" :
+                                            cboOccurStepSrh.SelectedValue.Equals("3") ? "검사수량" :
+                                            cboOccurStepSrh.SelectedValue.Equals("2") ? "생산수량" :
                                             cboOccurStepSrh.SelectedValue.Equals("4") ? "검사수량" : "출고수량",
 
                                 strGubun2 = "불량수",
@@ -1090,7 +1091,7 @@ namespace WizMes_BooKyong
                             day30 = Convert.ToDouble(dr["RepairRate30"].ToString());
                             day31 = Convert.ToDouble(dr["RepairRate31"].ToString());
 
-                           
+
                             //day25 = 50000;
 
                             if (WinDaily.DayCount.Equals("28"))
@@ -1163,7 +1164,7 @@ namespace WizMes_BooKyong
                                         },
                                         DataLabels = false
                                     }
-                                }; 
+                                };
                                 lvcDayChart.Series = SeriesCollection;
                             }
 
@@ -1980,27 +1981,45 @@ namespace WizMes_BooKyong
         //일별 탭
         private void TabItem_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            dtpEDate.Visibility = Visibility.Hidden;
-            btnLastSixMonth.Visibility = Visibility.Hidden;
+            TabItem tabItem = sender as TabItem;
+            if (tabItem != null && tabItem.IsSelected)
+            {
+                dtpEDate.Visibility = Visibility.Hidden;
+                btnLastSixMonth.Visibility = Visibility.Hidden;
+            }
+
+            e.Handled = true;
         }
 
         //월별 탭
         private void Month_TabItem_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            dtpEDate.Visibility = Visibility.Hidden;
-            btnLastSixMonth.Visibility = Visibility.Hidden;
+            TabItem tabItem = sender as TabItem;
+            if (tabItem != null && tabItem.IsSelected)
+            {
+
+                dtpEDate.Visibility = Visibility.Hidden;
+                btnLastSixMonth.Visibility = Visibility.Hidden;
+            }
+
+            e.Handled = true;
         }
 
         //전체 탭
         private void All_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            dtpEDate.Visibility = Visibility.Visible;
-            btnLastSixMonth.Visibility = Visibility.Visible;
+            TabItem tabItem = sender as TabItem;
+            if (tabItem != null && tabItem.IsSelected)
+            {
+                dtpEDate.Visibility = Visibility.Visible;
+                btnLastSixMonth.Visibility = Visibility.Visible;
+            }
+            e.Handled = true;
         }
 
         private void lblArticleNo_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if(chkArticleNo.IsChecked == true)
+            if (chkArticleNo.IsChecked == true)
             {
                 txtArticleNo.IsEnabled = false;
                 btnPfArticle.IsEnabled = false;
@@ -2017,11 +2036,11 @@ namespace WizMes_BooKyong
 
         private void txtArticleNo_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Enter)
+            if (e.Key == Key.Enter)
             {
                 MainWindow.pf.ReturnCode(txtArticleNo, 77, txtArticleNo.Text);
             }
-            
+
         }
 
         private void btnPfArticleNo_Click(object sender, RoutedEventArgs e)
@@ -2031,7 +2050,7 @@ namespace WizMes_BooKyong
 
         private void chkArticleNo_Checked(object sender, RoutedEventArgs e)
         {
-            if(chkArticleNo.IsChecked == true)
+            if (chkArticleNo.IsChecked == true)
             {
                 txtArticleNo.IsEnabled = true;
                 btnPfArticleNo.IsEnabled = true;
@@ -2089,61 +2108,50 @@ namespace WizMes_BooKyong
             }
         }
 
-        private void BtnCapture_Click(object sender, RoutedEventArgs e)
+        private void lblDate_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ScreenCapture();
-
-            if (!ImgImage.Source.Equals(null))
+            if (chkDate.IsChecked == true)
             {
-                //전역변수 ImageData 소스에 원본 ImgImage 소스를 대입
-                ImageData.Source = ImgImage.Source;
-
-                //MainWindow에 imgage리스트에 담아서 ScreenChot페이지로 넘겨준다.
-                MainWindow.ScreenCapture.Clear();
-                MainWindow.ScreenCapture.Add(ImageData);
-
+                chkDate.IsChecked = false;
+                dtpSDate.IsEnabled = false;
+                dtpEDate.IsEnabled = false;
             }
-
-            PopUp.ScreenShot SCshot = new PopUp.ScreenShot();
-
-            //보여줘
-            SCshot.ShowDialog();
-        }
-
-        public void ScreenCapture()
-        {
-            //화면의 크기 정보 
-            int width = (int)SystemParameters.PrimaryScreenWidth + 70;
-            int height = (int)SystemParameters.PrimaryScreenHeight;
-
-            //화면의 크기만큼 bitmap생성
-            using (Bitmap bmp = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+            else
             {
-                //bitmap 이미지 변경을 위해 Grapics 객체 생성
-                using (Graphics gr = Graphics.FromImage(bmp))
-                {
-                    // 화면을 그대로 카피해서 Bitmap 메모리에 저장 
-                    gr.CopyFromScreen(280, 130, 0, 0, bmp.Size);
-                }
-
-                //Bitmap 데이터를 파일로(저장 경로를 지정해서??)
-                bmp.Save(@"c:\temp\" + DateTime.Now.ToString("yyyy-MM-dd,HHmmss") + ".png", ImageFormat.Png);
-
-                using (MemoryStream memory = new MemoryStream())
-                {
-                    bmp.Save(memory, ImageFormat.Bmp);
-                    memory.Position = 0;
-                    BitmapImage bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.StreamSource = memory;
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.EndInit();
-
-                    ImgImage.Source = bitmapImage;
-
-                }
+                chkDate.IsChecked = true;
+                dtpSDate.IsEnabled = true;
+                dtpEDate.IsEnabled = true;
             }
         }
+
+        private void chkDate_Click(object sender, RoutedEventArgs e)
+        {
+            if (chkDate.IsChecked == true)
+            {
+                chkDate.IsChecked = true;
+                dtpSDate.IsEnabled = true;
+                dtpEDate.IsEnabled = true;
+            }
+            else
+            {
+                chkDate.IsChecked = false;
+                dtpSDate.IsEnabled = false;
+                dtpEDate.IsEnabled = false;
+            }
+        }
+
+        //private void CommonControl_Click(object sender, MouseButtonEventArgs e)
+        //{
+        //    lib.CommonControl_Click(sender, e);
+        //}
+
+        //private void CommonControl_Click(object sender, RoutedEventArgs e)
+        //{
+        //    lib.CommonControl_Click(sender, e);
+        //}
+
+
+
 
         public class Win_Qul_DefectRepair_Q_CodeView : BaseView
         {

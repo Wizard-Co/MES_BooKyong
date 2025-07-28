@@ -438,10 +438,8 @@
                         <ColumnDefinition Width="10*"/>
                         <ColumnDefinition Width="80*"/>
                     </Grid.ColumnDefinitions>
-                    <StackPanel Background="#365FB1">
-                        <TextBlock Text="합" Foreground="White" HorizontalAlignment="Center" FontSize="18"/>
-                        <TextBlock Text="계" Foreground="White" HorizontalAlignment="Center" FontSize="18"/>
-                    </StackPanel>
+                    <DataGridRowHeader Grid.Column="0" Content="합계" Style="{StaticResource RowHeaderStyle}"/>
+
                     <DataGrid Grid.Column="1" x:Name="dgdTotal" HeadersVisibility="Column" Style="{DynamicResource DataGridSet1}" ColumnHeaderHeight="20" >
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="건수" Width="*" Binding="{Binding count}" ElementStyle="{DynamicResource DataGridCellCenter}"/>

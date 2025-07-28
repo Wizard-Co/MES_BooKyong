@@ -582,10 +582,13 @@ namespace WizMes_BooKyong
         //검색버튼 클릭
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            using (Loading ld = new Loading(beSearch))
+            if(lib.DatePickerCheck(dtpFromDate, dtpToDate, chkOutwareDay))
             {
-                ld.ShowDialog();
-            }
+                using (Loading ld = new Loading(beSearch))
+                {
+                    ld.ShowDialog();
+                }
+            } 
         }
 
         private void beSearch()

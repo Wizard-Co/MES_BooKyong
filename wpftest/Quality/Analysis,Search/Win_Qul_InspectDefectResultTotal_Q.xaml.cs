@@ -156,11 +156,12 @@ namespace WizMes_BooKyong
         //검색(조회)
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            //검색버튼 비활성화
-            btnSearch.IsEnabled = false;
 
-            if(lib.DatePickerCheck(dtpSDate, dtpEDate, chkDate))
+            if (lib.DatePickerCheck(dtpSDate, dtpEDate, chkDate))
             {
+                //검색버튼 비활성화
+                btnSearch.IsEnabled = false;
+
                 Dispatcher.BeginInvoke(new Action(() =>
 
                 {
@@ -170,15 +171,15 @@ namespace WizMes_BooKyong
 
                 }), System.Windows.Threading.DispatcherPriority.Background);
 
-
-
                 Dispatcher.BeginInvoke(new Action(() =>
 
                 {
                     btnSearch.IsEnabled = true;
 
                 }), System.Windows.Threading.DispatcherPriority.Background);
+
             }
+
         }
 
         //닫기
