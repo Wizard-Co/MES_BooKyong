@@ -353,7 +353,8 @@ namespace WizMes_BooKyong
                                 Machine = dr["Machine"].ToString(),
                                 MachineNo = dr["MachineNo"].ToString(),
                                 Comments = dr["Comments"].ToString(),
-                                CT = dr["CT"].ToString()
+                                CT = dr["CT"].ToString(),
+                                TensileValue = Convert.ToDouble(dr["TensileValue"])
                             };
 
                             dgdMain.Items.Add(WinR);
@@ -555,6 +556,7 @@ namespace WizMes_BooKyong
         public string UpdateDate { get; set; }
         public string UpdateUserID { get; set; }
         public string CT { get; set; }
+        public double TensileValue { get; set; }
 
 
 
