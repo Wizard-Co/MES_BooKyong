@@ -474,6 +474,41 @@ namespace WizMes_BooKyong
                     }
                 }
             }
+            else if (nowTab.Header.ToString().Equals("일별 집계"))
+            {
+                string[] lst = new string[2];
+                lst[0] = "일별 집계";
+                lst[1] = DataGridThisMonth.Name;
+
+                ExportExcelxaml ExpExc = new ExportExcelxaml(lst);
+
+                ExpExc.ShowDialog();
+
+                if (ExpExc.DialogResult.HasValue)
+                {
+                    if (ExpExc.choice.Equals(DataGridThisMonth.Name))
+                    {
+                        if (ExpExc.Check.Equals("Y"))
+                            dt = Lib.Instance.DataGridToDTinHidden(DataGridThisMonth);
+                        else
+                            dt = Lib.Instance.DataGirdToDataTable(DataGridThisMonth);
+
+                        Name = DataGridThisMonth.Name;
+
+                        if (Lib.Instance.GenerateExcel(dt, Name))
+                            Lib.Instance.excel.Visible = true;
+                        else
+                            return;
+                    }
+                    else
+                    {
+                        if (dt != null)
+                        {
+                            dt.Clear();
+                        }
+                    }
+                }
+            }
         }
         #endregion // 엑셀 버튼 이벤트
 

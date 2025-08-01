@@ -422,8 +422,14 @@
                         Binding="{Binding MoldID}"
                         CellStyle="{DynamicResource DataGridCellAndCentering}"
                         Header="금형번호" />
-                    <DataGridTextColumn Binding="{Binding MoldNo}" Header="금형명" />
-                    <DataGridTextColumn Binding="{Binding BuyerArticleNo}" Header="품번" />
+                    <DataGridTextColumn
+                        Binding="{Binding MoldNo}"
+                        CellStyle="{DynamicResource NonNumericDataGridCell}"
+                        Header="금형명" />
+                    <DataGridTextColumn
+                        Binding="{Binding BuyerArticleNo}"
+                        CellStyle="{DynamicResource NonNumericDataGridCell}"
+                        Header="품번" />
                     <DataGridTextColumn
                         Binding="{Binding MoldSizeX, StringFormat=N0}"
                         CellStyle="{DynamicResource NumericDataGridCell}"
@@ -436,14 +442,17 @@
                         Binding="{Binding MoldSizeH, StringFormat=N0}"
                         CellStyle="{DynamicResource NumericDataGridCell}"
                         Header="높이Size(mm)" />
-                    <DataGridTextColumn Binding="{Binding MoldQuality}" Header="금형재질" />
+                    <DataGridTextColumn
+                        Binding="{Binding MoldQuality}"
+                        CellStyle="{DynamicResource NonNumericDataGridCell}"
+                        Header="금형재질" />
                     <DataGridTextColumn
                         Binding="{Binding ProdCustomName}"
                         CellStyle="{DynamicResource DataGridCellAndCentering}"
                         Header="금형제작업체" />
                     <DataGridTextColumn
                         Binding="{Binding OwnerCustomName}"
-                        CellStyle="{DynamicResource DataGridCellAndCentering}"
+                        CellStyle="{DynamicResource NonNumericDataGridCell}"
                         Header="금형소유권" />
                     <DataGridTextColumn
                         Binding="{Binding OwnerOneTimePayYn}"
@@ -633,21 +642,21 @@
                             Text="{Binding MoldNo}" />
 
                         <Label
-     Grid.Row="2"
-     Grid.Column="0"
-     Style="{DynamicResource LabelInputArea}">
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Style="{DynamicResource LabelInputArea}">
                             <Viewbox Style="{DynamicResource ViewBoxSetMaxMinHeight}">
                                 <TextBlock Style="{DynamicResource TextBlockInViewBoxInput}" Text="금형종류" />
                             </Viewbox>
                         </Label>
                         <TextBox
-     x:Name="txtMoldKind"
-     Grid.Row="2"
-     Grid.Column="1"
-     Text="{Binding MoldKind}"
-     Style="{DynamicResource TextBoxInputNecessary}"/>
+                            x:Name="txtMoldKind"
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Style="{DynamicResource TextBoxInputNecessary}"
+                            Text="{Binding MoldKind}" />
 
-                   
+
 
                         <Grid
                             Grid.Row="3"
@@ -851,21 +860,21 @@
                                 Grid.Row="4"
                                 Grid.Column="0"
                                 Margin="1"
-                                 PreviewTextInput="onlyNemeric"
+                                PreviewTextInput="onlyNemeric"
                                 Text="{Binding MoldSizeX}" />
                             <TextBox
                                 x:Name="txtMoldSizeY"
                                 Grid.Row="4"
                                 Grid.Column="1"
                                 Margin="1"
-                                 PreviewTextInput="onlyNemeric"
+                                PreviewTextInput="onlyNemeric"
                                 Text="{Binding MoldSizeY}" />
                             <TextBox
                                 x:Name="txtMoldSizeH"
                                 Grid.Row="4"
                                 Grid.Column="2"
                                 Margin="1"
-                                 PreviewTextInput="onlyNemeric"
+                                PreviewTextInput="onlyNemeric"
                                 Text="{Binding MoldSizeH}" />
                         </Grid>
 
@@ -1112,7 +1121,6 @@
                             Grid.Row="4"
                             Grid.Column="4"
                             Margin="1"
- 
                             SelectedDate="{Binding SetDate}" />
 
                         <!--  금형발주일  -->
@@ -1141,7 +1149,6 @@
                             Grid.Row="5"
                             Grid.Column="4"
                             Margin="1"
-                      
                             SelectedDate="{Binding ProdOrderDate}" />
 
                         <!--  금형 완료예정일  -->
@@ -1170,7 +1177,6 @@
                             Grid.Row="6"
                             Grid.Column="4"
                             Margin="1"
-                      
                             SelectedDate="{Binding ProdDueDate}" />
                         <!--  금형완료일 만들기  -->
                         <Label
@@ -1198,7 +1204,6 @@
                             Grid.Row="7"
                             Grid.Column="4"
                             Margin="1"
-                       
                             SelectedDate="{Binding ProdCompDate}" />
 
                         <!--  관리담당  -->
@@ -1241,9 +1246,9 @@
                             <TextBox
                                 Grid.Column="1"
                                 Margin="1"
+                                IsReadOnly="True"
                                 PreviewTextInput="onlyNemeric"
-                                Text="{Binding AfterRepairHitcount}"
-                                IsReadOnly="True"/>
+                                Text="{Binding AfterRepairHitcount}" />
                         </Grid>
 
                         <!--  세척주기/세척후 만들기  -->
@@ -1270,9 +1275,9 @@
                             <TextBox
                                 Grid.Column="1"
                                 Margin="1"
+                                IsReadOnly="True"
                                 PreviewTextInput="onlyNemeric"
-                                Text="{Binding AfterWashHitcount}"
-                                IsReadOnly="True"/>
+                                Text="{Binding AfterWashHitcount}" />
                         </Grid>
 
                         <!--  수명타발수/현재 만들기  -->
@@ -1299,9 +1304,9 @@
                             <TextBox
                                 Grid.Column="1"
                                 Margin="1"
+                                IsReadOnly="True"
                                 PreviewTextInput="onlyNemeric"
-                                Text="{Binding HitCount}"
-                                IsReadOnly="True"/>
+                                Text="{Binding HitCount}" />
                         </Grid>
 
                         <!--  초기설정타발수 만들기  -->
@@ -1348,7 +1353,6 @@
                             Grid.Row="13"
                             Grid.Column="4"
                             Margin="1"
-                   
                             SelectedDate="{Binding SetHitCountDate}" />
 
                         <!--  등급  -->
