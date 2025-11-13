@@ -238,8 +238,6 @@ namespace WizMes_BooKyong
             grdPeriod.Items.Clear();
             dgdPeriodTotal.Items.Clear();
 
-
-
             try
             {
                 Dictionary<string, object> sqlParameter = new Dictionary<string, object>();
